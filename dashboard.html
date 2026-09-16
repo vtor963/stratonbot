@@ -455,12 +455,12 @@
               <p class="font-bold text-black text-sm mt-4">Dados Pessoais</p>
               <p class="text-xs text-[#9aa0a6]">Preencha seus dados para garantir a segurança da sua conta!</p>
               <div class="grid grid-cols-2 gap-3 mt-3">
-                <div><label class="text-xs font-bold">Primeiro nome</label><input value="Victor" class="w-full h-9 rounded-lg border border-[#e5e7eb] px-3 text-xs bg-[#f9fafb]"></div>
-                <div><label class="text-xs font-bold">Último nome</label><input value="martinez" class="w-full h-9 rounded-lg border border-[#e5e7eb] px-3 text-xs bg-[#f9fafb]"></div>
-                <div><label class="text-xs font-bold">CPF</label><input value="48452934807" class="w-full h-9 rounded-lg border border-[#e5e7eb] px-3 text-xs bg-[#f9fafb]"></div>
-                <div><label class="text-xs font-bold">CNPJ</label><input class="w-full h-9 rounded-lg border border-[#e5e7eb] px-3 text-xs"></div>
-                <div class="col-span-2"><label class="text-xs font-bold">Email</label><input value="victoralbers13@gmail.com" class="w-full h-9 rounded-lg border border-[#e5e7eb] px-3 text-xs bg-[#f9fafb]"></div>
-                <div class="col-span-2"><label class="text-xs font-bold">Senha</label><input value="••••••••" type="password" class="w-full h-9 rounded-lg border border-[#e5e7eb] px-3 text-xs bg-[#f9fafb]"></div>
+                <div><label class="text-xs font-bold">Primeiro nome</label><input id="perfilPrimeiroNome" class="w-full h-9 rounded-lg border border-[#e5e7eb] px-3 text-xs bg-[#f9fafb]"></div>
+                <div><label class="text-xs font-bold">Último nome</label><input id="perfilUltimoNome" class="w-full h-9 rounded-lg border border-[#e5e7eb] px-3 text-xs bg-[#f9fafb]"></div>
+                <div><label class="text-xs font-bold">CPF</label><input id="perfilCpf" class="w-full h-9 rounded-lg border border-[#e5e7eb] px-3 text-xs bg-[#f9fafb]"></div>
+                <div><label class="text-xs font-bold">CNPJ</label><input id="perfilCnpj" class="w-full h-9 rounded-lg border border-[#e5e7eb] px-3 text-xs"></div>
+                <div class="col-span-2"><label class="text-xs font-bold">Email</label><input id="perfilEmail" readonly class="w-full h-9 rounded-lg border border-[#e5e7eb] px-3 text-xs bg-[#f0f0f0] text-[#6b7280]"></div>
+                <div class="col-span-2"><label class="text-xs font-bold">Senha</label><input id="perfilSenha" value="••••••••" type="password" class="w-full h-9 rounded-lg border border-[#e5e7eb] px-3 text-xs bg-[#f9fafb]"></div>
               </div>
               <button class="mt-3 mx-auto block px-6 py-2 rounded-lg bg-gradient-to-r from-[#000000] to-[#222222] text-white font-bold text-xs">Alterar senha</button>
             </div>
@@ -468,12 +468,12 @@
               <p class="font-bold text-black text-sm">Endereço</p>
               <p class="text-xs text-[#9aa0a6]">Mantenha seu endereço atualizado para enviarmos as premiações!</p>
               <div class="grid grid-cols-2 gap-3 mt-3">
-                <div><label class="text-xs font-bold">Cep</label><input class="w-full h-9 rounded-lg border border-[#e5e7eb] px-3 text-xs"></div>
-                <div><label class="text-xs font-bold">Bairro</label><input class="w-full h-9 rounded-lg border border-[#e5e7eb] px-3 text-xs"></div>
-                <div class="col-span-2"><label class="text-xs font-bold">Endereço</label><input class="w-full h-9 rounded-lg border border-[#e5e7eb] px-3 text-xs"></div>
-                <div><label class="text-xs font-bold">Número</label><input class="w-full h-9 rounded-lg border border-[#e5e7eb] px-3 text-xs"></div>
-                <div><label class="text-xs font-bold">UF</label><input class="w-full h-9 rounded-lg border border-[#e5e7eb] px-3 text-xs"></div>
-                <div><label class="text-xs font-bold">Cidade</label><input class="w-full h-9 rounded-lg border border-[#e5e7eb] px-3 text-xs"></div>
+                <div><label class="text-xs font-bold">Cep</label><input id="perfilCep" class="w-full h-9 rounded-lg border border-[#e5e7eb] px-3 text-xs"></div>
+                <div><label class="text-xs font-bold">Bairro</label><input id="perfilBairro" class="w-full h-9 rounded-lg border border-[#e5e7eb] px-3 text-xs"></div>
+                <div class="col-span-2"><label class="text-xs font-bold">Endereço</label><input id="perfilEndereco" class="w-full h-9 rounded-lg border border-[#e5e7eb] px-3 text-xs"></div>
+                <div><label class="text-xs font-bold">Número</label><input id="perfilNumero" class="w-full h-9 rounded-lg border border-[#e5e7eb] px-3 text-xs"></div>
+                <div><label class="text-xs font-bold">UF</label><input id="perfilUf" class="w-full h-9 rounded-lg border border-[#e5e7eb] px-3 text-xs"></div>
+                <div><label class="text-xs font-bold">Cidade</label><input id="perfilCidade" class="w-full h-9 rounded-lg border border-[#e5e7eb] px-3 text-xs"></div>
               </div>
               <div class="mt-4 bg-white border border-[#e5e7eb] rounded-xl p-3">
                 <div class="flex gap-4 text-[11px] font-bold border-b pb-2">
@@ -539,6 +539,82 @@ const user = JSON.parse(localStorage.getItem('profits_user')||'{}');
 document.getElementById('sideName').textContent = user.name ? user.name.split('@')[0].charAt(0).toUpperCase()+user.name.split('@')[0].slice(1) : 'Victor martinez';
 document.getElementById('sideEmail').textContent = user.email || 'victoralbers13@gmail.com';
 if(user.email) document.getElementById('indiqueLink').value = `https://app.profitsbet.co/sign-up?promo=${user.email.split('@')[0]}`;
+
+// PERFIL ISOLADO POR CONTA - cada login ve so seus dados
+(function(){
+  const email = (user.email||'').toLowerCase();
+  if(!email) return;
+  const perfilKey = 'straton_profile_' + email;
+  function loadPerfil(){
+    try{
+      const raw = localStorage.getItem(perfilKey);
+      if(raw) return JSON.parse(raw);
+    }catch(e){}
+    // se nao existe, cria a partir do user atual (migra hardcode Victor apenas uma vez)
+    const parts = (user.name||'').trim().split(' ');
+    return {
+      primeiroNome: parts[0]||'',
+      ultimoNome: parts.slice(1).join(' ')||'',
+      email: user.email,
+      cpf: (user.cpf||'').replace(/\D/g,''),
+      cnpj: '',
+      cep: '', bairro:'', endereco:'', numero:'', uf:'', cidade:''
+    };
+  }
+  function savePerfil(p){
+    localStorage.setItem(perfilKey, JSON.stringify(p));
+    // tambem atualiza profits_user pra manter nome/cpf sincronizado
+    try{
+      const u = JSON.parse(localStorage.getItem('profits_user')||'{}');
+      u.name = (p.primeiroNome + ' ' + p.ultimoNome).trim();
+      u.cpf = p.cpf;
+      localStorage.setItem('profits_user', JSON.stringify(u));
+    }catch(e){}
+  }
+  let perfil = loadPerfil();
+  // preenche campos
+  const $ = id => document.getElementById(id);
+  function fill(){
+    if($('perfilPrimeiroNome')) $('perfilPrimeiroNome').value = perfil.primeiroNome || '';
+    if($('perfilUltimoNome')) $('perfilUltimoNome').value = perfil.ultimoNome || '';
+    if($('perfilCpf')) $('perfilCpf').value = perfil.cpf || '';
+    if($('perfilCnpj')) $('perfilCnpj').value = perfil.cnpj || '';
+    if($('perfilEmail')) $('perfilEmail').value = perfil.email || '';
+    if($('perfilCep')) $('perfilCep').value = perfil.cep || '';
+    if($('perfilBairro')) $('perfilBairro').value = perfil.bairro || '';
+    if($('perfilEndereco')) $('perfilEndereco').value = perfil.endereco || '';
+    if($('perfilNumero')) $('perfilNumero').value = perfil.numero || '';
+    if($('perfilUf')) $('perfilUf').value = perfil.uf || '';
+    if($('perfilCidade')) $('perfilCidade').value = perfil.cidade || '';
+  }
+  fill();
+  // salva automatico ao digitar (por conta)
+  ['perfilPrimeiroNome','perfilUltimoNome','perfilCpf','perfilCnpj','perfilCep','perfilBairro','perfilEndereco','perfilNumero','perfilUf','perfilCidade'].forEach(id=>{
+    const el = document.getElementById(id);
+    if(!el) return;
+    el.addEventListener('input', ()=>{
+      perfil.primeiroNome = $('perfilPrimeiroNome')?.value || '';
+      perfil.ultimoNome = $('perfilUltimoNome')?.value || '';
+      perfil.cpf = $('perfilCpf')?.value.replace(/\D/g,'') || '';
+      perfil.cnpj = $('perfilCnpj')?.value || '';
+      perfil.cep = $('perfilCep')?.value || '';
+      perfil.bairro = $('perfilBairro')?.value || '';
+      perfil.endereco = $('perfilEndereco')?.value || '';
+      perfil.numero = $('perfilNumero')?.value || '';
+      perfil.uf = $('perfilUf')?.value || '';
+      perfil.cidade = $('perfilCidade')?.value || '';
+      savePerfil(perfil);
+    });
+  });
+  // corrige nome na sidebar ao salvar
+  ['perfilPrimeiroNome','perfilUltimoNome'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el) el.addEventListener('input', ()=>{
+      const nome = (($('perfilPrimeiroNome')?.value||'') + ' ' + ($('perfilUltimoNome')?.value||'')).trim();
+      if(nome) document.getElementById('sideName').textContent = nome.split(' ')[0];
+    });
+  });
+})();
 
 function toast(msg, type='ok'){
   const c=document.getElementById('toast');

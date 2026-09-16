@@ -146,8 +146,14 @@ document.getElementById('signupForm').addEventListener('submit', async e=>{
   const btn=document.getElementById('submitBtn'), txt=document.getElementById('btnText'), spin=document.getElementById('btnSpin');
   btn.disabled=true; txt.textContent='Registrando...'; spin.classList.remove('hidden');
   await new Promise(r=>setTimeout(r,1500));
+  // isola perfil por email - cada conta tem sua config
+  const perfilKey = 'straton_profile_' + email.toLowerCase();
+  const primeiro = name.split(' ')[0] || name;
+  const ultimo = name.split(' ').slice(1).join(' ') || '';
+  const perfil = { primeiroNome: primeiro, ultimoNome: ultimo, email: email, cpf: cpf.replace(/\D/g,''), phone: phone.replace(/\D/g,''), cnpj:'', cep:'', bairro:'', endereco:'', numero:'', uf:'', cidade:'' };
+  localStorage.setItem(perfilKey, JSON.stringify(perfil));
   localStorage.setItem('profits_token','mock_'+btoa(email+':'+Date.now()));
-  localStorage.setItem('profits_user', JSON.stringify({email, name}));
+  localStorage.setItem('profits_user', JSON.stringify({email, name, cpf: perfil.cpf, phone: perfil.phone}));
   toast('Conta criada com sucesso! Redirecionando...');
   setTimeout(()=> location.href='./dashboard.html',900);
 });
