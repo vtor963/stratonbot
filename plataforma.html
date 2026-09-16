@@ -70,8 +70,8 @@
 
         <!-- PERSONALIZACAO -->
         <div id="tab-platform" class="tab-panel hidden p-0">
-          <div class="grid lg:grid-cols-[1.2fr_360px] gap-0">
-            <div class="bg-[#2a2a2a] p-4 flex flex-col min-h-[620px]">
+          <div class="flex flex-col lg:flex-row gap-0 items-start">
+            <div id="previewOuter" class="bg-[#2a2a2a] p-4 flex flex-col min-h-[620px] flex-1 w-full lg:sticky lg:top-0 overflow-auto" style="cursor:grab;max-height:80vh">
               <div class="flex items-center gap-2 text-white text-xs mb-3">
                 <button class="w-8 h-8 rounded bg-white/10 grid place-items-center"><img src="./public/logo-orange-icon.svg" class="w-4 h-4"></button><button class="w-8 h-8 rounded bg-white/10 grid place-items-center"><img src="./public/logo-orange-icon.svg" class="w-4 h-4"></button><button class="w-8 h-8 rounded bg-white/10 grid place-items-center"><img src="./public/logo-orange-icon.svg" class="w-4 h-4"></button>
                 <div class="flex gap-1 ml-2 bg-black/30 rounded-full p-1">
@@ -81,7 +81,7 @@
                   <button data-dev="desktop" class="dev-btn px-3 py-1.5 rounded-full text-white/70 text-xs flex items-center gap-1"><img src="./public/logo-orange-icon.svg" class="w-3 h-3"> Desktop</button>
                 </div>
               </div>
-              <div id="previewFrame" class="flex-1 bg-[#0f1923] rounded-xl overflow-hidden border border-white/10 flex flex-col">
+              <div id="previewFrame" class="bg-[#0f1923] rounded-xl overflow-hidden border border-white/10 flex flex-col shrink-0" style="width:100%;max-width:100%;margin:0 auto;touch-action:none;user-select:none">
                 <div class="flex flex-1 min-h-0">
                   <div id="previewSidebar" class="w-[160px] bg-[#0b1220] p-3 hidden md:flex flex-col gap-2">
                     <div class="h-8 bg-white/10 rounded"></div>
@@ -103,7 +103,7 @@
                 </div>
               </div>
             </div>
-            <div class="p-4 bg-white space-y-4 overflow-auto max-h-[620px]">
+            <div class="p-4 bg-white space-y-4 overflow-auto w-full lg:w-[360px] lg:shrink-0 lg:max-h-[80vh] lg:sticky lg:top-0">
               <div><p class="font-bold text-sm">Banners</p><label id="bannerMainDrop" class="mt-2 h-[90px] bg-[#f9fafb] border-2 border-dashed rounded-xl grid place-items-center text-[#9aa0a6] text-xs cursor-pointer hover:border-[#FF4A00]/40 flex flex-col gap-1"><input type="file" accept="image/png,image/jpeg" class="hidden" id="bannerMainInput" onchange="previewBannerMain(this)"><img src="./public/logo-orange-icon.svg" class="w-6 h-6 opacity-50"><span>Arraste ou clique</span></label><img id="bannerMainPreview" class="hidden mt-2 w-full h-20 object-cover rounded-xl border"><button class="mt-2 w-8 h-8 rounded-full bg-[#FF4A00] text-white grid place-items-center ml-auto">+</button></div>
               <div><p class="font-bold text-sm">Banners promocionais</p><label id="bannerPromoDrop" class="mt-2 flex items-center gap-3 p-3 border-2 border-dashed rounded-xl cursor-pointer hover:border-[#FF4A00]/40 bg-[#f9fafb]"><input type="file" accept="image/png,image/jpeg" class="hidden" id="bannerPromoInput" onchange="previewBanner(this)"><span class="w-10 h-10 bg-[#f3f4f6] rounded grid place-items-center"><img src="./public/logo-orange-icon.svg" class="w-5 h-5"></span><span class="text-xs"><span class="text-[#FF4A00] font-bold">Clique ou arraste</span><br>PNG ou JPG - máx. 3 MB</span></label><img id="bannerPromoPreview" class="hidden mt-2 w-full rounded-xl border"></div>
               <div><p class="font-bold text-sm">Textura de fundo (Principal)</p><div class="mt-2 w-[100px] h-[100px] bg-[#0f1923] rounded-xl border flex flex-col items-center justify-center gap-1 overflow-hidden relative"><img id="textureThumb" src="./public/logo-orange-icon.svg" class="w-8 h-8 opacity-30"><span class="text-white text-[11px]">(128×128) *</span><label class="text-[11px] text-white/80 cursor-pointer underline bg-black/40 px-2 py-1 rounded">Alterar<input type="file" accept="image/*" class="hidden" id="textureInput" onchange="previewTexture(this)"></label></div><img id="texturePreview" class="hidden mt-2 w-24 h-24 rounded-xl border object-cover"></div>
@@ -369,10 +369,45 @@ document.querySelectorAll('input[type="color"]').forEach((inp)=>{
 document.querySelectorAll('.dev-btn').forEach(b=> b.addEventListener('click',()=>{
   document.querySelectorAll('.dev-btn').forEach(x=> x.className='dev-btn px-3 py-1.5 rounded-full text-white/70 text-xs');
   b.className='dev-btn px-3 py-1.5 rounded-full bg-[#FF4A00] text-white text-xs font-bold';
+  const frame=document.getElementById('previewFrame');
   const w = b.dataset.dev==='mobile'?'360px': b.dataset.dev==='tablet'?'768px': b.dataset.dev==='laptop'?'1024px':'100%';
-  document.getElementById('previewFrame').style.maxWidth=w;
-  document.getElementById('previewFrame').style.margin='0 auto';
+  frame.style.maxWidth=w;
+  frame.style.width=w==='100%'?'100%':w;
+  frame.style.margin='0 auto';
+  frame.style.transform='translate(0,0)';
+  previewPan={x:0,y:0};
+  document.getElementById('previewOuter')?.scrollTo({top:0,behavior:'smooth'});
 }));
+// Arrastar o preview para direita superior (pan livre)
+let previewPan={x:0,y:0}, previewDragging=false, dragStart={x:0,y:0};
+(function(){
+  const outer=document.getElementById('previewOuter');
+  const frame=document.getElementById('previewFrame');
+  if(!outer||!frame) return;
+  frame.style.cursor='grab';
+  frame.addEventListener('pointerdown',e=>{
+    // não arrastar ao clicar em input/botão dentro do preview
+    if(e.target.closest('input,button,select,textarea,a')) return;
+    previewDragging=true;
+    dragStart={x:e.clientX-previewPan.x, y:e.clientY-previewPan.y};
+    frame.style.cursor='grabbing';
+    frame.setPointerCapture(e.pointerId);
+  });
+  frame.addEventListener('pointermove',e=>{
+    if(!previewDragging) return;
+    previewPan.x=e.clientX-dragStart.x;
+    previewPan.y=e.clientY-dragStart.y;
+    frame.style.transform=`translate(${previewPan.x}px,${previewPan.y}px)`;
+  });
+  ['pointerup','pointercancel','pointerleave'].forEach(ev=> frame.addEventListener(ev,()=>{
+    previewDragging=false;
+    frame.style.cursor='grab';
+  }));
+  frame.addEventListener('dblclick',()=>{
+    previewPan={x:0,y:0};
+    frame.style.transform='translate(0,0)';
+  });
+})();
 function toast(msg){ const c=document.getElementById('toast'); const el=document.createElement('div'); el.className='bg-black text-white px-4 py-2 rounded-xl text-sm shadow'; el.textContent=msg; c.appendChild(el); setTimeout(()=>el.remove(),2500); }
 document.getElementById('btnPublicar')?.addEventListener('click',()=> toast('Publicado! (mock) - Link: '+document.getElementById('domainName').textContent));
 
