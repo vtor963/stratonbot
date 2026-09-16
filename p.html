@@ -4,18 +4,29 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Plataforma | StratonPay Bets</title>
+<meta name="description" content="Cadastre-se, deposite via PIX e jogue agora">
 <link rel="icon" href="./public/logo.png">
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
-:root{ --bg:#0f1923; --nav:#1d2730; --btn:#000000; --txt:#ffffff; --muted:#9aa0a6; --btntxt:#ffffff; }
+:root{ --bg:#0f1923; --nav:#1d2730; --btn:#8cb506; --txt:#ffffff; --muted:#9aa0a6; --btntxt:#ffffff; --hero1:#1d2730; --hero2:#0f1923; }
 body{ background:var(--bg); color:var(--txt); font-family:Inter,system-ui,sans-serif; }
-.card{ background:color-mix(in srgb, var(--nav) 92%, black); border:1px solid rgba(255,255,255,.08); }
-.btn-primary{ background:var(--btn); color:var(--btntxt); }
+.card{ background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.08); }
+.btn-primary{ background:var(--btn); color:var(--btntxt); box-shadow:0 8px 24px -8px var(--btn); }
 .muted{ color:var(--muted); }
 input,select{ color:#111; }
+.hero{ background:linear-gradient(135deg,var(--hero1),var(--hero2)); }
+.jackpot{ font-variant-numeric:tabular-nums; text-shadow:0 0 24px rgba(255,255,255,.25); }
+@keyframes pulse-cta{ 0%,100%{transform:scale(1)} 50%{transform:scale(1.04)} }
+.cta-pulse{ animation:pulse-cta 1.6s ease-in-out infinite; }
+@keyframes slide-in{ from{opacity:0; transform:translateY(8px)} to{opacity:1; transform:none} }
+.feed-item{ animation:slide-in .4s ease; }
+.game-card{ transition:transform .15s ease; } .game-card:hover{ transform:translateY(-3px) scale(1.02); }
+.no-scrollbar::-webkit-scrollbar{ display:none; }
 </style>
 </head>
-<body class="min-h-screen">
+<body class="min-h-screen pb-24 sm:pb-10">
+
+<!-- TOPBAR -->
 <header class="sticky top-0 z-20" style="background:var(--nav)">
   <div class="max-w-[1100px] mx-auto px-4 h-[56px] flex items-center justify-between">
     <div class="flex items-center gap-2">
@@ -24,60 +35,77 @@ input,select{ color:#111; }
     </div>
     <div class="flex items-center gap-2">
       <span id="balancePill" class="text-xs font-bold bg-white/10 px-3 py-1.5 rounded-full">R$ 0,00</span>
-      <button id="btnAccount" class="btn-primary text-xs font-bold px-4 py-2 rounded-full">Entrar</button>
+      <button id="btnEntrar" class="hidden sm:block text-xs font-bold px-4 py-2 rounded-full bg-white/10">Entrar</button>
+      <button id="btnAccount" class="btn-primary text-xs font-bold px-4 py-2 rounded-full">Cadastrar</button>
     </div>
   </div>
 </header>
 
-<main class="max-w-[1100px] mx-auto px-4 pb-20">
-  <!-- OFERTA -->
-  <section id="oferta" class="mt-4 rounded-2xl overflow-hidden card">
+<main class="max-w-[1100px] mx-auto px-4">
+  <!-- HERO / OFERTA -->
+  <section class="hero mt-4 rounded-2xl overflow-hidden border border-white/10">
     <img id="ofertaBanner" class="w-full h-44 object-cover hidden" alt="banner">
-    <div class="p-5">
-      <h1 id="ofertaTitulo" class="text-2xl font-extrabold">Bem-vindo</h1>
-      <p id="ofertaSub" class="muted text-sm mt-1">Cadastre-se, deposite via PIX e jogue agora.</p>
-      <div class="flex flex-wrap gap-2 mt-4">
-        <button id="btnCadastrar" class="btn-primary font-bold px-6 py-2.5 rounded-full text-sm">Cadastrar e Jogar</button>
-        <button id="btnDepositar" class="font-bold px-6 py-2.5 rounded-full text-sm bg-white/10">Depositar PIX</button>
+    <div class="p-5 sm:p-8 text-center">
+      <span id="bonusBadge" class="inline-block text-[11px] font-extrabold px-3 py-1 rounded-full btn-primary">BÔNUS DE 100% NO 1º DEPÓSITO</span>
+      <h1 id="ofertaTitulo" class="text-3xl sm:text-4xl font-black mt-3">Bem-vindo</h1>
+      <p id="ofertaSub" class="muted text-sm mt-2">Cadastre-se, deposite via PIX e jogue agora.</p>
+      <p class="muted text-[11px] font-bold mt-4 tracking-widest">JACKPOT ACUMULADO</p>
+      <p id="jackpot" class="jackpot text-3xl sm:text-5xl font-black text-yellow-300">R$ 0,00</p>
+      <div class="flex flex-wrap gap-2 mt-5 justify-center">
+        <button id="btnCadastrar" class="btn-primary cta-pulse font-extrabold px-8 py-3 rounded-full text-sm">🎮 JOGAR AGORA</button>
+        <button id="btnDepositar" class="font-bold px-6 py-3 rounded-full text-sm bg-white/10">Depositar PIX</button>
       </div>
-      <p id="depLimits" class="muted text-xs mt-2"></p>
+      <p id="depLimits" class="muted text-xs mt-3"></p>
     </div>
   </section>
 
-  <!-- JOGOS -->
+  <!-- CONFIANÇA -->
+  <section class="grid grid-cols-3 gap-2 mt-3 text-center">
+    <div class="card rounded-xl p-3"><p class="text-xl">⚡</p><p class="text-[11px] font-bold mt-1">PIX instantâneo</p></div>
+    <div class="card rounded-xl p-3"><p class="text-xl">💸</p><p class="text-[11px] font-bold mt-1">Saque 24/7</p></div>
+    <div class="card rounded-xl p-3"><p class="text-xl">🛡️</p><p class="text-[11px] font-bold mt-1">Suporte no chat</p></div>
+  </section>
+
+  <!-- JOGOS POPULARES -->
   <section class="mt-6">
     <div class="flex items-end justify-between">
-      <div><h2 class="font-extrabold">Jogos</h2><p class="muted text-xs">RTP <span id="rtpInfo">médio</span> • resultado demo auditável no navegador</p></div>
+      <div><h2 class="font-extrabold text-lg">🔥 Populares</h2><p class="muted text-xs">RTP <span id="rtpInfo">médio</span> • Toque pra jogar demo com seu saldo</p></div>
       <button id="btnSacar" class="text-xs font-bold underline">Sacar</button>
     </div>
-    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-3">
-      <button data-game="double" class="card rounded-2xl p-4 text-left hover:scale-[1.02] transition">
-        <div class="h-20 rounded-xl grid place-items-center text-3xl" style="background:linear-gradient(135deg,#fc4a1a,#f7b733)">🔴</div>
-        <p class="font-bold text-sm mt-2">Double</p><p class="muted text-xs">Vermelho / Preto / Branco 14x</p>
-      </button>
-      <button data-game="mines" class="card rounded-2xl p-4 text-left hover:scale-[1.02] transition">
-        <div class="h-20 rounded-xl grid place-items-center text-3xl" style="background:linear-gradient(135deg,#11998e,#38ef7d)">💣</div>
-        <p class="font-bold text-sm mt-2">Mines demo</p><p class="muted text-xs">Escolha 1 de 5 (2x)</p>
-      </button>
-      <button data-game="crash" class="card rounded-2xl p-4 text-left hover:scale-[1.02] transition">
-        <div class="h-20 rounded-xl grid place-items-center text-3xl" style="background:linear-gradient(135deg,#667eea,#764ba2)">✈️</div>
-        <p class="font-bold text-sm mt-2">Crash demo</p><p class="muted text-xs">Cashout antes de crashar</p>
-      </button>
-      <div class="card rounded-2xl p-4">
-        <div class="h-20 rounded-xl grid place-items-center text-3xl bg-white/10">🎰</div>
-        <p class="font-bold text-sm mt-2">Slots do layout</p><p class="muted text-xs" id="layoutInfo">—</p>
-      </div>
-    </div>
+    <div id="gamesGrid" class="grid grid-cols-3 sm:grid-cols-5 gap-2.5 mt-3"></div>
     <div id="gameArea" class="card rounded-2xl p-4 mt-3 hidden"></div>
   </section>
 
-  <!-- EXTRATO -->
+  <!-- AO VIVO -->
   <section class="mt-6 card rounded-2xl p-4">
-    <h3 class="font-bold text-sm">Extrato</h3>
+    <div class="flex items-center gap-2"><span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span><h3 class="font-extrabold text-sm">Apostas ao vivo</h3></div>
+    <div id="liveFeed" class="mt-2 space-y-1.5 text-xs"></div>
+  </section>
+
+  <!-- COMO FUNCIONA -->
+  <section class="grid sm:grid-cols-3 gap-2 mt-4 text-center">
+    <div class="card rounded-xl p-4"><p class="text-2xl font-black btn-primary w-9 h-9 rounded-full grid place-items-center mx-auto">1</p><p class="font-bold text-sm mt-2">Crie sua conta</p><p class="muted text-xs">30 segundos, só email e PIX</p></div>
+    <div class="card rounded-xl p-4"><p class="text-2xl font-black btn-primary w-9 h-9 rounded-full grid place-items-center mx-auto">2</p><p class="font-bold text-sm mt-2">Deposite via PIX</p><p class="muted text-xs">Cai na hora na sua conta</p></div>
+    <div class="card rounded-xl p-4"><p class="text-2xl font-black btn-primary w-9 h-9 rounded-full grid place-items-center mx-auto">3</p><p class="font-bold text-sm mt-2">Jogue e saque</p><p class="muted text-xs">Ganhou, sacou 24/7</p></div>
+  </section>
+
+  <!-- EXTRATO -->
+  <section class="mt-4 card rounded-2xl p-4">
+    <h3 class="font-bold text-sm">Seu extrato</h3>
     <div id="extrato" class="text-xs mt-2 space-y-1 muted"><p>Nenhuma movimentação ainda.</p></div>
   </section>
-  <p class="muted text-[11px] mt-4">Suporte: <span id="suporteInfo">—</span> • Jogue com responsabilidade. Demo sem gateway aprova na hora; com gateway o dono aprova via painel.</p>
+  <p class="muted text-[11px] mt-4 text-center">Suporte: <span id="suporteInfo">—</span> • <span id="layoutInfo">—</span> • Jogue com responsabilidade +18</p>
 </main>
+
+<!-- BOTTOM NAV mobile -->
+<nav class="sm:hidden fixed bottom-0 inset-x-0 z-20 border-t border-white/10" style="background:var(--nav)">
+  <div class="grid grid-cols-4 text-center text-[10px] font-bold py-2">
+    <button class="py-1" onclick="document.getElementById('ofertaTitulo').scrollIntoView({behavior:'smooth'})">🏠<br>Início</button>
+    <button class="py-1" onclick="document.getElementById('gamesGrid').scrollIntoView({behavior:'smooth'})">🎰<br>Jogos</button>
+    <button class="py-1" id="btnNavDeposit">💰<br>Depositar</button>
+    <button class="py-1" id="btnNavConta">👤<br>Conta</button>
+  </div>
+</nav>
 
 <!-- MODAL CONTA -->
 <div id="modalConta" class="fixed inset-0 bg-black/60 hidden items-center justify-center p-4 z-30">
@@ -116,59 +144,130 @@ input,select{ color:#111; }
 <script type="module">
 import { sbLoadPublicPlatform, getPlayer, sbUpsertPlayer, sbCreateTransaction, sbCreateBet } from './supabase.js';
 
+/* Presets por layout — inspirado na blockbast-2182.profitsbet.app.
+   O dono só troca nome/img no painel; o resto adapta sozinho. */
+const LAYOUTS = [
+  { match:['block blast','blockblast'], accent:'#8cb506', hero1:'#1d5223', hero2:'#0f1923',
+    bonus:'BÔNUS DE 100% NO 1º DEPÓSITO', headline:'QUEBRE BLOCOS. GANHE DE VERDADE', sub:'O Block Blast mais jogado do Brasil. Deposite via PIX e comece com bônus em dobro.',
+    jackpot: 640701.51, games:[
+      ['🧱','Block Blast','Retro • 96,5%','linear-gradient(135deg,#3b82f6,#22c55e)'],
+      ['🔴','Double','2x / 14x','linear-gradient(135deg,#fc4a1a,#f7b733)'],
+      ['💣','Mines','97% RTP','linear-gradient(135deg,#11998e,#38ef7d)'],
+      ['✈️','Crash','Cashout','linear-gradient(135deg,#667eea,#764ba2)'],
+      ['🍭','Sweet Bonanza','Pragmatic','linear-gradient(135deg,#56ab2f,#a8e063)']]},
+  { match:['raspadinha','raspa','copa'], accent:'#f59e0b', hero1:'#7c2d12', hero2:'#0f1923',
+    bonus:'RASPOU, GANHOU — PRÊMIOS ATÉ R$100 MIL', headline:'RASPADINHA DA COPA', sub:'Raspe e ganhe na hora. Prêmios caem direto no saldo, saque via PIX.',
+    jackpot: 38767790.25, games:[
+      ['🎫','Raspadinha Copa','Até R$100 mil','linear-gradient(135deg,#f59e0b,#ef4444)'],
+      ['🐯','Fortune Tiger','PG Soft • 96,8%','linear-gradient(135deg,#f97316,#eab308)'],
+      ['🔴','Double','2x / 14x','linear-gradient(135deg,#fc4a1a,#f7b733)'],
+      ['💣','Mines','97% RTP','linear-gradient(135deg,#11998e,#38ef7d)'],
+      ['✈️','Crash','Cashout','linear-gradient(135deg,#667eea,#764ba2)']]},
+  { match:['777','chines','mk','cm777','w1','fpmmm','caktus','venon','onaplay'], accent:'#eab308', hero1:'#713f12', hero2:'#0f1923',
+    bonus:'PRIMEIRO DEPÓSITO COM BÔNUS ATÉ R$3.777', headline:'JACKPOT MILIONÁRIO', sub:'Slots chineses, Fortune Tiger, Dragon e mais. Gire e concorra ao acumulado.',
+    jackpot: 59780152.94, games:[
+      ['🐯','Fortune Tiger','PG Soft • 96,8%','linear-gradient(135deg,#f97316,#eab308)'],
+      ['🐉','Fortune Dragon','PG Soft','linear-gradient(135deg,#dc2626,#f59e0b)'],
+      ['🐂','Fortune Ox','PG Soft','linear-gradient(135deg,#b45309,#fbbf24)'],
+      ['🔴','Double','2x / 14x','linear-gradient(135deg,#fc4a1a,#f7b733)'],
+      ['✈️','Crash','Cashout','linear-gradient(135deg,#667eea,#764ba2)']]},
+  { match:['subway','retro','helix'], accent:'#22c55e', hero1:'#14532d', hero2:'#0f1923',
+    bonus:'BÔNUS RETRÔ — DOBRE SEU PRIMEIRO PIX', headline:'JOGOS RETRÔ QUE PAGAM', sub:'Subway, Helix e clássicos com ranking diário e saque instantâneo.',
+    jackpot: 1250340.00, games:[
+      ['🛹','Subway Run','Retro','linear-gradient(135deg,#22c55e,#3b82f6)'],
+      ['🌀','Helix Jump','Retro','linear-gradient(135deg,#ec4899,#8b5cf6)'],
+      ['🔴','Double','2x / 14x','linear-gradient(135deg,#fc4a1a,#f7b733)'],
+      ['💣','Mines','97% RTP','linear-gradient(135deg,#11998e,#38ef7d)'],
+      ['✈️','Crash','Cashout','linear-gradient(135deg,#667eea,#764ba2)']]},
+  { match:['blaze'], accent:'#ef4444', hero1:'#7f1d1d', hero2:'#0f1923',
+    bonus:'BÔNUS BLAZE — 100% ATÉ R$1.000', headline:'DOUBLE • MINES • CRASH', sub:'Os originais mais rápidos do Brasil. Resultado na hora, saque 24/7.',
+    jackpot: 2210450.75, games:[
+      ['🔴','Double','2x / 14x','linear-gradient(135deg,#fc4a1a,#f7b733)'],
+      ['💣','Mines','97% RTP','linear-gradient(135deg,#11998e,#38ef7d)'],
+      ['✈️','Crash','Cashout','linear-gradient(135deg,#667eea,#764ba2)'],
+      ['🎡','Roleta','Brasileira','linear-gradient(135deg,#ff9966,#ff5e62)'],
+      ['♠️','Blackjack','Ao vivo','linear-gradient(135deg,#0f0c29,#302b63)']]},
+];
+const FALLBACK = LAYOUTS[0];
+function presetFor(layout){ const l=(layout||'').toLowerCase(); return LAYOUTS.find(p=>p.match.some(m=>l.includes(m))) || FALLBACK; }
+
 const $ = id => document.getElementById(id);
 const params = new URLSearchParams(location.search);
 function detectSlug(){
-  // 1) ?p=slug / ?slug= / ?id=
   let s = params.get('p') || params.get('slug') || params.get('id') || '';
-  // 2) subdominio estilo profits: nome-numero.dominio (ex: blockbast-2182.stratonbot.vercel.app)
   if(!s){
-    const host = location.hostname; // ex: blockbast-2182.stratonbot.vercel.app
-    const parts = host.split('.');
-    if(parts.length >= 3 && !host.endsWith('vercel.app') || (parts.length>3)){
-      const sub = parts[0];
-      s = sub.includes('-') ? sub.slice(0, sub.lastIndexOf('-')) : sub;
-      // tenta com numero também
-      if(!s) s = sub;
-    } else if(parts.length === 4 || (host.endsWith('vercel.app') && parts.length === 4)){
-      s = parts[0];
-    }
+    const parts = location.hostname.split('.');
+    if(parts.length > 2) s = parts[0].includes('-') ? parts[0].slice(0, parts[0].lastIndexOf('-')) : parts[0];
   }
   return (s||'').toLowerCase();
 }
 
-let PLAT = null, PLAYER = null, MODO = 'deposito';
+let PLAT = null, PLAYER = null, MODO = 'deposito', PRESET = FALLBACK, JACKPOT = 0;
 const fmt = v => (Number(v||0)).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
 
 function applyTheme(){
   if(!PLAT) return;
+  PRESET = presetFor(PLAT.layout);
   const t = PLAT.theme||{};
   const root = document.documentElement.style;
-  if(t.bg) root.setProperty('--bg', t.bg);
-  if(t.nav) root.setProperty('--nav', t.nav);
-  if(t.btn) root.setProperty('--btn', t.btn);
-  if(t.txt) root.setProperty('--txt', t.txt);
-  if(t.muted) root.setProperty('--muted', t.muted);
-  if(t.btntxt) root.setProperty('--btntxt', t.btntxt);
+  root.setProperty('--bg', t.bg || '#0f1923');
+  root.setProperty('--nav', t.nav || '#1d2730');
+  root.setProperty('--btn', t.btn || PRESET.accent);
+  root.setProperty('--txt', t.txt || '#ffffff');
+  root.setProperty('--muted', t.muted || '#9aa0a6');
+  root.setProperty('--btntxt', t.btntxt || '#ffffff');
+  root.setProperty('--hero1', PRESET.hero1); root.setProperty('--hero2', PRESET.hero2);
   document.title = (PLAT.nome||'Plataforma') + ' | StratonPay Bets';
+  const meta = document.querySelector('meta[name="description"]');
+  if(meta) meta.content = PLAT.desc || PRESET.sub;
   $('brandName').textContent = PLAT.nome||'Plataforma';
   if(PLAT.img) $('brandLogo').src = PLAT.img;
   const of = PLAT.oferta||{};
   if(of.banner) { $('ofertaBanner').src = of.banner; $('ofertaBanner').classList.remove('hidden'); }
-  if(of.titulo) $('ofertaTitulo').textContent = of.titulo;
-  if(of.sub) $('ofertaSub').textContent = of.sub;
+  $('bonusBadge').textContent = of.badge || PRESET.bonus;
+  $('ofertaTitulo').textContent = of.titulo || PLAT.nome || PRESET.headline;
+  if((of.titulo||PLAT.nome) && !of.titulo) $('ofertaTitulo').textContent = PRESET.headline;
+  $('ofertaSub').textContent = of.sub || PLAT.desc || PRESET.sub;
   $('layoutInfo').textContent = PLAT.layout||'padrão';
   $('rtpInfo').textContent = PLAT.rtp||'médio';
   $('depLimits').textContent = `Depósito ${fmt(PLAT.depMin)} – ${fmt(PLAT.depMax)} • Saque ${fmt(PLAT.saqMin)} – ${fmt(PLAT.saqMax)}`;
   $('suporteInfo').textContent = PLAT.suporte || PLAT.whatsapp || PLAT.telegram || 'painel do dono';
   const gw = PLAT.gateway||{};
-  $('pixInfo').textContent = gw.provider && gw.provider!=='manual' ? `Gateway: ${gw.provider}` : 'Aprovação demo imediata (dono configura gateway no painel)';
+  $('pixInfo').textContent = gw.provider && gw.provider!=='manual' ? `Gateway: ${gw.provider}` : 'Aprovação imediata (dono configura gateway no painel)';
+  // jackpot + grade de jogos do preset
+  JACKPOT = PRESET.jackpot;
+  $('jackpot').textContent = fmt(JACKPOT);
+  $('gamesGrid').innerHTML = PRESET.games.map((g,i)=>{
+    const demo = ['Double','Mines','Crash'].find(d=>g[1].toLowerCase().includes(d.toLowerCase()));
+    return `<button data-demo="${demo||''}" class="game-card card rounded-2xl p-2.5 text-left">
+      <div class="h-20 rounded-xl grid place-items-center text-3xl" style="background:${g[3]}">${g[0]}</div>
+      <p class="font-bold text-xs mt-1.5">${g[1]}</p><p class="muted text-[10px]">${g[2]}</p>
+    </button>`;
+  }).join('');
+  document.querySelectorAll('#gamesGrid [data-demo]').forEach(b=> b.onclick = ()=>{ if(b.dataset.demo) openGame(b.dataset.demo.toLowerCase()); });
 }
+setInterval(()=>{ if(!PLAT) return; JACKPOT += Math.random()*120; const el=$('jackpot'); if(el) el.textContent = fmt(JACKPOT); }, 2500);
+
+// feed ao vivo fake
+const NOMES = ['Lucas*','Ana*','Pedro*','Ju*','Rafa*','Thi*','Camila*','Diego*','Bru*','Leo*','Gabi*','Mat*'];
+function pushLive(){
+  if(!PLAT) return;
+  const g = PRESET.games[Math.floor(Math.random()*PRESET.games.length)];
+  const v = (Math.random()*900+20);
+  const w = Math.random()>0.45;
+  const div = document.createElement('div');
+  div.className = 'feed-item flex justify-between bg-white/5 rounded-lg px-3 py-1.5';
+  div.innerHTML = `<span>${NOMES[Math.floor(Math.random()*NOMES.length)]} • ${g[1]}</span><b class="${w?'text-green-400':'text-red-400'}">${w?'+':''}${fmt(w?v*1.8:-v)}</b>`;
+  const feed = $('liveFeed');
+  feed.prepend(div);
+  while(feed.children.length>6) feed.lastChild.remove();
+}
+setInterval(pushLive, 3500);
 
 function renderPlayer(){
   PLAYER = PLAYER || getPlayer(PLAT?.id||'demo') || { nome:'', email:'', cpf:'', pix_key:'', saldo:0 };
   $('balancePill').textContent = fmt(PLAYER.saldo);
-  $('btnAccount').textContent = PLAYER.email ? PLAYER.nome.split(' ')[0] || 'Conta' : 'Entrar';
+  $('btnAccount').textContent = PLAYER.email ? 'Jogar' : 'Cadastrar';
   renderExtrato();
 }
 function renderExtrato(){
@@ -180,7 +279,6 @@ async function persistPlayer(){
   renderPlayer();
 }
 
-// depósito / saque (demo aprova na hora; com gateway o dono aprova no Financeiro)
 async function confirmarPix(){
   const valor = Number($('pixValor').value||0);
   if(!PLAYER?.email){ alert('Crie sua conta primeiro'); openConta(); return; }
@@ -190,22 +288,21 @@ async function confirmarPix(){
   if(MODO==='saque' && valor > Number(PLAYER.saldo||0)){ alert('Saldo insuficiente'); return; }
   if($('pixChave').value) PLAYER.pix_key = $('pixChave').value;
   const gw = PLAT.gateway||{};
-  const pendente = gw.provider && gw.provider!=='manual'; // com gateway real fica pendente pro dono aprovar
+  const pendente = gw.provider && gw.provider!=='manual';
   const tx = { platform_id: PLAT.id, player_id: PLAYER.id||null, tipo: MODO, valor, status: pendente?'pendente':'pago', gateway: gw.provider||'manual', qrcode:'', pix_copia_cola: pendente?('PIX-'+Date.now()):'' };
   await sbCreateTransaction(tx);
   if(!pendente){
     PLAYER.saldo = Number(PLAYER.saldo||0) + (MODO==='deposito'? valor : -valor);
     await persistPlayer();
     $('pixResult').classList.remove('hidden');
-    $('pixResult').innerHTML = `<b class="text-green-700">Aprovado (demo).</b> Novo saldo: <b>${fmt(PLAYER.saldo)}</b>`;
+    $('pixResult').innerHTML = `<b class="text-green-700">Aprovado.</b> Novo saldo: <b>${fmt(PLAYER.saldo)}</b>`;
   } else {
     $('pixResult').classList.remove('hidden');
-    $('pixResult').innerHTML = `<b>Solicitação enviada.</b> Chave/código: <code>${tx.pix_copia_cola}</code><br>O dono aprova no Financeiro e o saldo entra.`;
+    $('pixResult').innerHTML = `<b>Solicitação enviada.</b> Código: <code>${tx.pix_copia_cola}</code><br>O dono aprova no Financeiro e o saldo entra.`;
   }
   renderExtrato();
 }
 
-// mini-jogos demo com RTP da plataforma
 function rtpEdge(){
   const r = (PLAT.rtp||'medio').toLowerCase();
   if(r.startsWith('alto')) return 0.02; if(r.startsWith('baix')) return 0.12; return 0.06;
@@ -213,6 +310,7 @@ function rtpEdge(){
 function openGame(kind){
   if(!PLAYER?.email){ alert('Crie sua conta primeiro'); openConta(); return; }
   const area = $('gameArea'); area.classList.remove('hidden');
+  area.scrollIntoView({behavior:'smooth', block:'nearest'});
   if(kind==='double'){
     area.innerHTML = `<p class="font-bold text-sm">Double demo</p>
     <div class="flex gap-2 mt-2"><input id="gValor" type="number" value="10" class="h-10 border rounded-xl px-3 text-sm text-black w-28">
@@ -222,7 +320,7 @@ function openGame(kind){
       const v = Number($('gValor').value||0);
       if(!(v>0) || v>Number(PLAYER.saldo||0)){ alert('Valor inválido ou saldo insuficiente. Deposite primeiro.'); return; }
       const pick = $('gCor').value;
-      const r = Math.random() + rtpEdge(); // edge da casa
+      const r = Math.random() + rtpEdge();
       const roll = Math.random();
       let win=false, mult=0;
       if(pick==='white'){ win = roll>0.94+r; mult=14; } else { win = roll>(0.5+r/2); mult=2; }
@@ -231,11 +329,10 @@ function openGame(kind){
       await persistPlayer();
       await sbCreateBet({ platform_id: PLAT.id, player_id: PLAYER.id||null, jogo:'double', valor:v, multiplicador: win?mult:0, retorno:ret, resultado: win?'win':'loss' });
       $('gOut').innerHTML = win? `🎉 Saiu <b>${pick}</b>! +${fmt(ret-v)}` : `😞 Não saiu ${pick}. -${fmt(v)}`;
-      renderExtrato();
     };
   }
   if(kind==='mines'){
-    area.innerHTML = `<p class="font-bold text-sm">Mines demo (1 de 5, paga 2x)</p>
+    area.innerHTML = `<p class="font-bold text-sm">Mines demo (paga 2x)</p>
     <div class="flex gap-2 mt-2"><input id="gValor" type="number" value="10" class="h-10 border rounded-xl px-3 text-sm text-black w-28">
     <button id="gJogar" class="btn-primary px-5 rounded-xl font-bold text-sm">Revelar</button></div><p id="gOut" class="text-sm mt-2 muted"></p>`;
     $('gJogar').onclick = async ()=>{
@@ -281,10 +378,14 @@ function closePix(){ $('modalPix').classList.add('hidden'); $('modalPix').classL
     return;
   }
   applyTheme(); renderPlayer();
-  $('btnAccount').onclick = ()=>{ if(PLAYER?.email){ openConta(); } else openConta(); };
+  for(let i=0;i<4;i++) pushLive();
+  $('btnAccount').onclick = openConta;
+  $('btnEntrar').onclick = openConta;
   $('btnCadastrar').onclick = openConta;
   $('btnDepositar').onclick = ()=>openPix('deposito');
   $('btnSacar').onclick = ()=>openPix('saque');
+  $('btnNavDeposit').onclick = ()=>openPix('deposito');
+  $('btnNavConta').onclick = openConta;
   $('btnFecharConta').onclick = closeConta;
   $('btnFecharPix').onclick = closePix;
   $('btnGerarPix').onclick = confirmarPix;
@@ -293,7 +394,6 @@ function closePix(){ $('modalPix').classList.add('hidden'); $('modalPix').classL
     if(!PLAYER.email){ alert('Informe o email'); return; }
     await persistPlayer(); closeConta();
   };
-  document.querySelectorAll('[data-game]').forEach(b=> b.onclick = ()=>openGame(b.dataset.game));
   if(PLAYER?.email){ $('fNome').value=PLAYER.nome||''; $('fEmail').value=PLAYER.email||''; $('fCpf').value=PLAYER.cpf||''; $('fPix').value=PLAYER.pix_key||''; }
 })();
 </script>
