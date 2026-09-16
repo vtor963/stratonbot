@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>StratonPay Bets | Registrar</title>
-<link rel="icon" href="./public/logo-straton.svg">
+<link rel="icon" href="./public/logo.png">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.tailwindcss.com"></script>
 <script>tailwind.config={theme:{extend:{fontFamily:{sans:['DM Sans','sans-serif']}}}}</script>
@@ -13,7 +13,7 @@
 <body class="bg-white overflow-x-hidden antialiased">
 <div class="w-full lg:grid lg:min-h-screen lg:grid-cols-2">
   <div class="flex flex-col items-center lg:justify-center px-6 py-8 lg:py-6 min-h-screen">
-    <img src="./public/logo-straton.svg" class="w-16 h-16 my-8 lg:hidden object-contain rounded-2xl" alt="StratonPay Bets">
+    <img src="./public/logo.png" class="w-16 h-16 my-8 lg:hidden object-contain rounded-2xl" alt="StratonPay Bets">
     <div class="mx-auto w-full max-w-[350px] grid gap-5 bg-white">
       <div class="grid gap-1.5">
         <h1 class="text-[30px] font-bold text-[#2b3674] leading-none">Registrar</h1>
@@ -22,27 +22,27 @@
 
       <form id="signupForm" class="grid gap-3.5" novalidate>
         <div class="grid gap-1.5">
-          <label class="text-[13px] font-semibold text-[#2b3674]">Nome Completo<span class="text-[#F84300] ml-1">*</span></label>
+          <label class="text-[13px] font-semibold text-[#2b3674]">Nome Completo<span class="text-[#000000] ml-1">*</span></label>
           <input id="name" placeholder="Digite seu nome" class="h-[42px] w-full rounded-xl border border-[#e8ebf5] bg-white px-3.5 text-[14px] font-semibold text-[#2b3674] placeholder:text-[#a3aed0] placeholder:font-medium focus:outline-none focus:border-[#6b7cff]/30 focus:ring-4 focus:ring-[#6b7cff]/10 transition">
           <p id="e-name" class="hidden text-xs font-medium text-red-500"></p>
         </div>
         <div class="grid gap-1.5">
-          <label class="text-[13px] font-semibold text-[#2b3674]">Email<span class="text-[#F84300] ml-1">*</span></label>
+          <label class="text-[13px] font-semibold text-[#2b3674]">Email<span class="text-[#000000] ml-1">*</span></label>
           <input id="email" type="email" placeholder="mail@profitsbet.com" class="h-[42px] w-full rounded-xl border border-[#e8ebf5] bg-white px-3.5 text-[14px] font-semibold text-[#2b3674] placeholder:text-[#a3aed0] placeholder:font-medium focus:outline-none focus:border-[#6b7cff]/30 focus:ring-4 focus:ring-[#6b7cff]/10 transition">
           <p id="e-email" class="hidden text-xs font-medium text-red-500"></p>
         </div>
         <div class="grid gap-1.5">
-          <label class="text-[13px] font-semibold text-[#2b3674]">CPF<span class="text-[#F84300] ml-1">*</span></label>
+          <label class="text-[13px] font-semibold text-[#2b3674]">CPF<span class="text-[#000000] ml-1">*</span></label>
           <input id="cpf" placeholder="000.000.000-00" maxlength="14" inputmode="numeric" class="h-[42px] w-full rounded-xl border border-[#e8ebf5] bg-white px-3.5 text-[14px] font-semibold text-[#2b3674] placeholder:text-[#a3aed0] placeholder:font-medium focus:outline-none focus:border-[#6b7cff]/30 focus:ring-4 focus:ring-[#6b7cff]/10 transition">
           <p id="e-cpf" class="hidden text-xs font-medium text-red-500"></p>
         </div>
         <div class="grid gap-1.5">
-          <label class="text-[13px] font-semibold text-[#2b3674]">Telefone<span class="text-[#F84300] ml-1">*</span></label>
+          <label class="text-[13px] font-semibold text-[#2b3674]">Telefone<span class="text-[#000000] ml-1">*</span></label>
           <input id="phone" placeholder="(00) 00000-0000" maxlength="15" inputmode="numeric" class="h-[42px] w-full rounded-xl border border-[#e8ebf5] bg-white px-3.5 text-[14px] font-semibold text-[#2b3674] placeholder:text-[#a3aed0] placeholder:font-medium focus:outline-none focus:border-[#6b7cff]/30 focus:ring-4 focus:ring-[#6b7cff]/10 transition">
           <p id="e-phone" class="hidden text-xs font-medium text-red-500"></p>
         </div>
         <div class="grid gap-1.5">
-          <label class="text-[13px] font-semibold text-[#2b3674]">Senha<span class="text-[#F84300] ml-1">*</span></label>
+          <label class="text-[13px] font-semibold text-[#2b3674]">Senha<span class="text-[#000000] ml-1">*</span></label>
           <div class="relative">
             <input id="pass" type="password" placeholder="Digite sua senha" class="h-[42px] w-full rounded-xl border border-[#e8ebf5] bg-white px-3.5 pr-10 text-[14px] font-semibold text-[#2b3674] placeholder:text-[#a3aed0] placeholder:font-medium focus:outline-none focus:border-[#6b7cff]/30 focus:ring-4 focus:ring-[#6b7cff]/10 transition">
             <button type="button" data-toggle="pass" class="absolute inset-y-0 right-0 pr-3 flex items-center text-[#a3aed0] hover:text-[#2b3674]"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"/></svg></button>
@@ -50,7 +50,7 @@
           <p id="e-pass" class="hidden text-xs font-medium text-red-500"></p>
         </div>
         <div class="grid gap-1.5">
-          <label class="text-[13px] font-semibold text-[#2b3674]">Confirme sua senha<span class="text-[#F84300] ml-1">*</span></label>
+          <label class="text-[13px] font-semibold text-[#2b3674]">Confirme sua senha<span class="text-[#000000] ml-1">*</span></label>
           <input id="pass2" type="password" placeholder="Confirme sua senha" class="h-[42px] w-full rounded-xl border border-[#e8ebf5] bg-white px-3.5 text-[14px] font-semibold text-[#2b3674] placeholder:text-[#a3aed0] placeholder:font-medium focus:outline-none focus:border-[#6b7cff]/30 focus:ring-4 focus:ring-[#6b7cff]/10 transition">
           <p id="e-pass2" class="hidden text-xs font-medium text-red-500"></p>
         </div>
@@ -59,7 +59,7 @@
           <input id="inviter" placeholder="Código de acesso" class="h-[42px] w-full rounded-xl border border-[#e8ebf5] bg-white px-3.5 text-[14px] font-semibold text-[#2b3674] placeholder:text-[#a3aed0] placeholder:font-medium focus:outline-none focus:border-[#6b7cff]/30 focus:ring-4 focus:ring-[#6b7cff]/10 transition">
         </div>
 
-        <button id="submitBtn" type="submit" class="mt-2 inline-flex items-center justify-center w-full h-[48px] bg-gradient-to-r from-[#F84300] to-[#FFA300] hover:from-[#e03d00] hover:to-[#ff9500] active:scale-[0.98] text-white font-bold text-[14px] rounded-2xl shadow-[0_8px_20px_rgba(248,67,0,0.25)] transition-all disabled:opacity-60">
+        <button id="submitBtn" type="submit" class="mt-2 inline-flex items-center justify-center w-full h-[48px] bg-gradient-to-r from-[#000000] to-[#111111] hover:from-black hover:to-zinc-800 active:scale-[0.98] text-white font-bold text-[14px] rounded-2xl shadow-[0_8px_20px_rgba(0,0,0,0.25)] transition-all disabled:opacity-60">
           <span id="btnText">Registrar</span>
           <svg id="btnSpin" class="hidden ml-2 w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/></svg>
         </button>
@@ -68,10 +68,10 @@
     </div>
   </div>
 
-  <div class="hidden lg:flex relative overflow-hidden bg-[#FF6B00] h-screen justify-center items-center rounded-bl-[170px]">
-    <div class="absolute inset-0"><img src="./public/Background.png" class="w-full h-full object-cover object-bottom opacity-90"><div class="absolute inset-0 bg-gradient-to-b from-[#FF6B00]/10 to-[#FF6B00]/20"></div></div>
+  <div class="hidden lg:flex relative overflow-hidden bg-black h-screen justify-center items-center rounded-bl-[170px]">
+    <div class="absolute inset-0"><div class="absolute inset-0 bg-gradient-to-b from-[#000000]/10 to-[#000000]/20"></div></div>
     <div class="relative flex flex-col items-center max-w-[500px] px-10">
-      <img src="./public/logo-straton.svg" class="w-[260px] object-contain drop-shadow-[0_8px_24px_rgba(0,0,0,0.15)] rounded-3xl" alt="StratonPay Bets">
+      <img src="./public/logo.png" class="w-[260px] object-contain drop-shadow-[0_8px_24px_rgba(0,0,0,0.15)] rounded-3xl" alt="StratonPay Bets">
       <p class="text-[44px] font-bold text-white leading-none mt-6 tracking-tight">StratonPay Bets</p>
       <p class="text-white/80 text-sm font-medium mt-3 text-center">Crie sua conta e tenha seu cassino em minutos</p>
     </div>
@@ -88,7 +88,7 @@ function toast(msg,type='success'){
   const c=document.getElementById('toastContainer');
   const el=document.createElement('div');
   el.className=`pointer-events-auto min-w-[300px] max-w-[420px] bg-[#2b3674] text-white px-4 py-3 rounded-2xl shadow-2xl flex items-center gap-3 border border-white/10 translate-x-full opacity-0 transition-all duration-300`;
-  el.innerHTML=`<div class="w-8 h-8 rounded-full ${type==='error'?'bg-red-500':'bg-gradient-to-r from-[#F84300] to-[#FFA300]'} flex items-center justify-center shrink-0 text-sm">${type==='error'?'✕':'✓'}</div><div class="flex-1 text-sm font-medium">${msg}</div>`;
+  el.innerHTML=`<div class="w-8 h-8 rounded-full ${type==='error'?'bg-red-500':'bg-gradient-to-r from-[#000000] to-[#111111]'} flex items-center justify-center shrink-0 text-sm">${type==='error'?'✕':'✓'}</div><div class="flex-1 text-sm font-medium">${msg}</div>`;
   c.appendChild(el); requestAnimationFrame(()=>el.classList.remove('translate-x-full','opacity-0'));
   setTimeout(()=>{el.classList.add('translate-x-full','opacity-0'); setTimeout(()=>el.remove(),300)},4000);
 }

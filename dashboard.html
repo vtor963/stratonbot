@@ -4,14 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>StratonPay Bets | Dashboard</title>
-<link rel="icon" href="./public/logo-straton.svg">
+<link rel="icon" href="./public/logo.png">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
 <script src="https://cdn.tailwindcss.com"></script>
 <script>tailwind.config={theme:{extend:{fontFamily:{sans:['Inter','DM Sans','sans-serif']}}}}</script>
 <style>
 *{font-family:Inter,sans-serif}
 ::-webkit-scrollbar{width:6px;height:6px}::-webkit-scrollbar-thumb{background:#e5e7eb;border-radius:999px}
-.sidebar-active{color:#111 !important;font-weight:700 !important;border-left:3px solid #FF4A00;background:#fff7ed0a}
+.sidebar-active{color:#111 !important;font-weight:700 !important;border-left:3px solid #000000;background:#f5f5f50a}
 .scroll-hide::-webkit-scrollbar{display:none}
 </style>
 </head>
@@ -20,10 +20,10 @@
   <!-- SIDEBAR -->
   <aside class="w-[220px] shrink-0 bg-white border-r border-[#f0f0f0] hidden lg:flex flex-col fixed h-screen left-0 top-0 z-30">
     <div class="h-[64px] flex items-center gap-2 px-5 border-b border-transparent">
-      <img src="./public/logo-straton.svg" class="w-8 h-8 rounded-lg object-cover" alt="StratonPay">
+      <img src="./public/logo.png" class="w-8 h-8 rounded-lg object-cover" alt="StratonPay">
       <span class="font-bold text-[16px] tracking-tight text-black">StratonPay Bets</span>
     </div>
-    <nav class="flex-1 px-3 py-4 grid gap-1 content-start overflow-y-auto scroll-hide"><a data-nav="dashboard" class="nav-link sidebar-active ml-1.5 flex items-center px-3 py-2 text-[13px] font-medium transition-colors duration-300 transform hover:bg-orange-100 hover:text-[#FF4D00]"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 576 512" height="20px" width="20px" xmlns="http://www.w3.org/2000/svg"><path d="M575.8 255.5c0 18-15 32.1-32 32.1h-32l.7 160.2c0 2.7-.2 5.4-.5 8.1V472c0 22.1-17.9 40-40 40H456c-1.1 0-2.2 0-3.3-.1c-1.4 .1-2.8 .1-4.2 .1H416 392c-22.1 0-40-17.9-40-40V448 384c0-17.7-14.3-32-32-32H256c-17.7 0-32 14.3-32 32v64 24c0 22.1-17.9 40-40 40H160 128.1c-1.5 0-3-.1-4.5-.2c-1.2 .1-2.4 .2-3.6 .2H104c-22.1 0-40-17.9-40-40V360c0-.9 0-1.9 .1-2.8V287.6H32c-18 0-32-14-32-32.1c0-9 3-17 10-24L266.4 8c7-7 15-8 22-8s15 2 21 7L564.8 231.5c8 7 12 15 11 24z"></path></svg><span class="mx-3 text-sm">Dashboard</span></a><a data-nav="plataformas" class="nav-link ml-1.5 flex items-center px-3 py-2 text-[13px] font-medium transition-colors duration-300 transform hover:bg-orange-100 hover:text-[#FF4D00]"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 16 16" height="20px" width="20px" xmlns="http://www.w3.org/2000/svg"><path d="M0 1a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H1a1 1 0 0 1-1-1zm9 0a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1h-5a1 1 0 0 1-1-1zm0 9a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1h-5a1 1 0 0 1-1-1z"></path></svg><span class="mx-3 text-sm">Plataformas</span></a><a data-nav="financeiro" class="nav-link ml-1.5 flex items-center px-3 py-2 text-[13px] font-medium transition-colors duration-300 transform hover:bg-orange-100 hover:text-[#FF4D00]"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" height="20px" width="20px" xmlns="http://www.w3.org/2000/svg"><path d="M243.4 2.6l-224 96c-14 6-21.8 21-18.7 35.8S16.8 160 32 160v8c0 13.3 10.7 24 24 24H456c13.3 0 24-10.7 24-24v-8c15.2 0 28.3-10.7 31.3-25.6s-4.8-29.9-18.7-35.8l-224-96c-8-3.4-17.2-3.4-25.2 0zM128 224H64V420.3c-.6 .3-1.2 .7-1.8 1.1l-48 32c-11.7 7.8-17 22.4-12.9 35.9S17.9 512 32 512H480c14.1 0 26.5-9.2 30.6-22.7s-1.1-28.1-12.9-35.9l-48-32c-.6-.4-1.2-.7-1.8-1.1V224H384V416H344V224H280V416H232V224H168V416H128V224zM256 64a32 32 0 1 1 0 64 32 32 0 1 1 0-64z"></path></svg><span class="mx-3 text-sm">Financeiro</span></a><a data-nav="visaogeral" class="nav-link ml-1.5 flex items-center px-3 py-2 text-[13px] font-medium transition-colors duration-300 transform hover:bg-orange-100 hover:text-[#FF4D00]"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" height="20px" width="20px" xmlns="http://www.w3.org/2000/svg"><path d="M160 80c0-26.5 21.5-48 48-48h32c26.5 0 48 21.5 48 48V432c0 26.5-21.5 48-48 48H208c-26.5 0-48-21.5-48-48V80zM0 272c0-26.5 21.5-48 48-48H80c26.5 0 48 21.5 48 48V432c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V272zM368 96h32c26.5 0 48 21.5 48 48V432c0 26.5-21.5 48-48 48H368c-26.5 0-48-21.5-48-48V144c0-26.5 21.5-48 48-48z"></path></svg><span class="mx-3 text-sm">Visao Geral</span></a><a data-nav="saquejogadores" class="nav-link ml-1.5 flex items-center px-3 py-2 text-[13px] font-medium transition-colors duration-300 transform hover:bg-orange-100 hover:text-[#FF4D00]"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" height="20px" width="20px" xmlns="http://www.w3.org/2000/svg"><path d="M64 32C28.7 32 0 60.7 0 96V416c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V192c0-35.3-28.7-64-64-64H80c-8.8 0-16-7.2-16-16s7.2-16 16-16H448c17.7 0 32-14.3 32-32s-14.3-32-32-32H64zM416 272a32 32 0 1 1 0 64 32 32 0 1 1 0-64z"></path></svg><span class="mx-3 text-sm">Saque de Jogadores</span></a><a data-nav="transacoes" class="nav-link ml-1.5 flex items-center px-3 py-2 text-[13px] font-medium transition-colors duration-300 transform hover:bg-orange-100 hover:text-[#FF4D00]"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 640 512" height="20px" width="20px" xmlns="http://www.w3.org/2000/svg"><path d="M535 41c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l64 64c4.5 4.5 7 10.6 7 17s-2.5 12.5-7 17l-64 64c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9l23-23L384 112c-13.3 0-24-10.7-24-24s10.7-24 24-24l174.1 0L535 41zM105 377l-23 23L256 400c13.3 0 24 10.7 24 24s-10.7 24-24 24L81.9 448l23 23c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0L7 441c-4.5-4.5-7-10.6-7-17s2.5-12.5 7-17l64-64c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9zM96 64H337.9c-3.7 7.2-5.9 15.3-5.9 24c0 28.7 23.3 52 52 52l117.4 0c-4 17 .6 35.5 13.8 48.8c20.3 20.3 53.2 20.3 73.5 0L608 169.5V384c0 35.3-28.7 64-64 64H302.1c3.7-7.2 5.9-15.3 5.9-24c0-28.7-23.3-52-52-52l-117.4 0c4-17-.6-35.5-13.8-48.8c-20.3-20.3-53.2-20.3-73.5 0L32 342.5V128c0-35.3 28.7-64 64-64zm64 64H96v64c35.3 0 64-28.7 64-64zM544 320c-35.3 0-64 28.7-64 64h64V320zM320 352a96 96 0 1 0 0-192 96 96 0 1 0 0 192z"></path></svg><span class="mx-3 text-sm">Transacoes</span></a><a data-nav="indique" class="nav-link ml-1.5 flex items-center px-3 py-2 text-[13px] font-medium transition-colors duration-300 transform hover:bg-orange-100 hover:text-[#FF4D00]"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" height="20px" width="20px" xmlns="http://www.w3.org/2000/svg"><path d="M352 320c-22.608 0-43.387 7.819-59.79 20.895l-102.486-64.054a96.551 96.551 0 0 0 0-41.683l102.486-64.054C308.613 184.181 329.392 192 352 192c53.019 0 96-42.981 96-96S405.019 0 352 0s-96 42.981-96 96c0 7.158.79 14.13 2.276 20.841L155.79 180.895C139.387 167.819 118.608 160 96 160c-53.019 0-96 42.981-96 96s42.981 96 96 96c22.608 0 43.387-7.819 59.79-20.895l102.486 64.054A96.301 96.301 0 0 0 256 416c0 53.019 42.981 96 96 96s96-42.981 96-96-42.981-96-96-96z"></path></svg><span class="mx-3 text-sm">Indique e ganhe</span></a><a data-nav="perfil" class="nav-link ml-1.5 flex items-center px-3 py-2 text-[13px] font-medium transition-colors duration-300 transform hover:bg-orange-100 hover:text-[#FF4D00]"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" height="20px" width="20px" xmlns="http://www.w3.org/2000/svg"><path d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512H418.3c16.4 0 29.7-13.3 29.7-29.7C448 383.8 368.2 304 269.7 304H178.3z"></path></svg><span class="mx-3 text-sm">Perfil</span></a></nav>
+    <nav class="flex-1 px-3 py-4 grid gap-1 content-start overflow-y-auto scroll-hide"><a data-nav="dashboard" class="nav-link sidebar-active ml-1.5 flex items-center px-3 py-2 text-[13px] font-medium transition-colors duration-300 transform hover:bg-zinc-100 hover:text-[#000000]"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 576 512" height="20px" width="20px" xmlns="http://www.w3.org/2000/svg"><path d="M575.8 255.5c0 18-15 32.1-32 32.1h-32l.7 160.2c0 2.7-.2 5.4-.5 8.1V472c0 22.1-17.9 40-40 40H456c-1.1 0-2.2 0-3.3-.1c-1.4 .1-2.8 .1-4.2 .1H416 392c-22.1 0-40-17.9-40-40V448 384c0-17.7-14.3-32-32-32H256c-17.7 0-32 14.3-32 32v64 24c0 22.1-17.9 40-40 40H160 128.1c-1.5 0-3-.1-4.5-.2c-1.2 .1-2.4 .2-3.6 .2H104c-22.1 0-40-17.9-40-40V360c0-.9 0-1.9 .1-2.8V287.6H32c-18 0-32-14-32-32.1c0-9 3-17 10-24L266.4 8c7-7 15-8 22-8s15 2 21 7L564.8 231.5c8 7 12 15 11 24z"></path></svg><span class="mx-3 text-sm">Dashboard</span></a><a data-nav="plataformas" class="nav-link ml-1.5 flex items-center px-3 py-2 text-[13px] font-medium transition-colors duration-300 transform hover:bg-zinc-100 hover:text-[#000000]"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 16 16" height="20px" width="20px" xmlns="http://www.w3.org/2000/svg"><path d="M0 1a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H1a1 1 0 0 1-1-1zm9 0a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1h-5a1 1 0 0 1-1-1zm0 9a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1h-5a1 1 0 0 1-1-1z"></path></svg><span class="mx-3 text-sm">Plataformas</span></a><a data-nav="financeiro" class="nav-link ml-1.5 flex items-center px-3 py-2 text-[13px] font-medium transition-colors duration-300 transform hover:bg-zinc-100 hover:text-[#000000]"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" height="20px" width="20px" xmlns="http://www.w3.org/2000/svg"><path d="M243.4 2.6l-224 96c-14 6-21.8 21-18.7 35.8S16.8 160 32 160v8c0 13.3 10.7 24 24 24H456c13.3 0 24-10.7 24-24v-8c15.2 0 28.3-10.7 31.3-25.6s-4.8-29.9-18.7-35.8l-224-96c-8-3.4-17.2-3.4-25.2 0zM128 224H64V420.3c-.6 .3-1.2 .7-1.8 1.1l-48 32c-11.7 7.8-17 22.4-12.9 35.9S17.9 512 32 512H480c14.1 0 26.5-9.2 30.6-22.7s-1.1-28.1-12.9-35.9l-48-32c-.6-.4-1.2-.7-1.8-1.1V224H384V416H344V224H280V416H232V224H168V416H128V224zM256 64a32 32 0 1 1 0 64 32 32 0 1 1 0-64z"></path></svg><span class="mx-3 text-sm">Financeiro</span></a><a data-nav="visaogeral" class="nav-link ml-1.5 flex items-center px-3 py-2 text-[13px] font-medium transition-colors duration-300 transform hover:bg-zinc-100 hover:text-[#000000]"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" height="20px" width="20px" xmlns="http://www.w3.org/2000/svg"><path d="M160 80c0-26.5 21.5-48 48-48h32c26.5 0 48 21.5 48 48V432c0 26.5-21.5 48-48 48H208c-26.5 0-48-21.5-48-48V80zM0 272c0-26.5 21.5-48 48-48H80c26.5 0 48 21.5 48 48V432c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V272zM368 96h32c26.5 0 48 21.5 48 48V432c0 26.5-21.5 48-48 48H368c-26.5 0-48-21.5-48-48V144c0-26.5 21.5-48 48-48z"></path></svg><span class="mx-3 text-sm">Visao Geral</span></a><a data-nav="saquejogadores" class="nav-link ml-1.5 flex items-center px-3 py-2 text-[13px] font-medium transition-colors duration-300 transform hover:bg-zinc-100 hover:text-[#000000]"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" height="20px" width="20px" xmlns="http://www.w3.org/2000/svg"><path d="M64 32C28.7 32 0 60.7 0 96V416c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V192c0-35.3-28.7-64-64-64H80c-8.8 0-16-7.2-16-16s7.2-16 16-16H448c17.7 0 32-14.3 32-32s-14.3-32-32-32H64zM416 272a32 32 0 1 1 0 64 32 32 0 1 1 0-64z"></path></svg><span class="mx-3 text-sm">Saque de Jogadores</span></a><a data-nav="transacoes" class="nav-link ml-1.5 flex items-center px-3 py-2 text-[13px] font-medium transition-colors duration-300 transform hover:bg-zinc-100 hover:text-[#000000]"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 640 512" height="20px" width="20px" xmlns="http://www.w3.org/2000/svg"><path d="M535 41c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l64 64c4.5 4.5 7 10.6 7 17s-2.5 12.5-7 17l-64 64c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9l23-23L384 112c-13.3 0-24-10.7-24-24s10.7-24 24-24l174.1 0L535 41zM105 377l-23 23L256 400c13.3 0 24 10.7 24 24s-10.7 24-24 24L81.9 448l23 23c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0L7 441c-4.5-4.5-7-10.6-7-17s2.5-12.5 7-17l64-64c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9zM96 64H337.9c-3.7 7.2-5.9 15.3-5.9 24c0 28.7 23.3 52 52 52l117.4 0c-4 17 .6 35.5 13.8 48.8c20.3 20.3 53.2 20.3 73.5 0L608 169.5V384c0 35.3-28.7 64-64 64H302.1c3.7-7.2 5.9-15.3 5.9-24c0-28.7-23.3-52-52-52l-117.4 0c4-17-.6-35.5-13.8-48.8c-20.3-20.3-53.2-20.3-73.5 0L32 342.5V128c0-35.3 28.7-64 64-64zm64 64H96v64c35.3 0 64-28.7 64-64zM544 320c-35.3 0-64 28.7-64 64h64V320zM320 352a96 96 0 1 0 0-192 96 96 0 1 0 0 192z"></path></svg><span class="mx-3 text-sm">Transacoes</span></a><a data-nav="indique" class="nav-link ml-1.5 flex items-center px-3 py-2 text-[13px] font-medium transition-colors duration-300 transform hover:bg-zinc-100 hover:text-[#000000]"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" height="20px" width="20px" xmlns="http://www.w3.org/2000/svg"><path d="M352 320c-22.608 0-43.387 7.819-59.79 20.895l-102.486-64.054a96.551 96.551 0 0 0 0-41.683l102.486-64.054C308.613 184.181 329.392 192 352 192c53.019 0 96-42.981 96-96S405.019 0 352 0s-96 42.981-96 96c0 7.158.79 14.13 2.276 20.841L155.79 180.895C139.387 167.819 118.608 160 96 160c-53.019 0-96 42.981-96 96s42.981 96 96 96c22.608 0 43.387-7.819 59.79-20.895l102.486 64.054A96.301 96.301 0 0 0 256 416c0 53.019 42.981 96 96 96s96-42.981 96-96-42.981-96-96-96z"></path></svg><span class="mx-3 text-sm">Indique e ganhe</span></a><a data-nav="perfil" class="nav-link ml-1.5 flex items-center px-3 py-2 text-[13px] font-medium transition-colors duration-300 transform hover:bg-zinc-100 hover:text-[#000000]"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" height="20px" width="20px" xmlns="http://www.w3.org/2000/svg"><path d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512H418.3c16.4 0 29.7-13.3 29.7-29.7C448 383.8 368.2 304 269.7 304H178.3z"></path></svg><span class="mx-3 text-sm">Perfil</span></a></nav>
     <div class="p-3 border-t border-[#f0f0f0]">
       <div id="userCard" class="flex items-center gap-2 px-2 py-2">
         <img id="sideAvatar" src="https://i.pravatar.cc/100?img=8" class="w-7 h-7 rounded-full object-cover">
@@ -31,14 +31,14 @@
           <p id="sideName" class="text-xs font-bold text-black leading-none truncate">Victor martinez</p>
           <p id="sideEmail" class="text-[11px] text-[#9aa0a6] truncate">victoralbers13@gmail.com</p>
         </div>
-        <button id="logoutBtn" class="w-7 h-7 rounded-lg hover:bg-[#fff1e8] text-[#9aa0a6] hover:text-[#FF4A00] flex items-center justify-center transition"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg></button>
+        <button id="logoutBtn" class="w-7 h-7 rounded-lg hover:bg-[#f5f5f5] text-[#9aa0a6] hover:text-[#000000] flex items-center justify-center transition"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg></button>
       </div>
     </div>
   </aside>
 
   <!-- MOBILE TOP -->
   <header class="lg:hidden fixed top-0 inset-x-0 h-[56px] bg-white border-b border-[#f0f0f0] flex items-center justify-between px-4 z-30">
-    <div class="flex items-center gap-2"><img src="./public/logo-straton.svg" class="w-8 h-8 rounded-lg object-cover" alt="StratonPay"><span class="font-bold">StratonPay Bets</span></div>
+    <div class="flex items-center gap-2"><img src="./public/logo.png" class="w-8 h-8 rounded-lg object-cover" alt="StratonPay"><span class="font-bold">StratonPay Bets</span></div>
     <button id="mobileMenu" class="w-9 h-9 rounded-xl bg-[#f6f7f9] flex items-center justify-center">☰</button>
   </header>
   <div id="mobileNav" class="lg:hidden fixed inset-0 bg-black/40 z-40 hidden"><div class="w-[260px] bg-white h-full overflow-auto p-4"><div class="flex justify-between items-center mb-4"><span class="font-bold">Menu</span><button id="closeMobile" class="text-xl">×</button></div><div id="mobileLinks"></div></div></div>
@@ -52,8 +52,8 @@
           <div class="flex items-center gap-2 text-sm text-[#9aa0a6]"><span>Hoje</span></div>
           <div class="flex items-center gap-2 ml-auto">
             <div class="flex items-center gap-1 bg-white border border-[#e5e7eb] rounded-full px-1 py-1">
-              <div class="flex items-center gap-1 bg-[#fff1e8] border border-[#ffd9c2] rounded-full px-3 py-1.5">
-                <span class="w-2 h-2 bg-[#FF4A00] rounded-full"></span><span class="text-xs font-bold text-[#FF4A00]">R$ 0</span>
+              <div class="flex items-center gap-1 bg-[#f5f5f5] border border-[#e5e7eb] rounded-full px-3 py-1.5">
+                <span class="w-2 h-2 bg-black rounded-full"></span><span class="text-xs font-bold text-[#000000]">R$ 0</span>
               </div>
               <button class="w-7 h-7 rounded-full hover:bg-gray-50 flex items-center justify-center text-[#9aa0a6]"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" d="M2.12 12a10.3 10.3 0 0119.76 0 10.3 10.3 0 01-19.76 0z"/></svg></button>
               <button class="w-7 h-7 rounded-full hover:bg-gray-50 flex items-center justify-center text-[#9aa0a6]"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg></button>
@@ -68,11 +68,11 @@
       <div class="max-w-[1200px] mx-auto px-6 lg:px-8 py-6">
         <div class="flex flex-wrap gap-8 items-start">
           <div class="flex-1 min-w-[280px]">
-            <p class="text-sm font-medium text-[#9aa0a6] flex items-center gap-1">Saldo StratonPay <span class="w-4 h-4 rounded-full bg-orange-100 text-[#FF4A00] grid place-items-center"><svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span></p>
+            <p class="text-sm font-medium text-[#9aa0a6] flex items-center gap-1">Saldo StratonPay <span class="w-4 h-4 rounded-full bg-zinc-100 text-[#000000] grid place-items-center"><svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span></p>
             <p class="text-[32px] font-extrabold text-black leading-none mt-1">R$ 0,00</p>
             <p class="text-sm font-medium text-[#6b7280] mt-1">comissão R$ 0,00</p>
             <div class="flex gap-2 mt-3">
-              <button class="px-4 py-1.5 rounded-full bg-[#FF4A00] text-white text-xs font-bold">Comissões</button>
+              <button class="px-4 py-1.5 rounded-full bg-black text-white text-xs font-bold">Comissões</button>
               <button class="px-4 py-1.5 rounded-full bg-[#e5e7eb] text-[#6b7280] text-xs font-bold">Plataformas</button>
               <button class="px-4 py-1.5 rounded-full bg-[#e5e7eb] text-[#6b7280] text-xs font-bold">Enviar</button>
             </div>
@@ -81,8 +81,8 @@
             <p class="text-sm font-semibold text-black">Transações</p>
             <p class="text-[18px] font-extrabold text-black">R$ 0,00</p>
             <p class="text-xs font-semibold text-emerald-600"><span class="text-emerald-600">↗ R$ 0</span> <span class="text-red-500">↘ R$ 0</span></p>
-            <div class="mt-4 h-[100px] flex items-end gap-[2px]"><div class="flex-1 h-[2px] bg-[#FF4A00]/30"></div></div>
-            <div class="flex justify-between text-[11px] text-[#9aa0a6] border-t border-[#FF4A00] mt-1 pt-1"><span>15/09 00:00</span><span>15/09 23:00</span></div>
+            <div class="mt-4 h-[100px] flex items-end gap-[2px]"><div class="flex-1 h-[2px] bg-black/30"></div></div>
+            <div class="flex justify-between text-[11px] text-[#9aa0a6] border-t border-[#000000] mt-1 pt-1"><span>15/09 00:00</span><span>15/09 23:00</span></div>
           </div>
         </div>
 
@@ -100,7 +100,7 @@
             <table class="w-full text-sm">
               <thead><tr class="text-xs text-[#9aa0a6] border-b"><th class="text-left py-2 font-medium">Tipo</th><th class="text-left font-medium">Quantidade</th><th class="text-left font-medium">Conversão</th><th class="font-medium"></th><th class="text-left font-medium">Conversão QTD</th><th class="text-left font-medium">Valor</th></tr></thead>
               <tbody>
-                <tr class="border-b"><td class="py-3 font-bold">Jogadores</td><td>0</td><td>0.00% <div class="inline-block w-24 h-1.5 bg-[#e5e7eb] rounded-full ml-2 align-middle"><div class="h-1.5 bg-[#FF4A00] rounded-full" style="width:0%"></div></div></td><td></td><td>0</td><td class="font-bold">R$ 0,00</td></tr>
+                <tr class="border-b"><td class="py-3 font-bold">Jogadores</td><td>0</td><td>0.00% <div class="inline-block w-24 h-1.5 bg-[#e5e7eb] rounded-full ml-2 align-middle"><div class="h-1.5 bg-black rounded-full" style="width:0%"></div></div></td><td></td><td>0</td><td class="font-bold">R$ 0,00</td></tr>
                 <tr class="border-b"><td class="py-3 font-bold">Pix</td><td>0</td><td>0.00% <div class="inline-block w-24 h-1.5 bg-[#e5e7eb] rounded-full ml-2 align-middle"></div></td><td></td><td>0</td><td class="font-bold">R$ 0,00</td></tr>
               </tbody>
             </table>
@@ -109,13 +109,13 @@
 
         <!-- bottom banner -->
         <div class="mt-4 bg-white border border-[#e5e7eb] rounded-2xl p-3 flex flex-wrap items-center gap-3 shadow-sm">
-          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-[#FF4A00] to-[#FF8800] grid place-items-center text-white"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4" stroke-width="1.7"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" d="M23 21v-2a4 4 0 00-3-3.87"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" d="M16 3.13a4 4 0 010 7.75"/></svg></div>
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-[#000000] to-[#222222] grid place-items-center text-white"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4" stroke-width="1.7"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" d="M23 21v-2a4 4 0 00-3-3.87"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" d="M16 3.13a4 4 0 010 7.75"/></svg></div>
           <div class="flex-1">
             <p class="text-sm font-extrabold text-black">Indique e Ganhe!</p>
             <p class="text-xs text-[#9aa0a6] max-w-[420px]">Ganhe até R$ 50,00 reais e mais 1% sobre o faturamento sobre as suas indicações durante 12 meses!</p>
           </div>
           <button class="px-6 py-2 rounded-lg bg-[#e5e7eb] text-[#9aa0a6] text-xs font-bold">Fechar</button>
-          <button data-nav="indique" class="nav-link px-6 py-2 rounded-lg bg-gradient-to-r from-[#FF4A00] to-[#FF8800] text-white text-xs font-bold">Indicar agora!</button>
+          <button data-nav="indique" class="nav-link px-6 py-2 rounded-lg bg-gradient-to-r from-[#000000] to-[#222222] text-white text-xs font-bold">Indicar agora!</button>
         </div>
 
         <p class="mt-6 font-bold text-black">Transações</p>
@@ -124,13 +124,13 @@
 
     <!-- ===== PLATAFORMAS ===== -->
     <section id="sec-plataformas" class="section hidden">
-      <div class="h-[140px] bg-gradient-to-r from-[#FF6A00] via-[#FF4A00] to-[#FF2A2A]"></div>
+      <div class="h-[140px] bg-gradient-to-r from-[#000000] via-[#000000] to-[#222222]"></div>
       <div class="max-w-[1100px] mx-auto px-6 lg:px-8 -mt-[70px]">
         <h1 class="text-white text-[22px] font-extrabold mb-4">Plataformas</h1>
         <div class="bg-white rounded-xl shadow-sm border border-[#e5e7eb] p-6">
           <div class="flex items-center justify-between border-b border-[#f0f0f0] pb-4">
             <div class="flex gap-6 text-sm font-bold">
-              <button id="tab-minhas" class="text-[#FF4A00] border-b-2 border-[#FF4A00] pb-2 -mb-[17px]">Minhas Plataformas</button>
+              <button id="tab-minhas" class="text-[#000000] border-b-2 border-[#000000] pb-2 -mb-[17px]">Minhas Plataformas</button>
               <button id="tab-afili" class="text-black pb-2">Afiliações</button>
             </div>
           </div>
@@ -138,10 +138,10 @@
             <div></div>
             <div class="flex items-center gap-3 ml-auto">
               <div class="relative">
-                <input placeholder="" class="w-[160px] h-9 rounded-lg border border-[#e5e7eb] pl-8 pr-3 text-sm focus:outline-none focus:border-[#FF4A00]/40">
+                <input placeholder="" class="w-[160px] h-9 rounded-lg border border-[#e5e7eb] pl-8 pr-3 text-sm focus:outline-none focus:border-[#000000]/40">
                 <svg class="w-4 h-4 absolute left-2.5 top-2.5 text-black" fill="currentColor" viewBox="0 0 20 20"><path d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"/></svg>
               </div>
-              <button id="btnCriarPlataforma" class="h-9 px-4 rounded-lg bg-gradient-to-r from-[#FF4A00] to-[#FF7A00] text-white font-bold text-sm flex items-center gap-1.5 shadow"><span class="w-5 h-5 rounded-full bg-white text-[#FF4A00] grid place-items-center text-sm leading-none">+</span> Criar</button>
+              <button id="btnCriarPlataforma" class="h-9 px-4 rounded-lg bg-gradient-to-r from-[#000000] to-[#222222] text-white font-bold text-sm flex items-center gap-1.5 shadow"><span class="w-5 h-5 rounded-full bg-white text-[#000000] grid place-items-center text-sm leading-none">+</span> Criar</button>
             </div>
           </div>
           <div id="plataformasEmpty" class="py-16 text-center text-[#9aa0a6] text-sm">
@@ -156,13 +156,13 @@
     <!-- ===== FINANCEIRO ===== -->
     <section id="sec-financeiro" class="section hidden">
       <div class="max-w-[640px] mx-auto px-6 lg:px-8 py-6 lg:ml-[0] lg:pl-10">
-        <div class="lg:hidden h-[120px] bg-gradient-to-r from-[#FF6A00] to-[#FF2A2A] -mx-6 -mt-6 mb-6"></div>
+        <div class="lg:hidden h-[120px] bg-gradient-to-r from-[#000000] to-[#222222] -mx-6 -mt-6 mb-6"></div>
         <div class="space-y-8">
           <div>
-            <div class="flex items-center gap-3 mb-2"><span class="w-3 h-3 rounded-full bg-[#FF4A00]"></span><h3 class="font-bold text-black text-sm">Selecione o método</h3></div>
-            <div class="ml-[22px] border-l border-[#FF4A00]/30 pl-6">
+            <div class="flex items-center gap-3 mb-2"><span class="w-3 h-3 rounded-full bg-black"></span><h3 class="font-bold text-black text-sm">Selecione o método</h3></div>
+            <div class="ml-[22px] border-l border-[#000000]/30 pl-6">
               <div class="relative">
-                <select id="metodoPix" class="w-full h-10 rounded-lg border border-[#e5e7eb] bg-white px-3 pr-8 text-sm font-medium focus:outline-none focus:border-[#FF4A00]/40 appearance-none">
+                <select id="metodoPix" class="w-full h-10 rounded-lg border border-[#e5e7eb] bg-white px-3 pr-8 text-sm font-medium focus:outline-none focus:border-[#000000]/40 appearance-none">
                   <option>PIX &nbsp; Real brasileiro</option>
                   <option>BTC Bitcoin</option>
                 </select>
@@ -171,13 +171,13 @@
             </div>
           </div>
           <div>
-            <div class="flex items-center gap-3 mb-2"><span class="w-3 h-3 rounded-full bg-[#FF4A00]"></span><h3 class="font-bold text-black text-sm">Retirar para</h3></div>
-            <div class="ml-[22px] border-l border-[#FF4A00]/30 pl-6 space-y-4">
+            <div class="flex items-center gap-3 mb-2"><span class="w-3 h-3 rounded-full bg-black"></span><h3 class="font-bold text-black text-sm">Retirar para</h3></div>
+            <div class="ml-[22px] border-l border-[#000000]/30 pl-6 space-y-4">
               <div>
-                <p class="text-xs font-bold text-black mb-1.5 border-b-2 border-[#FF4A00] inline-block pb-1">Dados de envio</p>
+                <p class="text-xs font-bold text-black mb-1.5 border-b-2 border-[#000000] inline-block pb-1">Dados de envio</p>
                 <div class="grid gap-3">
-                  <input id="cpfSaque" placeholder="Digite o CPF ou CNPJ" class="h-10 rounded-lg border border-[#e5e7eb] px-3 text-sm focus:outline-none focus:border-[#FF4A00]/40">
-                  <input id="chavePix" placeholder="Chave pix" class="h-10 rounded-lg border border-[#e5e7eb] px-3 text-sm focus:outline-none focus:border-[#FF4A00]/40">
+                  <input id="cpfSaque" placeholder="Digite o CPF ou CNPJ" class="h-10 rounded-lg border border-[#e5e7eb] px-3 text-sm focus:outline-none focus:border-[#000000]/40">
+                  <input id="chavePix" placeholder="Chave pix" class="h-10 rounded-lg border border-[#e5e7eb] px-3 text-sm focus:outline-none focus:border-[#000000]/40">
                   <p class="text-[11px] text-[#9aa0a6] leading-tight">O CPF/CNPJ inserido deve corresponder ao titular da conta<br>vinculada à chave PIX. Caso contrário, o saque não será concluído.</p>
                 </div>
               </div>
@@ -187,8 +187,8 @@
             <div class="flex items-center gap-3 mb-2"><span class="w-3 h-3 rounded bg-[#d1d5db] rotate-45"></span><h3 class="font-bold text-black text-sm">Quantia Sacada</h3></div>
             <div class="ml-[22px] pl-6 space-y-3">
               <div class="relative">
-                <input id="quantia" type="number" placeholder="Mínimo 10,00" min="10" class="w-full h-10 rounded-lg border border-[#e5e7eb] px-3 pr-20 text-sm focus:outline-none focus:border-[#FF4A00]/40">
-                <div class="absolute right-1 top-1 h-8 flex items-center gap-1 text-xs font-bold"><span class="text-black">BRL</span><button id="btnMax" class="text-[#FF4A00] px-2">MAX</button></div>
+                <input id="quantia" type="number" placeholder="Mínimo 10,00" min="10" class="w-full h-10 rounded-lg border border-[#e5e7eb] px-3 pr-20 text-sm focus:outline-none focus:border-[#000000]/40">
+                <div class="absolute right-1 top-1 h-8 flex items-center gap-1 text-xs font-bold"><span class="text-black">BRL</span><button id="btnMax" class="text-[#000000] px-2">MAX</button></div>
               </div>
               <p class="text-[11px] text-[#9aa0a6]">Verifique se os dados estão corretos, caso contrário os fundos<br>podem ser perdidos.</p>
               <div class="flex justify-between text-xs"><span class="text-[#9aa0a6]">Disponível para saque</span><span class="font-bold text-black"><span id="dispBRL">R$ 0,00</span> BRL</span></div>
@@ -200,7 +200,7 @@
                   <p class="text-base font-extrabold text-black" id="quantiaRecebida">-0,40 BRL</p>
                   <p class="text-[11px] text-[#9aa0a6]" id="taxaDetalhe">Taxa de cash-out 0,40 BRL</p>
                 </div>
-                <button id="btnSacar" class="px-6 py-2 rounded-lg bg-[#FFB088] text-white font-bold text-sm cursor-not-allowed" disabled>Sacar</button>
+                <button id="btnSacar" class="px-6 py-2 rounded-lg bg-[#9ca3af] text-white font-bold text-sm cursor-not-allowed" disabled>Sacar</button>
               </div>
             </div>
           </div>
@@ -227,13 +227,13 @@
           <div class="ml-auto text-right"><p class="text-xs text-[#9aa0a6]">Saldo BRL</p><p class="text-sm font-bold text-black">R$ 0,00</p></div>
         </div>
         <div class="flex justify-end mt-6"><div class="text-right"><p class="text-xs text-[#9aa0a6]">Esse mês</p><p class="text-sm font-bold text-black">R$ 0,00</p></div></div>
-        <div class="h-[2px] bg-[#FF4A00]/60 w-[60%] mt-4"></div>
+        <div class="h-[2px] bg-black/60 w-[60%] mt-4"></div>
 
         <h3 class="font-extrabold text-black mt-8">Seu overview</h3>
         <div class="flex items-center gap-2 mt-2">
           <div class="inline-flex bg-white border border-[#e5e7eb] rounded-full p-1 text-xs">
             <button class="px-3 py-1 rounded-full bg-white text-black font-bold">Intervalo</button>
-            <button class="px-3 py-1 rounded-full bg-[#FFF1E8] text-[#FF4A00] font-bold border border-[#FFD9C2]">Hoje</button>
+            <button class="px-3 py-1 rounded-full bg-[#F5F5F5] text-[#000000] font-bold border border-[#E5E7EB]">Hoje</button>
           </div>
         </div>
         <div class="grid md:grid-cols-3 gap-4 mt-4">
@@ -241,12 +241,12 @@
             <p class="text-xs font-bold text-black">Pagamentos</p>
             <div class="h-2 bg-[#f3f4f6] rounded mt-2"></div>
             <div class="mt-4 grid gap-2 text-xs">
-              <div class="flex justify-between border-b py-2"><span class="flex items-center gap-2"><span class="w-3 h-3 bg-[#FF4A00] rounded-sm"></span>Depositos</span><span class="font-bold">R$ 0,00</span></div>
+              <div class="flex justify-between border-b py-2"><span class="flex items-center gap-2"><span class="w-3 h-3 bg-black rounded-sm"></span>Depositos</span><span class="font-bold">R$ 0,00</span></div>
               <div class="flex justify-between border-b py-2"><span class="flex items-center gap-2"><span class="w-3 h-3 bg-red-600 rounded-sm"></span>Saques</span><span class="font-bold">R$ 0,00</span></div>
               <div class="flex justify-between border-b py-2"><span class="flex items-center gap-2"><span class="w-3 h-3 bg-yellow-400 rounded-sm"></span>Depositos pendentes</span><span class="font-bold">R$ 0,00</span></div>
               <div class="flex justify-between py-2"><span class="flex items-center gap-2"><span class="w-3 h-3 bg-[#9aa0a6] rounded-sm"></span>Reembolsos</span><span class="font-bold">R$ 0,00</span></div>
             </div>
-            <div class="h-[2px] bg-[#FF4A00] mt-6"></div>
+            <div class="h-[2px] bg-black mt-6"></div>
             <p class="text-[11px] text-[#6b7280] mt-4">Atualizado há menos de um minuto</p>
           </div>
           <div class="bg-white rounded-xl border border-[#e5e7eb] p-4">
@@ -254,7 +254,7 @@
             <p class="text-sm font-extrabold text-black">R$ 0,00</p>
             <p class="text-[11px] text-[#9aa0a6]">R$ 0,00 periodo anterior</p>
             <div class="h-[80px]"></div>
-            <div class="h-[2px] bg-[#FF4A00] mt-2"></div>
+            <div class="h-[2px] bg-black mt-2"></div>
             <p class="text-[11px] text-[#6b7280] mt-4">Atualizado há menos de um minuto</p>
           </div>
           <div class="bg-white rounded-xl border border-[#e5e7eb] p-4">
@@ -262,7 +262,7 @@
             <p class="text-sm font-extrabold text-black">R$ 0,00</p>
             <p class="text-[11px] text-[#9aa0a6]">R$ 0,00 periodo anterior</p>
             <div class="h-[80px]"></div>
-            <div class="h-[2px] bg-[#FF4A00] mt-2"></div>
+            <div class="h-[2px] bg-black mt-2"></div>
             <p class="text-[11px] text-[#6b7280] mt-4">Atualizado há menos de um minuto</p>
           </div>
         </div>
@@ -270,42 +270,42 @@
           <div class="bg-white rounded-xl border border-[#e5e7eb] p-4">
             <p class="text-xs font-bold text-black">Volume de FTDs</p>
             <p class="text-sm font-bold">R$ 0,00</p><p class="text-[11px] text-[#9aa0a6]">R$ 0,00 periodo anterior</p>
-            <div class="h-16"></div><div class="h-[2px] bg-[#FF4A00]"></div><p class="text-[11px] text-[#6b7280] mt-4">Atualizado há menos de um minuto</p>
+            <div class="h-16"></div><div class="h-[2px] bg-black"></div><p class="text-[11px] text-[#6b7280] mt-4">Atualizado há menos de um minuto</p>
           </div>
           <div class="bg-white rounded-xl border border-[#e5e7eb] p-4">
             <p class="text-xs font-bold text-black">Total de saques</p>
             <p class="text-sm font-bold">R$ 0,00</p><p class="text-[11px] text-[#9aa0a6]">R$ 0,00 periodo anterior</p>
-            <div class="h-16"></div><div class="h-[2px] bg-[#FF4A00]"></div><p class="text-[11px] text-[#6b7280] mt-4">Atualizado há menos de um minuto</p>
+            <div class="h-16"></div><div class="h-[2px] bg-black"></div><p class="text-[11px] text-[#6b7280] mt-4">Atualizado há menos de um minuto</p>
           </div>
           <div class="bg-white rounded-xl border border-[#e5e7eb] p-4">
             <p class="text-xs font-bold text-black">Ticket médio</p>
             <p class="text-sm font-bold">R$ 0,00</p><p class="text-[11px] text-[#9aa0a6]">R$ 0,00 periodo anterior</p>
-            <div class="h-16"></div><div class="h-[2px] bg-[#FF4A00]"></div><p class="text-[11px] text-[#6b7280] mt-4">Atualizado há menos de um minuto</p>
+            <div class="h-16"></div><div class="h-[2px] bg-black"></div><p class="text-[11px] text-[#6b7280] mt-4">Atualizado há menos de um minuto</p>
           </div>
           <div class="bg-white rounded-xl border border-[#e5e7eb] p-4">
             <p class="text-xs font-bold text-black">Total de depósitos por FTD</p>
             <p class="text-sm font-bold">R$ 0,00</p><p class="text-[11px] text-[#9aa0a6]">R$ 0,00 periodo anterior</p>
-            <div class="h-16"></div><div class="h-[2px] bg-[#FF4A00]"></div><p class="text-[11px] text-[#6b7280] mt-4">Atualizado há menos de um minuto</p>
+            <div class="h-16"></div><div class="h-[2px] bg-black"></div><p class="text-[11px] text-[#6b7280] mt-4">Atualizado há menos de um minuto</p>
           </div>
           <div class="bg-white rounded-xl border border-[#e5e7eb] p-4">
             <p class="text-xs font-bold text-black">Novos jogadores</p>
             <p class="text-sm font-bold">0</p><p class="text-[11px] text-[#9aa0a6]">0 periodo anterior</p>
-            <div class="h-16"></div><div class="h-[2px] bg-[#FF4A00]"></div><p class="text-[11px] text-[#6b7280] mt-4">Atualizado há menos de um minuto</p>
+            <div class="h-16"></div><div class="h-[2px] bg-black"></div><p class="text-[11px] text-[#6b7280] mt-4">Atualizado há menos de um minuto</p>
           </div>
           <div class="bg-white rounded-xl border border-[#e5e7eb] p-4">
             <p class="text-xs font-bold text-black">Novos FTDs</p>
             <p class="text-sm font-bold">0</p><p class="text-[11px] text-[#9aa0a6]">0 periodo anterior</p>
-            <div class="h-16"></div><div class="h-[2px] bg-[#FF4A00]"></div><p class="text-[11px] text-[#6b7280] mt-4">Atualizado há menos de um minuto</p>
+            <div class="h-16"></div><div class="h-[2px] bg-black"></div><p class="text-[11px] text-[#6b7280] mt-4">Atualizado há menos de um minuto</p>
           </div>
           <div class="bg-white rounded-xl border border-[#e5e7eb] p-4">
             <p class="text-xs font-bold text-black">Total de apostas</p>
             <p class="text-sm font-bold">R$ 0,00</p><p class="text-[11px] text-[#9aa0a6]">R$ 0,00 periodo anterior</p>
-            <div class="h-16"></div><div class="h-[2px] bg-[#FF4A00]"></div><p class="text-[11px] text-[#6b7280] mt-4">Atualizado há menos de um minuto</p>
+            <div class="h-16"></div><div class="h-[2px] bg-black"></div><p class="text-[11px] text-[#6b7280] mt-4">Atualizado há menos de um minuto</p>
           </div>
           <div class="bg-white rounded-xl border border-[#e5e7eb] p-4">
             <p class="text-xs font-bold text-black">Total de prêmios</p>
             <p class="text-sm font-bold">R$ 0,00</p><p class="text-[11px] text-[#9aa0a6]">R$ 0,00 periodo anterior</p>
-            <div class="h-16"></div><div class="h-[2px] bg-[#FF4A00]"></div><p class="text-[11px] text-[#6b7280] mt-4">Atualizado há menos de um minuto</p>
+            <div class="h-16"></div><div class="h-[2px] bg-black"></div><p class="text-[11px] text-[#6b7280] mt-4">Atualizado há menos de um minuto</p>
           </div>
         </div>
       </div>
@@ -313,7 +313,7 @@
 
     <!-- ===== SAQUE JOGADORES ===== -->
     <section id="sec-saquejogadores" class="section hidden">
-      <div class="h-[140px] bg-gradient-to-r from-[#FF6A00] via-[#FF4A00] to-[#FF2A2A]"></div>
+      <div class="h-[140px] bg-gradient-to-r from-[#000000] via-[#000000] to-[#222222]"></div>
       <div class="max-w-[700px] mx-auto px-6 -mt-[70px]">
         <h2 class="text-white font-bold text-lg mb-4">Saques dos jogadores</h2>
         <div class="bg-[#edeef2] rounded-[24px] p-4 md:p-6 shadow-sm">
@@ -353,20 +353,20 @@
 
     <!-- ===== TRANSACOES ===== -->
     <section id="sec-transacoes" class="section hidden">
-      <div class="h-[140px] bg-gradient-to-r from-[#FF6A00] via-[#FF4A00] to-[#FF2A2A]"></div>
+      <div class="h-[140px] bg-gradient-to-r from-[#000000] via-[#000000] to-[#222222]"></div>
       <div class="max-w-[900px] mx-auto px-6 -mt-[70px]">
         <h1 class="text-white text-[22px] font-bold mb-4">Transações</h1>
         <div class="grid md:grid-cols-3 gap-4">
           <div class="bg-white rounded-2xl p-4 shadow-sm flex items-center gap-3">
-            <div class="w-8 h-8 rounded-full bg-[#FF4A00] text-white grid place-items-center text-xs">↓</div>
+            <div class="w-8 h-8 rounded-full bg-black text-white grid place-items-center text-xs">↓</div>
             <div><p class="text-xs text-[#9aa0a6]">Entradas</p><p class="font-extrabold text-black">R$ 0,00</p></div>
           </div>
           <div class="bg-white rounded-2xl p-4 shadow-sm flex items-center gap-3">
-            <div class="w-8 h-8 rounded-full bg-[#FF4A00] text-white grid place-items-center text-xs">↑</div>
+            <div class="w-8 h-8 rounded-full bg-black text-white grid place-items-center text-xs">↑</div>
             <div><p class="text-xs text-[#9aa0a6]">Saídas</p><p class="font-extrabold text-black">- R$ 0,00</p></div>
           </div>
           <div class="bg-white rounded-2xl p-4 shadow-sm flex items-center gap-3">
-            <div class="w-8 h-8 rounded-full bg-[#FF4A00] text-white grid place-items-center text-xs">₿</div>
+            <div class="w-8 h-8 rounded-full bg-black text-white grid place-items-center text-xs">₿</div>
             <div><p class="text-xs text-[#9aa0a6]">Balanço</p><p class="font-extrabold text-black">R$ 0,00</p></div>
           </div>
         </div>
@@ -375,7 +375,7 @@
             <p class="text-xs font-bold text-black">Todas as transações</p>
             <div class="flex items-center gap-2">
               <div class="flex items-center gap-2 bg-[#f3f4f6] rounded-lg px-3 py-1.5 text-xs text-[#6b7280]"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" d="M8 7V3m8 4V3M3 11h18M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg> Hoje</div>
-              <button class="w-7 h-7 rounded-lg bg-[#FF4A00] text-white grid place-items-center"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+              <button class="w-7 h-7 rounded-lg bg-black text-white grid place-items-center"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" d="M4 6h16M4 12h16M4 18h16"/></svg></button>
               <button class="w-7 h-7 rounded-lg bg-[#e5e7eb] text-[#9aa0a6] grid place-items-center"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.5L17 8.5V19a2 2 0 01-2 2z"/></svg></button>
             </div>
           </div>
@@ -390,12 +390,12 @@
 
     <!-- ===== INDIQUE ===== -->
     <section id="sec-indique" class="section hidden">
-      <div class="h-[140px] bg-gradient-to-r from-[#FF6A00] via-[#FF4A00] to-[#FF2A2A]"></div>
+      <div class="h-[140px] bg-gradient-to-r from-[#000000] via-[#000000] to-[#222222]"></div>
       <div class="max-w-[900px] mx-auto px-6 -mt-[70px]">
         <h1 class="text-white text-[18px] font-bold mb-4">Programa de Indicações</h1>
         <div class="grid md:grid-cols-2 gap-4">
           <div class="bg-white rounded-2xl shadow-sm p-4">
-            <div class="h-[70px] rounded-xl bg-gradient-to-r from-[#FFEB3B] via-[#FF8A00] to-[#FF2A2A] relative overflow-hidden">
+            <div class="h-[70px] rounded-xl bg-gradient-to-r from-black via-zinc-900 to-black relative overflow-hidden">
               <img src="https://i.pravatar.cc/100?img=8" class="w-14 h-14 rounded-full border-4 border-white absolute left-1/2 -translate-x-1/2 -bottom-0 top-6 object-cover">
             </div>
             <p class="text-center font-bold text-black mt-8 text-sm">Victor martinez</p>
@@ -405,15 +405,15 @@
               <div class="text-center"><p class="text-sm font-bold text-black">0</p><p class="text-[11px] text-[#9aa0a6]">Cadastros (+600)</p></div>
               <div class="text-center"><p class="text-sm font-bold text-black">R$ 0</p><p class="text-[11px] text-[#9aa0a6]">Comissões</p></div>
             </div>
-            <button class="w-full mt-3 h-8 rounded-lg bg-[#FFC497] text-[#FF4A00] font-bold text-sm">Coletar</button>
+            <button class="w-full mt-3 h-8 rounded-lg bg-[#e5e7eb] text-[#000000] font-bold text-sm">Coletar</button>
           </div>
           <div class="bg-white rounded-2xl shadow-sm p-4">
-            <div class="w-10 h-10 rounded-xl bg-[#FF4A00] text-white grid place-items-center mx-auto"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4" stroke-width="1.7"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" d="M19 8a2 2 0 010 4"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" d="M22 11v-1a2 2 0 00-2-2"/></svg></div>
+            <div class="w-10 h-10 rounded-xl bg-black text-white grid place-items-center mx-auto"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4" stroke-width="1.7"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" d="M19 8a2 2 0 010 4"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" d="M22 11v-1a2 2 0 00-2-2"/></svg></div>
             <p class="text-center font-extrabold text-black">Indique e ganhe!</p>
             <p class="text-center text-[11px] text-[#9aa0a6]">Ganhe R$ 50,00 por cada amigo que você<br>indicar e mais 1% sobre o faturamento dele</p>
             <div class="flex gap-2 mt-3">
               <input id="indiqueLink" value="https://app.profitsbet.co/sign-up?prom..." readonly class="flex-1 h-8 rounded-lg border border-[#e5e7eb] px-3 text-[11px] bg-[#f9fafb] text-[#6b7280]">
-              <button id="btnCopyLink" class="h-8 px-3 rounded-lg bg-[#FF4A00] text-white text-xs font-bold flex items-center gap-1"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" stroke-width="1.7"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v3"/></svg> Copiar link</button>
+              <button id="btnCopyLink" class="h-8 px-3 rounded-lg bg-black text-white text-xs font-bold flex items-center gap-1"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" stroke-width="1.7"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v3"/></svg> Copiar link</button>
               <button class="w-8 h-8 rounded-lg bg-[#f3f4f6] grid place-items-center text-[#9aa0a6]"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" d="M7 17L17 7M17 7H7m10 0v10"/></svg></button>
             </div>
             <div class="bg-[#fffbeb] border border-[#fde68a] rounded-lg p-2 mt-3 flex gap-2">
@@ -445,7 +445,7 @@
 
     <!-- ===== PERFIL ===== -->
     <section id="sec-perfil" class="section hidden">
-      <div class="h-[140px] bg-gradient-to-r from-[#FF6A00] via-[#FF4A00] to-[#FF2A2A]"></div>
+      <div class="h-[140px] bg-gradient-to-r from-[#000000] via-[#000000] to-[#222222]"></div>
       <div class="max-w-[1000px] mx-auto px-6 -mt-[90px]">
         <h1 class="text-white font-bold mb-4">Perfil</h1>
         <div class="bg-white rounded-2xl shadow-sm p-6">
@@ -462,7 +462,7 @@
                 <div class="col-span-2"><label class="text-xs font-bold">Email</label><input value="victoralbers13@gmail.com" class="w-full h-9 rounded-lg border border-[#e5e7eb] px-3 text-xs bg-[#f9fafb]"></div>
                 <div class="col-span-2"><label class="text-xs font-bold">Senha</label><input value="••••••••" type="password" class="w-full h-9 rounded-lg border border-[#e5e7eb] px-3 text-xs bg-[#f9fafb]"></div>
               </div>
-              <button class="mt-3 mx-auto block px-6 py-2 rounded-lg bg-gradient-to-r from-[#FF4A00] to-[#FF7A00] text-white font-bold text-xs">Alterar senha</button>
+              <button class="mt-3 mx-auto block px-6 py-2 rounded-lg bg-gradient-to-r from-[#000000] to-[#222222] text-white font-bold text-xs">Alterar senha</button>
             </div>
             <div>
               <p class="font-bold text-black text-sm">Endereço</p>
@@ -479,15 +479,15 @@
                 <div class="flex gap-4 text-[11px] font-bold border-b pb-2">
                   <span class="flex-1 text-center">Dados bancários</span>
                   <span class="flex-1 text-center">Identidade</span>
-                  <span class="flex-1 text-center text-[#FF4A00] border-b-2 border-[#FF4A00]">Taxas</span>
+                  <span class="flex-1 text-center text-[#000000] border-b-2 border-[#000000]">Taxas</span>
                 </div>
                 <div class="flex gap-3 mt-3">
                   <div class="flex-1">
                     <p class="text-[11px] text-[#9aa0a6]">| Preço justo</p>
-                    <p class="text-xs font-extrabold text-black mt-1">Nosso compromisso é com<br><span class="text-[#FF4A00]">a sua operação!</span></p>
+                    <p class="text-xs font-extrabold text-black mt-1">Nosso compromisso é com<br><span class="text-[#000000]">a sua operação!</span></p>
                     <p class="text-[11px] text-[#6b7280] mt-2 leading-tight">Nós preparamos essa taxa especial para que você desfrute da MAIOR E MELHOR ferramenta do mercado com o maior lucro possível!</p>
                   </div>
-                  <div class="flex-1 bg-gradient-to-br from-[#FF2A2A] to-[#FF8A00] rounded-2xl p-3 text-white relative overflow-hidden">
+                  <div class="flex-1 bg-gradient-to-br from-[#222222] to-[#222222] rounded-2xl p-3 text-white relative overflow-hidden">
                     <div class="bg-white rounded-xl p-3 text-black">
                       <p class="text-xs font-bold">Você só paga se vender!</p>
                       <p class="text-[11px] text-[#9aa0a6]">Zero taxa de adesão</p>
@@ -518,14 +518,14 @@
     </div>
     <div class="p-6">
       <div class="grid md:grid-cols-2 gap-4">
-        <div><label class="text-xs font-bold">Nome *</label><input id="platNome" placeholder="Nome de sua plataforma" class="w-full h-10 rounded-lg border border-[#e5e7eb] px-3 text-sm mt-1 focus:outline-none focus:border-[#FF4A00]/40"></div>
-        <div><label class="text-xs font-bold">Descrição *</label><input id="platDesc" placeholder="Escreva algo sobre sua plataforma" class="w-full h-10 rounded-lg border border-[#e5e7eb] px-3 text-sm mt-1 focus:outline-none focus:border-[#FF4A00]/40"></div>
+        <div><label class="text-xs font-bold">Nome *</label><input id="platNome" placeholder="Nome de sua plataforma" class="w-full h-10 rounded-lg border border-[#e5e7eb] px-3 text-sm mt-1 focus:outline-none focus:border-[#000000]/40"></div>
+        <div><label class="text-xs font-bold">Descrição *</label><input id="platDesc" placeholder="Escreva algo sobre sua plataforma" class="w-full h-10 rounded-lg border border-[#e5e7eb] px-3 text-sm mt-1 focus:outline-none focus:border-[#000000]/40"></div>
       </div>
       <p class="text-xs font-bold mt-4">Layout *</p>
       <div id="gridLayouts" class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-2 max-h-[60vh] overflow-auto pr-2 w-full">
         <!-- cards gerados via JS -->
       </div>
-      <div class="flex justify-end mt-6"><button id="btnCriarPlataformaFinal" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-[#FF4A00] to-[#FF8800] text-white font-bold text-sm shadow">Criar Plataforma</button></div>
+      <div class="flex justify-end mt-6"><button id="btnCriarPlataformaFinal" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-[#000000] to-[#222222] text-white font-bold text-sm shadow">Criar Plataforma</button></div>
     </div>
   </div>
 </div>
@@ -597,8 +597,8 @@ function recalc(){
   const btn=document.getElementById('btnSacar');
   const ok = v>=10 && document.getElementById('cpfSaque').value.trim() && document.getElementById('chavePix').value.trim();
   btn.disabled=!ok;
-  btn.classList.toggle('bg-[#FFB088]', !ok);
-  btn.classList.toggle('bg-[#FF4A00]', ok);
+  btn.classList.toggle('bg-[#9ca3af]', !ok);
+  btn.classList.toggle('bg-black', ok);
   btn.classList.toggle('cursor-not-allowed', !ok);
 }
 quantia.addEventListener('input', recalc);
@@ -654,9 +654,9 @@ const grid=document.getElementById('gridLayouts');
 let selected=null;
 grid.innerHTML = modelos.map((m,i)=>`
   <div data-idx="${i}" class="plataforma-card cursor-pointer group w-full">
-    <div class="h-[210px] rounded-2xl relative overflow-hidden border-2 border-transparent group-[.selected]:border-[#FF4A00] shadow-sm bg-[#f5f5f5] hover:shadow-[0_0_15px_rgba(255,77,0,0.4)] hover:scale-[1.02] transition-all duration-300 flex flex-col">
+    <div class="h-[210px] rounded-2xl relative overflow-hidden border-2 border-transparent group-[.selected]:border-[#000000] shadow-sm bg-[#f5f5f5] hover:shadow-[0_0_15px_rgba(255,77,0,0.4)] hover:scale-[1.02] transition-all duration-300 flex flex-col">
       <div class="absolute top-2 left-2 right-2 z-10 flex justify-between pointer-events-none">
-        <div class="flex gap-1">${m.badges.map(b=>`<span class="text-[11px] font-bold text-white px-2 py-1 rounded-full flex items-center gap-1 ${b==='NOVO'?'bg-red-500':'bg-[#FF4A00]'}">${b==='HYPE'?'<svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><path d="M13.5 5.5c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5c0 .44.18.83.46 1.12C9.5 8.5 7 11.1 7 14.5 7 17.5 9.5 20 12 20s5-2.5 5-5.5c0-3.4-2.5-6-3.96-7.88.28-.29.46-.68.46-1.12z"/><path d="M9 14.5c0-1.2.5-2.3 1.2-3.2.2.6.5 1.1.8 1.6-.3.5-.5 1-.5 1.6 0 1.1.9 2 2 2s2-.9 2-2c0-1.5-1-2.8-2-3.8.6-.4 1-1 1-1.7 0-.7-.4-1.3-.9-1.7.9 1.1 1.4 2.4 1.4 4.2 0 2.5-2 4.5-4.5 4.5S7 17 7 14.5c0-1.1.3-2 .8-2.9.3.6.7 1.2 1.2 1.9z"/></svg> HYPE':b}</span>`).join('')}</div>
+        <div class="flex gap-1">${m.badges.map(b=>`<span class="text-[11px] font-bold text-white px-2 py-1 rounded-full flex items-center gap-1 ${b==='NOVO'?'bg-red-500':'bg-black'}">${b==='HYPE'?'<svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><path d="M13.5 5.5c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5c0 .44.18.83.46 1.12C9.5 8.5 7 11.1 7 14.5 7 17.5 9.5 20 12 20s5-2.5 5-5.5c0-3.4-2.5-6-3.96-7.88.28-.29.46-.68.46-1.12z"/><path d="M9 14.5c0-1.2.5-2.3 1.2-3.2.2.6.5 1.1.8 1.6-.3.5-.5 1-.5 1.6 0 1.1.9 2 2 2s2-.9 2-2c0-1.5-1-2.8-2-3.8.6-.4 1-1 1-1.7 0-.7-.4-1.3-.9-1.7.9 1.1 1.4 2.4 1.4 4.2 0 2.5-2 4.5-4.5 4.5S7 17 7 14.5c0-1.1.3-2 .8-2.9.3.6.7 1.2 1.2 1.9z"/></svg> HYPE':b}</span>`).join('')}</div>
       </div>
       <img src="${m.img}" alt="${m.n}" loading="lazy" class="w-full aspect-square object-cover object-top rounded-t-2xl ${m.locked?'opacity-80':''}">
       ${m.locked?'<div class="absolute inset-0 bg-black/55 rounded-2xl flex items-center justify-center"><svg class="w-10 h-10 text-white/80" fill="currentColor" viewBox="0 0 448 512"><path d="M144 144v48H304V144c0-44.2-35.8-80-80-80s-80 35.8-80 80zM80 192V144C80 64.5 144.5 0 224 0s144 64.5 144 144v48h16c35.3 0 64 28.7 64 64V448c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V256c0-35.3 28.7-64 64-64H80z"/></svg></div>':''}
@@ -692,8 +692,8 @@ document.getElementById('btnCriarPlataformaFinal').addEventListener('click',()=>
   localStorage.setItem('platforms', JSON.stringify(plats));
   localStorage.setItem('lastPlatId', id);
   const card=document.createElement('div');
-  card.className='bg-white rounded-xl p-3 border border-[#e5e7eb] shadow-sm cursor-pointer hover:border-[#FF4A00]/40';
-  card.innerHTML=`<img src="${m.img}" class="w-full aspect-square object-cover rounded-lg"><p class="font-bold text-sm mt-2">${nome}</p><p class="text-xs text-[#9aa0a6]">${desc}</p><p class="text-[11px] text-[#FF4A00] font-bold mt-1">${m.n} • ${m.s}</p>`;
+  card.className='bg-white rounded-xl p-3 border border-[#e5e7eb] shadow-sm cursor-pointer hover:border-[#000000]/40';
+  card.innerHTML=`<img src="${m.img}" class="w-full aspect-square object-cover rounded-lg"><p class="font-bold text-sm mt-2">${nome}</p><p class="text-xs text-[#9aa0a6]">${desc}</p><p class="text-[11px] text-[#000000] font-bold mt-1">${m.n} • ${m.s}</p>`;
   card.onclick=()=> location.href=`./plataforma.html?id=${id}&t=players`;
   lista.appendChild(card);
   document.getElementById('modalPlataforma').classList.add('hidden');
@@ -705,11 +705,11 @@ document.getElementById('btnCriarPlataformaFinal').addEventListener('click',()=>
 
 // tabs plataformas
 document.getElementById('tab-minhas')?.addEventListener('click',()=>{
-  document.getElementById('tab-minhas').className='text-[#FF4A00] border-b-2 border-[#FF4A00] pb-2 -mb-[17px]';
+  document.getElementById('tab-minhas').className='text-[#000000] border-b-2 border-[#000000] pb-2 -mb-[17px]';
   document.getElementById('tab-afili').className='text-black pb-2';
 });
 document.getElementById('tab-afili')?.addEventListener('click',()=>{
-  document.getElementById('tab-afili').className='text-[#FF4A00] border-b-2 border-[#FF4A00] pb-2 -mb-[17px]';
+  document.getElementById('tab-afili').className='text-[#000000] border-b-2 border-[#000000] pb-2 -mb-[17px]';
   document.getElementById('tab-minhas').className='text-black pb-2';
   toast('Afiliações em breve');
 });

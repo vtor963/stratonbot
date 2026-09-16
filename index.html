@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>StratonPay Bets | Entrar</title>
 <meta name="description" content="Tenha seu próprio cassino online! com diversos slots e jogos retrô - StratonPay Bets">
-<link rel="icon" href="./public/logo-straton.svg">
+<link rel="icon" href="./public/logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.tailwindcss.com"></script>
@@ -15,7 +15,7 @@ tailwind.config = {
     extend: {
       fontFamily: { sans: ['DM Sans','Inter','sans-serif'] },
       colors: {
-        profits: { navy:'#2b3674', muted:'#a3aed0', border:'#e8ebf5', light:'#f4f7fe', orange:'#FF6B00', orangeDark:'#F84300', orangeLight:'#FFA300', grayLink:'#BABABA' }
+        profits: { navy:'#2b3674', muted:'#a3aed0', border:'#e8ebf5', light:'#f4f7fe', orange:'#000000', orangeDark:'#000000', orangeLight:'#111111', grayLink:'#BABABA' }
       }
     }
   }
@@ -33,7 +33,7 @@ input:-webkit-autofill { -webkit-box-shadow: 0 0 0 1000px white inset; -webkit-t
 <div class="w-full lg:grid lg:min-h-screen lg:grid-cols-2">
   <!-- LEFT -->
   <div class="flex flex-col items-center justify-center px-6 py-8 lg:py-0 min-h-screen lg:min-h-screen">
-    <img src="./public/logo-straton.svg" alt="StratonPay Bets" class="w-16 h-16 my-10 lg:hidden flex object-contain rounded-2xl">
+    <img src="./public/logo.png" alt="StratonPay Bets" class="w-16 h-16 my-10 lg:hidden flex object-contain rounded-2xl">
     
     <div class="mx-auto w-full max-w-[350px] grid gap-6">
       <div class="grid gap-2 text-left">
@@ -53,13 +53,13 @@ input:-webkit-autofill { -webkit-box-shadow: 0 0 0 1000px white inset; -webkit-t
 
       <form id="loginForm" class="grid gap-4" novalidate>
         <div class="grid gap-2">
-          <label for="email" class="text-[14px] font-semibold text-[#2b3674]">Email<span class="text-[#F84300] ml-1">*</span></label>
+          <label for="email" class="text-[14px] font-semibold text-[#2b3674]">Email<span class="text-[#000000] ml-1">*</span></label>
           <input id="email" name="email" type="email" autocomplete="email" placeholder="mail@profitsbet.com" required
             class="flex h-[44px] w-full rounded-xl border border-[#e8ebf5] bg-white px-3.5 py-2 text-[14px] font-semibold text-[#2b3674] placeholder:text-[#a3aed0] placeholder:font-medium focus:outline-none focus:border-[#6b7cff]/30 focus:ring-4 focus:ring-[#6b7cff]/10 transition-all">
           <p id="emailError" class="hidden text-xs font-medium text-red-500 -mt-1"></p>
         </div>
         <div class="grid gap-2">
-          <label for="password" class="text-[14px] font-semibold text-[#2b3674]">Senha<span class="text-[#F84300] ml-1">*</span></label>
+          <label for="password" class="text-[14px] font-semibold text-[#2b3674]">Senha<span class="text-[#000000] ml-1">*</span></label>
           <div class="relative">
             <input id="password" name="password" type="password" autocomplete="current-password" placeholder="Mín. 8 caracteres" required
               class="flex h-[44px] w-full rounded-xl border border-[#e8ebf5] bg-white px-3.5 pr-10 py-2 text-[14px] font-semibold text-[#2b3674] placeholder:text-[#a3aed0] placeholder:font-medium focus:outline-none focus:border-[#6b7cff]/30 focus:ring-4 focus:ring-[#6b7cff]/10 transition-all">
@@ -73,13 +73,13 @@ input:-webkit-autofill { -webkit-box-shadow: 0 0 0 1000px white inset; -webkit-t
 
         <div class="grid grid-cols-2 items-center mt-1 mb-1">
           <label class="flex items-center gap-2 cursor-pointer group">
-            <input id="remember" type="checkbox" class="w-4 h-4 rounded border-[#e8ebf5] text-[#FF6B00] focus:ring-[#FF6B00]/20 accent-[#FB6501] cursor-pointer">
+            <input id="remember" type="checkbox" class="w-4 h-4 rounded border-[#e8ebf5] text-[#000000] focus:ring-[#000000]/20 accent-[#FB6501] cursor-pointer">
             <span class="text-[13px] font-semibold text-[#2b3674] group-hover:text-[#1a234f] transition">Mantenha-me logado</span>
           </label>
-          <a href="./forgot-password.html" class="ml-auto text-[13px] font-semibold text-[#FF6B00] hover:text-[#F84300] hover:underline transition text-right">Esqueceu sua senha?</a>
+          <a href="./forgot-password.html" class="ml-auto text-[13px] font-semibold text-[#000000] hover:text-[#000000] hover:underline transition text-right">Esqueceu sua senha?</a>
         </div>
 
-        <button id="submitBtn" type="submit" class="inline-flex items-center justify-center w-full h-[48px] bg-gradient-to-r from-[#F84300] to-[#FFA300] hover:from-[#e03d00] hover:to-[#ff9500] active:scale-[0.98] text-white font-bold text-[14px] rounded-2xl shadow-[0_8px_20px_rgba(248,67,0,0.25)] hover:shadow-[0_12px_28px_rgba(248,67,0,0.35)] transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed disabled:active:scale-100">
+        <button id="submitBtn" type="submit" class="inline-flex items-center justify-center w-full h-[48px] bg-gradient-to-r from-[#000000] to-[#111111] hover:from-black hover:to-zinc-800 active:scale-[0.98] text-white font-bold text-[14px] rounded-2xl shadow-[0_8px_20px_rgba(0,0,0,0.25)] hover:shadow-[0_12px_28px_rgba(0,0,0,0.35)] transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed disabled:active:scale-100">
           <span id="btnText">Entrar</span>
           <svg id="btnSpinner" class="hidden ml-2 w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path></svg>
         </button>
@@ -90,13 +90,13 @@ input:-webkit-autofill { -webkit-box-shadow: 0 0 0 1000px white inset; -webkit-t
   </div>
 
   <!-- RIGHT -->
-  <div class="hidden lg:flex relative overflow-hidden bg-[#FF6B00] h-screen justify-center items-center rounded-bl-[140px] lg:rounded-bl-[170px]">
+  <div class="hidden lg:flex relative overflow-hidden bg-black h-screen justify-center items-center rounded-bl-[140px] lg:rounded-bl-[170px]">
     <div class="absolute inset-0">
-      <img src="./public/Background.png" alt="" class="w-full h-full object-cover object-bottom opacity-90">
-      <div class="absolute inset-0 bg-gradient-to-b from-[#FF6B00]/10 via-transparent to-[#FF6B00]/20"></div>
+      
+      <div class="absolute inset-0 bg-gradient-to-b from-[#000000]/10 via-transparent to-[#000000]/20"></div>
     </div>
     <div class="relative w-full flex flex-col items-center justify-center max-w-[500px] px-10">
-      <img src="./public/logo-straton.svg" alt="StratonPay Bets" class="w-[200px] lg:w-[260px] h-auto object-contain drop-shadow-[0_8px_24px_rgba(0,0,0,0.15)] rounded-3xl">
+      <img src="./public/logo.png" alt="StratonPay Bets" class="w-[200px] lg:w-[260px] h-auto object-contain drop-shadow-[0_8px_24px_rgba(0,0,0,0.15)] rounded-3xl">
       <h2 class="w-full text-center mt-6 text-[42px] lg:text-[48px] font-bold text-white tracking-tight leading-none drop-shadow-sm">StratonPay Bets</h2>
       <p class="text-white/80 text-center mt-3 text-sm font-medium">Sua plataforma de cassino completa</p>
     </div>
@@ -132,7 +132,7 @@ function toast(msg, type='success') {
   const el = document.createElement('div');
   const bg = type==='error' ? 'bg-[#2b3674] border-red-400' : type==='info' ? 'bg-[#2b3674]' : 'bg-[#2b3674]';
   el.className = `pointer-events-auto min-w-[300px] max-w-[420px] ${bg} text-white px-4 py-3 rounded-2xl shadow-2xl flex items-center gap-3 border border-white/10 translate-x-full opacity-0 transition-all duration-300`;
-  el.innerHTML = `<div class="w-8 h-8 rounded-full ${type==='error'?'bg-red-500':'bg-gradient-to-r from-[#F84300] to-[#FFA300]'} flex items-center justify-center shrink-0">${type==='error'?'✕':'✓'}</div><div class="flex-1 text-sm font-medium leading-tight">${msg}</div><button onclick="this.parentElement.remove()" class="text-white/60 hover:text-white">✕</button>`;
+  el.innerHTML = `<div class="w-8 h-8 rounded-full ${type==='error'?'bg-red-500':'bg-gradient-to-r from-[#000000] to-[#111111]'} flex items-center justify-center shrink-0">${type==='error'?'✕':'✓'}</div><div class="flex-1 text-sm font-medium leading-tight">${msg}</div><button onclick="this.parentElement.remove()" class="text-white/60 hover:text-white">✕</button>`;
   c.appendChild(el);
   requestAnimationFrame(()=>{ el.classList.remove('translate-x-full','opacity-0'); });
   setTimeout(()=>{ el.classList.add('translate-x-full','opacity-0'); setTimeout(()=>el.remove(),300); }, 4000);
