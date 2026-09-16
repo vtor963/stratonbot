@@ -372,7 +372,13 @@ function closePix(){ $('modalPix').classList.add('hidden'); $('modalPix').classL
 
 (async function init(){
   const slug = detectSlug();
-  PLAT = slug ? await sbLoadPublicPlatform(slug) : null;
+  const demo = (params.get('demo')||'').toLowerCase();
+  if(demo){
+    // modo vitrine sem plataforma: p.html?demo=blockblast | raspadinha | 777 | retros | blaze
+    PLAT = { id:'demo-'+demo, nome:'Minha Plataforma', desc:'', layout:demo, img:'', theme:{}, oferta:{}, gateway:{provider:'manual'}, depMin:20, depMax:10000, saqMin:20, saqMax:10000, rtp:'medio', suporte:'', published:true };
+  } else {
+    PLAT = slug ? await sbLoadPublicPlatform(slug) : null;
+  }
   if(!PLAT){
     document.querySelector('main').innerHTML = `<div class="card rounded-2xl p-8 mt-6 text-center"><h1 class="font-extrabold text-xl">Plataforma não encontrada</h1><p class="muted text-sm mt-2">Use o link completo da plataforma, ex: <code>p.html?p=${slug||'slug-da-plataforma'}</code></p><a href="./dashboard.html" class="inline-block mt-4 btn-primary px-6 py-2 rounded-full text-sm font-bold">Ir pro painel</a></div>`;
     return;
