@@ -291,9 +291,9 @@
         <div id="tab-domains" class="tab-panel hidden p-4">
           <div class="flex gap-2 mb-4"><input placeholder="Buscar domínios" class="flex-1 h-10 rounded-xl border px-4 text-sm"><button class="px-5 py-2 bg-black text-white rounded-xl font-bold">+ Adicionar Domínio</button></div>
           <div class="rounded-xl border overflow-hidden">
-            <table class="w-full text-sm"><thead><tr class="bg-[#f9fafb] text-xs text-[#6b7280]"><th class="text-left px-4 py-3">Domínio</th><th class="text-center px-4">Status</th><th class="text-center px-4">Tipo</th><th class="text-center px-4">Criado em</th><th class="text-right px-4">Ações</th></tr></thead><tbody><tr class="border-t"><td class="px-4 py-3 text-[#2563eb] font-medium flex items-center gap-1" id="domainName">https://stratonbot.vercel.app</td><td class="text-center"><span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 justify-center">Ativo</span></td><td class="text-center">Produção</td><td class="text-center">Agora</td><td><a href="https://stratonbot.vercel.app" target="_blank" class="text-xs font-bold text-black underline">Abrir</a></td></tr></tbody></table>
+            <table class="w-full text-sm"><thead><tr class="bg-[#f9fafb] text-xs text-[#6b7280]"><th class="text-left px-4 py-3">Domínio</th><th class="text-center px-4">Status</th><th class="text-center px-4">Tipo</th><th class="text-center px-4">Criado em</th><th class="text-right px-4">Ações</th></tr></thead><tbody id="tbodyDomains"><tr class="border-t"><td class="px-4 py-3 text-[#2563eb] font-medium flex items-center gap-1"><a id="domainName" href="https://stratonbot.vercel.app" target="_blank" class="hover:underline">testeawdad-1351.stratonbot.vercel.app</a> <svg class="w-3 h-3 text-[#2563eb]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg></td><td class="text-center"><span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 justify-center">Ativo</span></td><td class="text-center">Pré-visualização</td><td class="text-center">Há 1 hora</td><td><button onclick="window.open(document.getElementById('domainName').href,'_blank')" class="text-xs font-bold text-black border border-[#e5e7eb] px-3 py-1 rounded-full hover:bg-zinc-50">Abrir</button></td></tr></tbody></table>
            </div>
-           <div class="mt-4 p-4 border rounded-xl bg-[#f5f5f5]"><p class="font-bold">Publicar Magic Link</p><div class="flex gap-2 mt-2"><input id="magicSubdomain" placeholder="Digite seu subdomínio (opcional)" class="flex-1 h-10 rounded-xl border px-4 text-sm"><select id="magicDomain" class="h-10 rounded-xl border px-3 text-sm"><option value="stratonbot.vercel.app" selected>stratonbot.vercel.app</option><option value="seu-dominio.com">seu-dominio.com</option></select></div><p class="text-xs bg-zinc-100 text-zinc-700 p-2 rounded mt-2">Domínio verificado: <span class="font-bold">https://stratonbot.vercel.app</span> — clique em Publicar para liberar o acesso.</p><p class="text-xs mt-2">Seu link: <span id="magicLinkPreview" class="font-bold text-[#000000]">https://stratonbot.vercel.app</span></p></div>
+           <div class="mt-4 p-4 border rounded-xl bg-[#f5f5f5]"><p class="font-bold">Publicar Magic Link</p><p class="text-xs text-[#6b7280] mt-1">Formato: <span class="font-mono font-bold">nome-da-plataforma.numero.stratonbot.vercel.app</span> igual ao Profits <span class="font-mono">testeawdad-1351.profitsbet.app</span></p><div class="flex gap-2 mt-3"><input id="magicSubdomain" placeholder="testeawdad" class="flex-1 h-10 rounded-xl border px-4 text-sm"><span class="h-10 flex items-center px-2 text-sm font-bold text-[#6b7280]">.</span><select id="magicDomain" class="h-10 rounded-xl border px-3 text-sm bg-white"><option value="stratonbot.vercel.app" selected>stratonbot.vercel.app</option><option value="seu-dominio.com">seu-dominio.com</option></select><button id="btnAddDomain" class="h-10 px-4 rounded-xl bg-black text-white text-sm font-bold hover:bg-zinc-800">Adicionar</button></div><p class="text-xs bg-zinc-100 text-zinc-700 p-2 rounded mt-3">Seu link: <a id="magicLinkPreview" href="https://stratonbot.vercel.app" target="_blank" class="font-bold text-black hover:underline">https://testeawdad-1351.stratonbot.vercel.app</a> — clique para testar</p><p class="text-[11px] text-[#9aa0a6] mt-1">Ao publicar, o link abre a plataforma em <span class="font-mono">stratonbot.vercel.app/plataforma?id=...</span> (hospedado na Vercel)</p></div>
         </div>
 
         <!-- PIXEL -->
@@ -397,21 +397,49 @@ if(id){
 }
 if(params.get('t')==='players' && !id) platName = 'vavava';
 document.getElementById('platTitle').textContent = platName;
+function genSuffix(){
+  // gera sufixo tipo 1351 igual print profits (4 digitos)
+  if(id && id.length>=4) return id.slice(-4).replace(/[^0-9]/g,'').padEnd(4,'1').slice(0,4) || '1351';
+  return String(Math.floor(1000+Math.random()*9000));
+}
 function updateDomainDisplay(){
   const dom=document.getElementById('magicDomain')?.value || 'stratonbot.vercel.app';
+  const subInput=document.getElementById('magicSubdomain')?.value?.trim();
+  const base=subInput || platName.toLowerCase().replace(/[^a-z0-9]/g,'').slice(0,18) || 'testeawdad';
+  const suffix=genSuffix();
   if(dom.includes('vercel.app')){
-    const full='https://stratonbot.vercel.app';
-    document.getElementById('domainName').textContent = full;
+    const full= base + '-' + suffix + '.' + dom;
+    const href='https://stratonbot.vercel.app/plataforma?id='+encodeURIComponent(id)+'&t=domains';
+    // se for vercel, o dominio exibido é nome-numero.vercel.app mas aponta pro vercel
+    const dn=document.getElementById('domainName');
+    if(dn){ dn.textContent=full; dn.href=href; }
     const preview=document.getElementById('magicLinkPreview');
-    if(preview) preview.textContent = full;
+    if(preview){ preview.textContent='https://'+full; preview.href=href; }
     return;
   }
-  const sub=document.getElementById('magicSubdomain')?.value?.trim() || platName.toLowerCase().replace(/[^a-z0-9]/g,'');
+  const sub=base;
   const full=(sub||'seu-subdominio')+'.'+dom;
-  document.getElementById('domainName').textContent = full;
+  const dn=document.getElementById('domainName');
+  if(dn){ dn.textContent=full; dn.href='https://'+full; }
   const preview=document.getElementById('magicLinkPreview');
-  if(preview) preview.textContent = full;
+  if(preview){ preview.textContent='https://'+full; preview.href='https://'+full; }
 }
+document.getElementById('btnAddDomain')?.addEventListener('click',()=>{
+  const sub=document.getElementById('magicSubdomain')?.value?.trim();
+  if(!sub){ toast('Digite o subdomínio'); return; }
+  updateDomainDisplay();
+  // adiciona linha na tabela para teste
+  const tbody=document.getElementById('tbodyDomains');
+  if(tbody){
+    const row=document.createElement('tr');
+    row.className='border-t';
+    const dn=document.getElementById('domainName').textContent;
+    const href=document.getElementById('domainName').href;
+    row.innerHTML=`<td class="px-4 py-3 text-[#2563eb] font-medium"><a href="${href}" target="_blank" class="hover:underline">${dn}</a></td><td class="text-center"><span class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-xs font-bold">Pendente</span></td><td class="text-center">Custom</td><td class="text-center">Agora</td><td><a href="${href}" target="_blank" class="text-xs font-bold text-black underline">Abrir</a></td>`;
+    tbody.appendChild(row);
+    toast('Domínio adicionado (mock) -> '+dn);
+  }
+});
 updateDomainDisplay();
 document.getElementById('magicSubdomain')?.addEventListener('input', updateDomainDisplay);
 document.getElementById('magicDomain')?.addEventListener('change', updateDomainDisplay);
