@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Plataforma | StratonPay Bets</title>
+<link rel="icon" href="./public/logo.png">
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+:root{ --bg:#0f1923; --nav:#1d2730; --btn:#000000; --txt:#ffffff; --muted:#9aa0a6; --btntxt:#ffffff; }
+body{ background:var(--bg); color:var(--txt); font-family:Inter,system-ui,sans-serif; }
+.card{ background:color-mix(in srgb, var(--nav) 92%, black); border:1px solid rgba(255,255,255,.08); }
+.btn-primary{ background:var(--btn); color:var(--btntxt); }
+.muted{ color:var(--muted); }
+input,select{ color:#111; }
+</style>
+</head>
+<body class="min-h-screen">
+<header class="sticky top-0 z-20" style="background:var(--nav)">
+  <div class="max-w-[1100px] mx-auto px-4 h-[56px] flex items-center justify-between">
+    <div class="flex items-center gap-2">
+      <img id="brandLogo" src="./public/logo.png" class="w-8 h-8 rounded-lg object-cover" alt="logo">
+      <span id="brandName" class="font-extrabold">Carregando...</span>
+    </div>
+    <div class="flex items-center gap-2">
+      <span id="balancePill" class="text-xs font-bold bg-white/10 px-3 py-1.5 rounded-full">R$ 0,00</span>
+      <button id="btnAccount" class="btn-primary text-xs font-bold px-4 py-2 rounded-full">Entrar</button>
+    </div>
+  </div>
+</header>
+
+<main class="max-w-[1100px] mx-auto px-4 pb-20">
+  <!-- OFERTA -->
+  <section id="oferta" class="mt-4 rounded-2xl overflow-hidden card">
+    <img id="ofertaBanner" class="w-full h-44 object-cover hidden" alt="banner">
+    <div class="p-5">
+      <h1 id="ofertaTitulo" class="text-2xl font-extrabold">Bem-vindo</h1>
+      <p id="ofertaSub" class="muted text-sm mt-1">Cadastre-se, deposite via PIX e jogue agora.</p>
+      <div class="flex flex-wrap gap-2 mt-4">
+        <button id="btnCadastrar" class="btn-primary font-bold px-6 py-2.5 rounded-full text-sm">Cadastrar e Jogar</button>
+        <button id="btnDepositar" class="font-bold px-6 py-2.5 rounded-full text-sm bg-white/10">Depositar PIX</button>
+      </div>
+      <p id="depLimits" class="muted text-xs mt-2"></p>
+    </div>
+  </section>
+
+  <!-- JOGOS -->
+  <section class="mt-6">
+    <div class="flex items-end justify-between">
+      <div><h2 class="font-extrabold">Jogos</h2><p class="muted text-xs">RTP <span id="rtpInfo">médio</span> • resultado demo auditável no navegador</p></div>
+      <button id="btnSacar" class="text-xs font-bold underline">Sacar</button>
+    </div>
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-3">
+      <button data-game="double" class="card rounded-2xl p-4 text-left hover:scale-[1.02] transition">
+        <div class="h-20 rounded-xl grid place-items-center text-3xl" style="background:linear-gradient(135deg,#fc4a1a,#f7b733)">🔴</div>
+        <p class="font-bold text-sm mt-2">Double</p><p class="muted text-xs">Vermelho / Preto / Branco 14x</p>
+      </button>
+      <button data-game="mines" class="card rounded-2xl p-4 text-left hover:scale-[1.02] transition">
+        <div class="h-20 rounded-xl grid place-items-center text-3xl" style="background:linear-gradient(135deg,#11998e,#38ef7d)">💣</div>
+        <p class="font-bold text-sm mt-2">Mines demo</p><p class="muted text-xs">Escolha 1 de 5 (2x)</p>
+      </button>
+      <button data-game="crash" class="card rounded-2xl p-4 text-left hover:scale-[1.02] transition">
+        <div class="h-20 rounded-xl grid place-items-center text-3xl" style="background:linear-gradient(135deg,#667eea,#764ba2)">✈️</div>
+        <p class="font-bold text-sm mt-2">Crash demo</p><p class="muted text-xs">Cashout antes de crashar</p>
+      </button>
+      <div class="card rounded-2xl p-4">
+        <div class="h-20 rounded-xl grid place-items-center text-3xl bg-white/10">🎰</div>
+        <p class="font-bold text-sm mt-2">Slots do layout</p><p class="muted text-xs" id="layoutInfo">—</p>
+      </div>
+    </div>
+    <div id="gameArea" class="card rounded-2xl p-4 mt-3 hidden"></div>
+  </section>
+
+  <!-- EXTRATO -->
+  <section class="mt-6 card rounded-2xl p-4">
+    <h3 class="font-bold text-sm">Extrato</h3>
+    <div id="extrato" class="text-xs mt-2 space-y-1 muted"><p>Nenhuma movimentação ainda.</p></div>
+  </section>
+  <p class="muted text-[11px] mt-4">Suporte: <span id="suporteInfo">—</span> • Jogue com responsabilidade. Demo sem gateway aprova na hora; com gateway o dono aprova via painel.</p>
+</main>
+
+<!-- MODAL CONTA -->
+<div id="modalConta" class="fixed inset-0 bg-black/60 hidden items-center justify-center p-4 z-30">
+  <div class="bg-white text-black rounded-2xl p-5 w-full max-w-[380px]">
+    <h3 class="font-extrabold">Sua conta</h3>
+    <div class="grid gap-2 mt-3">
+      <input id="fNome" placeholder="Nome" class="h-11 border rounded-xl px-3 text-sm">
+      <input id="fEmail" placeholder="Email" class="h-11 border rounded-xl px-3 text-sm">
+      <input id="fCpf" placeholder="CPF" class="h-11 border rounded-xl px-3 text-sm">
+      <input id="fPix" placeholder="Chave PIX (pro saque)" class="h-11 border rounded-xl px-3 text-sm">
+    </div>
+    <div class="flex gap-2 mt-4">
+      <button id="btnFecharConta" class="flex-1 h-11 rounded-xl border font-bold text-sm">Fechar</button>
+      <button id="btnSalvarConta" class="flex-1 h-11 rounded-xl bg-black text-white font-bold text-sm">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL PIX -->
+<div id="modalPix" class="fixed inset-0 bg-black/60 hidden items-center justify-center p-4 z-30">
+  <div class="bg-white text-black rounded-2xl p-5 w-full max-w-[380px]">
+    <h3 id="pixTitulo" class="font-extrabold">Depositar PIX</h3>
+    <p id="pixInfo" class="text-xs text-gray-500 mt-1"></p>
+    <div class="grid gap-2 mt-3" id="pixForm">
+      <input id="pixValor" type="number" min="1" placeholder="Valor R$" class="h-11 border rounded-xl px-3 text-sm">
+      <input id="pixChave" placeholder="Sua chave PIX (só pro saque)" class="h-11 border rounded-xl px-3 text-sm">
+    </div>
+    <div id="pixResult" class="hidden mt-3 text-sm"></div>
+    <div class="flex gap-2 mt-4">
+      <button id="btnFecharPix" class="flex-1 h-11 rounded-xl border font-bold text-sm">Fechar</button>
+      <button id="btnGerarPix" class="flex-1 h-11 rounded-xl bg-black text-white font-bold text-sm">Gerar QR</button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { sbLoadPublicPlatform, getPlayer, sbUpsertPlayer, sbCreateTransaction, sbCreateBet } from './supabase.js';
+
+const $ = id => document.getElementById(id);
+const params = new URLSearchParams(location.search);
+function detectSlug(){
+  // 1) ?p=slug / ?slug= / ?id=
+  let s = params.get('p') || params.get('slug') || params.get('id') || '';
+  // 2) subdominio estilo profits: nome-numero.dominio (ex: blockbast-2182.stratonbot.vercel.app)
+  if(!s){
+    const host = location.hostname; // ex: blockbast-2182.stratonbot.vercel.app
+    const parts = host.split('.');
+    if(parts.length >= 3 && !host.endsWith('vercel.app') || (parts.length>3)){
+      const sub = parts[0];
+      s = sub.includes('-') ? sub.slice(0, sub.lastIndexOf('-')) : sub;
+      // tenta com numero também
+      if(!s) s = sub;
+    } else if(parts.length === 4 || (host.endsWith('vercel.app') && parts.length === 4)){
+      s = parts[0];
+    }
+  }
+  return (s||'').toLowerCase();
+}
+
+let PLAT = null, PLAYER = null, MODO = 'deposito';
+const fmt = v => (Number(v||0)).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+
+function applyTheme(){
+  if(!PLAT) return;
+  const t = PLAT.theme||{};
+  const root = document.documentElement.style;
+  if(t.bg) root.setProperty('--bg', t.bg);
+  if(t.nav) root.setProperty('--nav', t.nav);
+  if(t.btn) root.setProperty('--btn', t.btn);
+  if(t.txt) root.setProperty('--txt', t.txt);
+  if(t.muted) root.setProperty('--muted', t.muted);
+  if(t.btntxt) root.setProperty('--btntxt', t.btntxt);
+  document.title = (PLAT.nome||'Plataforma') + ' | StratonPay Bets';
+  $('brandName').textContent = PLAT.nome||'Plataforma';
+  if(PLAT.img) $('brandLogo').src = PLAT.img;
+  const of = PLAT.oferta||{};
+  if(of.banner) { $('ofertaBanner').src = of.banner; $('ofertaBanner').classList.remove('hidden'); }
+  if(of.titulo) $('ofertaTitulo').textContent = of.titulo;
+  if(of.sub) $('ofertaSub').textContent = of.sub;
+  $('layoutInfo').textContent = PLAT.layout||'padrão';
+  $('rtpInfo').textContent = PLAT.rtp||'médio';
+  $('depLimits').textContent = `Depósito ${fmt(PLAT.depMin)} – ${fmt(PLAT.depMax)} • Saque ${fmt(PLAT.saqMin)} – ${fmt(PLAT.saqMax)}`;
+  $('suporteInfo').textContent = PLAT.suporte || PLAT.whatsapp || PLAT.telegram || 'painel do dono';
+  const gw = PLAT.gateway||{};
+  $('pixInfo').textContent = gw.provider && gw.provider!=='manual' ? `Gateway: ${gw.provider}` : 'Aprovação demo imediata (dono configura gateway no painel)';
+}
+
+function renderPlayer(){
+  PLAYER = PLAYER || getPlayer(PLAT?.id||'demo') || { nome:'', email:'', cpf:'', pix_key:'', saldo:0 };
+  $('balancePill').textContent = fmt(PLAYER.saldo);
+  $('btnAccount').textContent = PLAYER.email ? PLAYER.nome.split(' ')[0] || 'Conta' : 'Entrar';
+  renderExtrato();
+}
+function renderExtrato(){
+  const arr = JSON.parse(localStorage.getItem('txs_'+PLAT.id)||'[]');
+  $('extrato').innerHTML = arr.length ? arr.slice(0,10).map(t=>`<p>• ${t.tipo} ${fmt(t.valor)} — <b>${t.status}</b></p>`).join('') : '<p>Nenhuma movimentação ainda.</p>';
+}
+async function persistPlayer(){
+  PLAYER = await sbUpsertPlayer(PLAT.id, { ...PLAYER, platform_id: PLAT.id });
+  renderPlayer();
+}
+
+// depósito / saque (demo aprova na hora; com gateway o dono aprova no Financeiro)
+async function confirmarPix(){
+  const valor = Number($('pixValor').value||0);
+  if(!PLAYER?.email){ alert('Crie sua conta primeiro'); openConta(); return; }
+  const min = MODO==='deposito'? Number(PLAT.depMin||1) : Number(PLAT.saqMin||1);
+  const max = MODO==='deposito'? Number(PLAT.depMax||1e9) : Number(PLAT.saqMax||1e9);
+  if(!(valor>=min && valor<=max)){ alert(`Valor deve estar entre ${fmt(min)} e ${fmt(max)}`); return; }
+  if(MODO==='saque' && valor > Number(PLAYER.saldo||0)){ alert('Saldo insuficiente'); return; }
+  if($('pixChave').value) PLAYER.pix_key = $('pixChave').value;
+  const gw = PLAT.gateway||{};
+  const pendente = gw.provider && gw.provider!=='manual'; // com gateway real fica pendente pro dono aprovar
+  const tx = { platform_id: PLAT.id, player_id: PLAYER.id||null, tipo: MODO, valor, status: pendente?'pendente':'pago', gateway: gw.provider||'manual', qrcode:'', pix_copia_cola: pendente?('PIX-'+Date.now()):'' };
+  await sbCreateTransaction(tx);
+  if(!pendente){
+    PLAYER.saldo = Number(PLAYER.saldo||0) + (MODO==='deposito'? valor : -valor);
+    await persistPlayer();
+    $('pixResult').classList.remove('hidden');
+    $('pixResult').innerHTML = `<b class="text-green-700">Aprovado (demo).</b> Novo saldo: <b>${fmt(PLAYER.saldo)}</b>`;
+  } else {
+    $('pixResult').classList.remove('hidden');
+    $('pixResult').innerHTML = `<b>Solicitação enviada.</b> Chave/código: <code>${tx.pix_copia_cola}</code><br>O dono aprova no Financeiro e o saldo entra.`;
+  }
+  renderExtrato();
+}
+
+// mini-jogos demo com RTP da plataforma
+function rtpEdge(){
+  const r = (PLAT.rtp||'medio').toLowerCase();
+  if(r.startsWith('alto')) return 0.02; if(r.startsWith('baix')) return 0.12; return 0.06;
+}
+function openGame(kind){
+  if(!PLAYER?.email){ alert('Crie sua conta primeiro'); openConta(); return; }
+  const area = $('gameArea'); area.classList.remove('hidden');
+  if(kind==='double'){
+    area.innerHTML = `<p class="font-bold text-sm">Double demo</p>
+    <div class="flex gap-2 mt-2"><input id="gValor" type="number" value="10" class="h-10 border rounded-xl px-3 text-sm text-black w-28">
+    <select id="gCor" class="h-10 border rounded-xl px-2 text-sm text-black"><option value="red">Vermelho 2x</option><option value="black">Preto 2x</option><option value="white">Branco 14x</option></select>
+    <button id="gJogar" class="btn-primary px-5 rounded-xl font-bold text-sm">Jogar</button></div><p id="gOut" class="text-sm mt-2 muted"></p>`;
+    $('gJogar').onclick = async ()=>{
+      const v = Number($('gValor').value||0);
+      if(!(v>0) || v>Number(PLAYER.saldo||0)){ alert('Valor inválido ou saldo insuficiente. Deposite primeiro.'); return; }
+      const pick = $('gCor').value;
+      const r = Math.random() + rtpEdge(); // edge da casa
+      const roll = Math.random();
+      let win=false, mult=0;
+      if(pick==='white'){ win = roll>0.94+r; mult=14; } else { win = roll>(0.5+r/2); mult=2; }
+      const ret = win? v*mult : 0;
+      PLAYER.saldo = Number(PLAYER.saldo||0) - v + ret;
+      await persistPlayer();
+      await sbCreateBet({ platform_id: PLAT.id, player_id: PLAYER.id||null, jogo:'double', valor:v, multiplicador: win?mult:0, retorno:ret, resultado: win?'win':'loss' });
+      $('gOut').innerHTML = win? `🎉 Saiu <b>${pick}</b>! +${fmt(ret-v)}` : `😞 Não saiu ${pick}. -${fmt(v)}`;
+      renderExtrato();
+    };
+  }
+  if(kind==='mines'){
+    area.innerHTML = `<p class="font-bold text-sm">Mines demo (1 de 5, paga 2x)</p>
+    <div class="flex gap-2 mt-2"><input id="gValor" type="number" value="10" class="h-10 border rounded-xl px-3 text-sm text-black w-28">
+    <button id="gJogar" class="btn-primary px-5 rounded-xl font-bold text-sm">Revelar</button></div><p id="gOut" class="text-sm mt-2 muted"></p>`;
+    $('gJogar').onclick = async ()=>{
+      const v = Number($('gValor').value||0);
+      if(!(v>0) || v>Number(PLAYER.saldo||0)){ alert('Valor inválido ou saldo insuficiente.'); return; }
+      const win = Math.random() > (0.6 + rtpEdge());
+      const ret = win? v*2 : 0;
+      PLAYER.saldo = Number(PLAYER.saldo||0) - v + ret;
+      await persistPlayer();
+      await sbCreateBet({ platform_id: PLAT.id, player_id: PLAYER.id||null, jogo:'mines', valor:v, multiplicador: win?2:0, retorno:ret, resultado: win?'win':'loss' });
+      $('gOut').innerHTML = win? `💎 Achou! +${fmt(ret-v)}` : `💣 Bomba. -${fmt(v)}`;
+    };
+  }
+  if(kind==='crash'){
+    area.innerHTML = `<p class="font-bold text-sm">Crash demo</p>
+    <div class="flex gap-2 mt-2"><input id="gValor" type="number" value="10" class="h-10 border rounded-xl px-3 text-sm text-black w-28">
+    <input id="gCash" type="number" value="2" step="0.1" class="h-10 border rounded-xl px-3 text-sm text-black w-24">
+    <button id="gJogar" class="btn-primary px-5 rounded-xl font-bold text-sm">Apostar</button></div><p id="gOut" class="text-sm mt-2 muted"></p>`;
+    $('gJogar').onclick = async ()=>{
+      const v = Number($('gValor').value||0), cash = Number($('gCash').value||2);
+      if(!(v>0) || v>Number(PLAYER.saldo||0)){ alert('Valor inválido ou saldo insuficiente.'); return; }
+      const crash = 1 + Math.random()*4 - rtpEdge()*5;
+      const win = crash >= cash;
+      const ret = win? v*cash : 0;
+      PLAYER.saldo = Number(PLAYER.saldo||0) - v + ret;
+      await persistPlayer();
+      await sbCreateBet({ platform_id: PLAT.id, player_id: PLAYER.id||null, jogo:'crash', valor:v, multiplicador: win?cash:0, retorno:ret, resultado: win?'win':'loss' });
+      $('gOut').innerHTML = `Crash em <b>${crash.toFixed(2)}x</b> — ` + (win? `cashout ${cash}x! +${fmt(ret-v)}` : `crashou antes. -${fmt(v)}`);
+    };
+  }
+}
+
+function openConta(){ $('modalConta').classList.remove('hidden'); $('modalConta').classList.add('flex'); }
+function closeConta(){ $('modalConta').classList.add('hidden'); $('modalConta').classList.remove('flex'); }
+function openPix(modo){ MODO=modo; $('pixTitulo').textContent = modo==='deposito'?'Depositar PIX':'Sacar'; $('pixResult').classList.add('hidden'); $('modalPix').classList.remove('hidden'); $('modalPix').classList.add('flex'); }
+function closePix(){ $('modalPix').classList.add('hidden'); $('modalPix').classList.remove('flex'); }
+
+(async function init(){
+  const slug = detectSlug();
+  PLAT = slug ? await sbLoadPublicPlatform(slug) : null;
+  if(!PLAT){
+    document.querySelector('main').innerHTML = `<div class="card rounded-2xl p-8 mt-6 text-center"><h1 class="font-extrabold text-xl">Plataforma não encontrada</h1><p class="muted text-sm mt-2">Use o link completo da plataforma, ex: <code>p.html?p=${slug||'slug-da-plataforma'}</code></p><a href="./dashboard.html" class="inline-block mt-4 btn-primary px-6 py-2 rounded-full text-sm font-bold">Ir pro painel</a></div>`;
+    return;
+  }
+  applyTheme(); renderPlayer();
+  $('btnAccount').onclick = ()=>{ if(PLAYER?.email){ openConta(); } else openConta(); };
+  $('btnCadastrar').onclick = openConta;
+  $('btnDepositar').onclick = ()=>openPix('deposito');
+  $('btnSacar').onclick = ()=>openPix('saque');
+  $('btnFecharConta').onclick = closeConta;
+  $('btnFecharPix').onclick = closePix;
+  $('btnGerarPix').onclick = confirmarPix;
+  $('btnSalvarConta').onclick = async ()=>{
+    PLAYER = { ...(PLAYER||{saldo:0}), nome: $('fNome').value||'Jogador', email: $('fEmail').value||'', cpf: $('fCpf').value||'', pix_key: $('fPix').value||'' };
+    if(!PLAYER.email){ alert('Informe o email'); return; }
+    await persistPlayer(); closeConta();
+  };
+  document.querySelectorAll('[data-game]').forEach(b=> b.onclick = ()=>openGame(b.dataset.game));
+  if(PLAYER?.email){ $('fNome').value=PLAYER.nome||''; $('fEmail').value=PLAYER.email||''; $('fCpf').value=PLAYER.cpf||''; $('fPix').value=PLAYER.pix_key||''; }
+})();
+</script>
+</body>
+</html>

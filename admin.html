@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Global | StratonPay Bets</title>
+<link rel="icon" href="./public/logo.png">
+<script src="https://cdn.tailwindcss.com"></script>
+<style>*{font-family:Inter,system-ui,sans-serif}</style>
+</head>
+<body class="bg-[#f6f7f9] min-h-screen">
+<div class="max-w-[1200px] mx-auto px-4 py-6">
+  <div class="flex flex-wrap items-center gap-3">
+    <a href="./dashboard.html" class="text-xs font-bold underline">← Dashboard</a>
+    <h1 class="text-xl font-extrabold">Admin global — todas as plataformas</h1>
+    <span id="ownerEmail" class="ml-auto text-xs text-gray-500"></span>
+    <button id="btnReload" class="text-xs font-bold bg-black text-white px-4 py-2 rounded-full">Atualizar</button>
+  </div>
+
+  <div id="kpis" class="grid grid-cols-2 lg:grid-cols-5 gap-3 mt-4">
+    <div class="bg-white rounded-2xl border p-4"><p class="text-xs text-gray-500">Plataformas</p><p id="kPlat" class="text-xl font-extrabold">0</p></div>
+    <div class="bg-white rounded-2xl border p-4"><p class="text-xs text-gray-500">Depósitos pagos</p><p id="kDep" class="text-xl font-extrabold text-green-600">R$ 0</p></div>
+    <div class="bg-white rounded-2xl border p-4"><p class="text-xs text-gray-500">Saques pagos</p><p id="kSaq" class="text-xl font-extrabold text-red-500">R$ 0</p></div>
+    <div class="bg-white rounded-2xl border p-4"><p class="text-xs text-gray-500">Apostado</p><p id="kBet" class="text-xl font-extrabold">R$ 0</p></div>
+    <div class="bg-white rounded-2xl border p-4"><p class="text-xs text-gray-500">Lucro (dep−saq)</p><p id="kLucro" class="text-xl font-extrabold">R$ 0</p></div>
+  </div>
+
+  <div class="bg-white rounded-2xl border mt-4 overflow-hidden">
+    <div class="px-4 py-3 border-b flex flex-wrap gap-2 items-center">
+      <h2 class="font-bold text-sm">Pendentes (aprovar = entra/sai saldo)</h2>
+      <select id="fPlat" class="ml-auto h-9 border rounded-full px-3 text-xs"><option value="">Todas as plataformas</option></select>
+    </div>
+    <div class="overflow-auto"><table class="w-full text-xs min-w-[760px]">
+      <thead><tr class="bg-gray-50 text-gray-500"><th class="text-left px-4 py-2">Quando</th><th class="text-left px-4">Plataforma</th><th class="text-left px-4">Tipo</th><th class="text-right px-4">Valor</th><th class="text-left px-4">Gateway</th><th class="text-center px-4">Ações</th></tr></thead>
+      <tbody id="tbodyPend"><tr><td colspan="6" class="text-center py-8 text-gray-400">Carregando...</td></tr></tbody>
+    </table></div>
+  </div>
+
+  <div class="bg-white rounded-2xl border mt-4 overflow-hidden">
+    <div class="px-4 py-3 border-b"><h2 class="font-bold text-sm">Log geral (últimas 100)</h2></div>
+    <div class="overflow-auto"><table class="w-full text-xs min-w-[760px]">
+      <thead><tr class="bg-gray-50 text-gray-500"><th class="text-left px-4 py-2">Quando</th><th class="text-left px-4">Plataforma</th><th class="text-left px-4">Tipo/Jogo</th><th class="text-right px-4">Valor</th><th class="text-center px-4">Status</th></tr></thead>
+      <tbody id="tbodyLog"><tr><td colspan="5" class="text-center py-8 text-gray-400">Carregando...</td></tr></tbody>
+    </table></div>
+  </div>
+  <p class="text-[11px] text-gray-400 mt-3">Aprovar depósito soma saldo do jogador. Aprovar saque subtrai (já subtraído na solicitação demo) e você paga o PIX por fora ou via gateway. Recusar marca como recusado.</p>
+</div>
+
+<script type="module">
+import { supabase, sbLoadPlatforms, getOwnerEmailSync } from './supabase.js';
+const $ = id => document.getElementById(id);
+const fmt = v => Number(v||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+let PLATS = [];
+
+async function load(){
+  $('ownerEmail').textContent = getOwnerEmailSync() || '';
+  PLATS = await sbLoadPlatforms();
+  $('kPlat').textContent = PLATS.length;
+  $('fPlat').innerHTML = '<option value="">Todas as plataformas</option>' + PLATS.map(p=>`<option value="${p.id}">${p.nome} (${p.slug||p.id.slice(0,6)})</option>`).join('');
+  const ids = PLATS.map(p=>p.id);
+  if(!ids.length){
+    $('tbodyPend').innerHTML = '<tr><td colspan="6" class="text-center py-8 text-gray-400">Crie uma plataforma no dashboard primeiro</td></tr>';
+    $('tbodyLog').innerHTML = '<tr><td colspan="5" class="text-center py-8 text-gray-400">—</td></tr>';
+    return;
+  }
+  // transações + apostas das minhas plataformas
+  const { data: txs } = await supabase.from('platform_transactions').select('*').in('platform_id', ids).order('created_at',{ascending:false}).limit(100);
+  const { data: bets } = await supabase.from('platform_bets').select('*').in('platform_id', ids).order('created_at',{ascending:false}).limit(100);
+  const nameOf = id => (PLATS.find(p=>p.id===id)?.nome || id.slice(0,8));
+  const f = $('fPlat').value;
+  const txf = (txs||[]).filter(t=> !f || t.platform_id===f);
+  const dep = txf.filter(t=>t.tipo==='deposito'&&t.status==='pago').reduce((s,t)=>s+Number(t.valor||0),0);
+  const saq = txf.filter(t=>t.tipo==='saque'&&t.status==='pago').reduce((s,t)=>s+Number(t.valor||0),0);
+  const bet = (bets||[]).filter(b=> !f || b.platform_id===f).reduce((s,b)=>s+Number(b.valor||0),0);
+  $('kDep').textContent = fmt(dep); $('kSaq').textContent = fmt(saq);
+  $('kBet').textContent = fmt(bet); $('kLucro').textContent = fmt(dep-saq);
+  const pend = txf.filter(t=>t.status==='pendente'||t.status==='processamento');
+  $('tbodyPend').innerHTML = pend.length ? pend.map(t=>`<tr class="border-t">
+    <td class="px-4 py-2">${new Date(t.created_at).toLocaleString('pt-BR')}</td>
+    <td class="px-4 font-bold">${nameOf(t.platform_id)}</td>
+    <td class="px-4">${t.tipo}</td>
+    <td class="px-4 text-right font-bold">${fmt(t.valor)}</td>
+    <td class="px-4">${t.gateway||'manual'}</td>
+    <td class="px-4 text-center whitespace-nowrap">
+      <button data-ap="1" data-id="${t.id}" class="bg-green-600 text-white px-3 py-1 rounded-full font-bold">Aprovar</button>
+      <button data-ap="0" data-id="${t.id}" class="bg-gray-200 px-3 py-1 rounded-full font-bold ml-1">Recusar</button>
+    </td></tr>`).join('') : '<tr><td colspan="6" class="text-center py-8 text-gray-400">Nada pendente 🎉</td></tr>';
+  const log = [
+    ...(txf.map(t=>({quando:t.created_at, plat:nameOf(t.platform_id), oque:t.tipo, valor:t.valor, st:t.status, id:t.id, kind:'tx', row:t}))),
+    ...((bets||[]).filter(b=> !f || b.platform_id===f).map(b=>({quando:b.created_at, plat:nameOf(b.platform_id), oque:'aposta '+b.jogo, valor:b.valor, st:b.resultado, kind:'bet'})))
+  ].sort((a,b)=> new Date(b.quando)-new Date(a.quando)).slice(0,100);
+  $('tbodyLog').innerHTML = log.length ? log.map(l=>`<tr class="border-t"><td class="px-4 py-2">${new Date(l.quando).toLocaleString('pt-BR')}</td><td class="px-4">${l.plat}</td><td class="px-4">${l.oque}</td><td class="px-4 text-right font-bold">${fmt(l.valor)}</td><td class="px-4 text-center">${l.st}</td></tr>`).join('') : '<tr><td colspan="5" class="text-center py-8 text-gray-400">—</td></tr>';
+  document.querySelectorAll('[data-ap]').forEach(b=> b.onclick = ()=>decidir(b.dataset.id, b.dataset.ap==='1'));
+}
+
+async function decidir(txId, aprovar){
+  // acha tx
+  const { data: tx } = await supabase.from('platform_transactions').select('*').eq('id', txId).single();
+  if(!tx) return alert('Transação não sumiu? Recarrega.');
+  if(aprovar){
+    await supabase.from('platform_transactions').update({status:'pago'}).eq('id', txId);
+    // soma/subtrai saldo do jogador
+    if(tx.player_id){
+      const { data: pl } = await supabase.from('platform_players').select('*').eq('id', tx.player_id).single();
+      if(pl){
+        const novo = Number(pl.saldo||0) + (tx.tipo==='deposito'? Number(tx.valor||0) : 0);
+        // saque demo já descontou na hora; aqui só garante
+        await supabase.from('platform_players').update({saldo:novo}).eq('id', tx.player_id);
+      }
+    }
+  } else {
+    await supabase.from('platform_transactions').update({status:'recusado'}).eq('id', txId);
+    // se era saque recusado, devolve saldo
+    if(tx.tipo==='saque' && tx.player_id){
+      const { data: pl } = await supabase.from('platform_players').select('*').eq('id', tx.player_id).single();
+      if(pl) await supabase.from('platform_players').update({saldo:Number(pl.saldo||0)+Number(tx.valor||0)}).eq('id', tx.player_id);
+    }
+  }
+  load();
+}
+$('btnReload').onclick = load;
+$('fPlat').onchange = load;
+load();
+</script>
+</body>
+</html>

@@ -142,7 +142,6 @@
                 <svg class="w-4 h-4 absolute left-2.5 top-2.5 text-black" fill="currentColor" viewBox="0 0 20 20"><path d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"/></svg>
               </div>
               <button id="btnCriarPlataforma" class="h-9 px-4 rounded-lg bg-gradient-to-r from-[#000000] to-[#222222] text-white font-bold text-sm flex items-center gap-1.5 shadow"><span class="w-5 h-5 rounded-full bg-white text-[#000000] grid place-items-center text-sm leading-none">+</span> Criar</button>
-              <button id="btnCriarTodas" class="h-9 px-4 rounded-lg bg-white border-2 border-black text-black font-bold text-sm hidden sm:flex items-center gap-1.5 hover:bg-zinc-50">⚡ Criar todas (19) 1 clique</button>
             </div>
           </div>
           <div id="plataformasEmpty" class="py-16 text-center text-[#9aa0a6] text-sm">
@@ -843,8 +842,9 @@ document.getElementById('btnCriarPlataformaFinal').addEventListener('click',asyn
   lista.classList.remove('hidden');
   empty.classList.add('hidden');
   const id='cmu'+Math.random().toString(36).slice(2,10);
+  const slugBase = nome.toLowerCase().replace(/[^a-z0-9]+/g,'').slice(0,18) || 'plat';
   const plats=JSON.parse(localStorage.getItem(getPlataformasKey())||'[]');
-  plats.push({id, nome, desc, layout:m.n, img:m.img, badges:m.badges});
+  plats.push({id, nome, desc, layout:m.n, img:m.img, badges:m.badges, slug: slugBase + '-' + id.slice(-4), theme:{}, oferta:{titulo:nome, sub:desc, banner:''}, gateway:{provider:'manual', url:'', client_id:''}, depMin:20, depMax:10000, saqMin:20, saqMax:10000, rtp:'baixo', published:false, dominio:''});
   localStorage.setItem(getPlataformasKey(), JSON.stringify(plats));
   localStorage.setItem(getLastPlatKey(), id);
   // sync Supabase se disponivel
@@ -876,64 +876,27 @@ document.getElementById('tab-afili')?.addEventListener('click',()=>{
 });
 
 // carrega plataformas do usuario (Supabase + fallback)
-async function renderPlataformas(plats){
-  const lista=document.getElementById('listaPlataformas');
-  const empty=document.getElementById('emptyMsg');
-  if(!lista) return;
-  if(plats && plats.length){
-    lista.innerHTML='';
-    lista.classList.remove('hidden');
-    if(empty) empty.classList.add('hidden');
-    plats.forEach(p=>{
-      const card=document.createElement('div');
-      card.className='bg-white rounded-xl p-3 border border-[#e5e7eb] shadow-sm cursor-pointer hover:border-[#000000]/40';
-      card.innerHTML=`<img src="${p.img}" class="w-full aspect-square object-cover rounded-lg"><p class="font-bold text-sm mt-2">${p.nome}</p><p class="text-xs text-[#9aa0a6]">${p.desc||''}</p><p class="text-[11px] text-[#000000] font-bold mt-1">${p.layout||''}</p>`;
-      card.onclick=()=> location.href=`./plataforma.html?id=${p.id}&t=players`;
-      lista.appendChild(card);
-    });
-  } else {
-    lista.classList.add('hidden');
-    if(empty) empty.classList.remove('hidden');
-  }
-}
 (async()=>{
   try{
     const { sbLoadPlatforms } = await import('./supabase.js');
     const plats = await sbLoadPlatforms();
-    await renderPlataformas(plats);
-    // se vazio, mostra botao criar todas em destaque
-    if(!plats || !plats.length){
-      const btn=document.getElementById('btnCriarTodas');
-      if(btn) btn.classList.remove('hidden');
+    const lista=document.getElementById('listaPlataformas');
+    const empty=document.getElementById('emptyMsg');
+    if(!lista) return;
+    if(plats && plats.length){
+      lista.innerHTML='';
+      lista.classList.remove('hidden');
+      if(empty) empty.classList.add('hidden');
+      plats.forEach(p=>{
+        const card=document.createElement('div');
+        card.className='bg-white rounded-xl p-3 border border-[#e5e7eb] shadow-sm cursor-pointer hover:border-[#000000]/40';
+        card.innerHTML=`<img src="${p.img}" class="w-full aspect-square object-cover rounded-lg"><p class="font-bold text-sm mt-2">${p.nome}</p><p class="text-xs text-[#9aa0a6]">${p.desc||''}</p><p class="text-[11px] text-[#000000] font-bold mt-1">${p.layout||''}</p>`;
+        card.onclick=()=> location.href=`./plataforma.html?id=${p.id}&t=players`;
+        lista.appendChild(card);
+      });
     }
   }catch(e){ console.warn('load plataformas fail', e); }
 })();
-
-// bulk: cria todas 19 de uma vez (sem ficar criando 1 por 1)
-document.getElementById('btnCriarTodas')?.addEventListener('click', async()=>{
-  if(!confirm('Criar as 19 plataformas de uma vez?')) return;
-  const btn=document.getElementById('btnCriarTodas');
-  btn.disabled=true; btn.textContent='Criando...';
-  const plats=JSON.parse(localStorage.getItem(getPlataformasKey())||'[]');
-  // evita duplicar se ja tem
-  if(plats.length>=5){ if(!confirm('Já tem '+plats.length+' plataformas. Criar mais 19 mesmo assim?')){ btn.disabled=false; btn.textContent='⚡ Criar todas (19) 1 clique'; return; } }
-  for(let i=0;i<modelos.length;i++){
-    const m=modelos[i];
-    const id='cmu'+Math.random().toString(36).slice(2,10);
-    plats.push({id, nome: m.n, desc: m.s, layout:m.n, img:m.img, badges:m.badges});
-    // delay pequeno pra não travar
-    await new Promise(r=>setTimeout(r,30));
-  }
-  localStorage.setItem(getPlataformasKey(), JSON.stringify(plats));
-  localStorage.setItem(getLastPlatKey(), plats[plats.length-1].id);
-  try{
-    const { sbSavePlatforms } = await import('./supabase.js');
-    await sbSavePlatforms(plats);
-  }catch(e){}
-  await renderPlataformas(plats);
-  toast('19 plataformas criadas! GG 🎉');
-  btn.disabled=false; btn.textContent='⚡ Criar todas (19) 1 clique';
-});
 </script>
 </body>
 </html>

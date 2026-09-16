@@ -306,6 +306,25 @@
         <!-- INTEGRACOES -->
         <div id="tab-integrations" class="tab-panel hidden p-6">
           <div class="bg-[#fffbeb] rounded-2xl p-5 border flex gap-4 items-start"><div class="w-10 h-10 rounded-xl bg-black text-white grid place-items-center"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M7 17L17 7M17 7H7m10 0v10"/></svg></div><div><p class="font-bold">Integrações</p><p class="text-sm text-[#6b7280]">Configure suas integrações com serviços externos</p></div></div>
+          <div class="mt-4 bg-white border rounded-xl p-5">
+            <p class="font-bold">Gateway PIX da plataforma <span class="text-xs font-medium text-[#6b7280]">(cada plataforma usa o gateway do dono)</span></p>
+            <p class="text-xs text-[#6b7280] mt-1">Igual SISTEMA BET: SuitPay / EzzeBank. O secret fica na Edge Function, aqui só url + client_id.</p>
+            <div class="grid md:grid-cols-3 gap-4 mt-3">
+              <div><label class="text-xs font-bold">Provedor</label><select id="gwProvider" class="w-full h-10 rounded-xl border px-3 text-sm mt-1"><option value="manual">Manual / Demo (aprova na hora)</option><option value="suitpay">SuitPay</option><option value="ezzebank">EzzeBank</option></select></div>
+              <div><label class="text-xs font-bold">URL base</label><input id="gwUrl" placeholder="https://api.suitpay..." class="w-full h-10 rounded-xl border px-3 text-sm mt-1"></div>
+              <div><label class="text-xs font-bold">Client ID</label><input id="gwClientId" placeholder="ci_..." class="w-full h-10 rounded-xl border px-3 text-sm mt-1"></div>
+            </div>
+            <button id="btnSalvarGateway" class="mt-4 ml-auto block px-6 py-2 bg-black text-white rounded-xl font-bold">Salvar gateway</button>
+          </div>
+          <div class="mt-4 bg-white border rounded-xl p-5"><p class="font-bold">Página de oferta (vitrine pública)</p>
+            <div class="grid gap-3 mt-3">
+              <div><label class="text-xs font-bold">Slug público (vai no link)</label><input id="cfgSlug" placeholder="minha-plataforma" class="w-full h-10 rounded-xl border px-3 text-sm mt-1"></div>
+              <div><label class="text-xs font-bold">Título da oferta</label><input id="ofTitulo" placeholder="Bônus de 100% no primeiro depósito" class="w-full h-10 rounded-xl border px-3 text-sm mt-1"></div>
+              <div><label class="text-xs font-bold">Subtítulo</label><input id="ofSub" placeholder="Deposite via PIX e jogue agora" class="w-full h-10 rounded-xl border px-3 text-sm mt-1"></div>
+              <label class="flex items-center gap-2 text-sm mt-1"><input id="cfgPublished" type="checkbox" class="w-4 h-4 accent-black"> Plataforma publicada (aparece no link público)</label>
+              <a id="publicLink" href="#" target="_blank" class="text-xs font-bold text-blue-600 hover:underline">Abrir página pública</a>
+            </div>
+          </div>
           <div class="mt-4 bg-white border rounded-xl p-5"><p class="font-bold">Nova Integração</p><div class="grid md:grid-cols-2 gap-4 mt-3"><div><label class="text-xs font-bold">Serviço de Integração</label><select class="w-full h-10 rounded-xl border px-3 text-sm mt-1"><option>Jivochat</option><option>Tawk.to</option><option>Intercom</option></select></div><div><label class="text-xs font-bold">ID de Integração</label><input placeholder="Ex: a1b2c3d4e5" class="w-full h-10 rounded-xl border px-3 text-sm mt-1"></div></div><div class="mt-4 bg-[#f5f5f5] border border-orange-200 rounded-xl p-4"><p class="font-bold text-sm">ⓘ Como encontrar o ID</p><p class="text-xs text-[#6b7280]">Localize o ID no código de integração:</p><div class="mt-2 bg-[#0f172a] text-white p-3 rounded-xl text-xs font-mono">&lt;script src="//code.jivosite.com/widget/<span class="bg-black px-2 rounded">a1b2c3d4e5</span>" async&gt;&lt;/script&gt;</div></div><button onclick="toast('Integração adicionada')" class="mt-4 ml-auto block px-6 py-2 bg-gradient-to-r from-[#000000] to-[#222222] text-white rounded-xl font-bold">+ Adicionar Integração</button></div>
         </div>
 
@@ -491,8 +510,45 @@ function showTab(t){
 tabBtns.forEach(b=> b.addEventListener('click',()=> showTab(b.dataset.tab)));
 const initial = params.get('t') || 'dados';
 showTab(initial);
-// salvar dados gerais
-document.getElementById('btnSalvarDados')?.addEventListener('click', ()=>{
+// salvar dados gerais + tema + oferta + gateway + slug (vitrine ponta a ponta)
+function collectTheme(){
+  const inputs = Array.from(document.querySelectorAll('input[type="color"]'));
+  const keys = ['bg','nav','footer','bottomnav','txt','muted','btntxt','btn'];
+  const theme = {};
+  inputs.slice(0,8).forEach((inp,i)=>{ theme[keys[i]||('c'+i)] = inp.value; });
+  return theme;
+}
+function fillThemeInputs(theme){
+  if(!theme) return;
+  const keys = ['bg','nav','footer','bottomnav','txt','muted','btntxt','btn'];
+  const inputs = Array.from(document.querySelectorAll('input[type="color"]'));
+  inputs.slice(0,8).forEach((inp,i)=>{ if(theme[keys[i]]) inp.value = theme[keys[i]]; });
+}
+async function persistPlatform(patch){
+  try{
+    const plats = JSON.parse(localStorage.getItem(getPlataformasKey())||'[]');
+    const idx = plats.findIndex(x=>x.id===id);
+    if(idx>=0){
+      plats[idx]={...plats[idx], ...patch};
+      localStorage.setItem(getPlataformasKey(), JSON.stringify(plats));
+      // espelha no Supabase (melhor esforço, sem quebrar o mock atual)
+      try{
+        const mod = await import('./supabase.js');
+        if(mod.sbSavePlatforms) await mod.sbSavePlatforms(plats);
+      }catch(e){}
+      return plats[idx];
+    }
+  }catch(e){}
+  return null;
+}
+function currentSlug(){
+  return (document.getElementById('cfgSlug')?.value || document.getElementById('magicSubdomain')?.value || platName).toLowerCase().replace(/[^a-z0-9-]/g,'').slice(0,40) || 'minha-plataforma';
+}
+function updatePublicLink(){
+  const a = document.getElementById('publicLink');
+  if(a) { a.href = './p.html?p=' + encodeURIComponent(currentSlug()); a.textContent = 'Abrir página pública: p.html?p=' + currentSlug(); }
+}
+document.getElementById('btnSalvarDados')?.addEventListener('click', async ()=>{
   const data = {
     titulo: document.getElementById('cfgTitulo')?.value || '',
     descricao: document.getElementById('cfgDescricao')?.value || '',
@@ -507,15 +563,45 @@ document.getElementById('btnSalvarDados')?.addEventListener('click', ()=>{
     facebook: document.getElementById('cfgFacebook')?.value || '',
     whatsapp: document.getElementById('cfgWhatsapp')?.value || ''
   };
-  try{
-    const plats = JSON.parse(localStorage.getItem(getPlataformasKey())||'[]');
-    const idx = plats.findIndex(x=>x.id===id);
-    if(idx>=0){ plats[idx]={...plats[idx], ...data, nome: data.titulo || plats[idx].nome}; localStorage.setItem(getPlataformasKey(), JSON.stringify(plats)); }
-    document.getElementById('platTitle').textContent = data.titulo || platName;
-    document.title = (data.titulo || platName) + ' | StratonPay Bets';
-  }catch(e){}
-  toast('Configurações salvas!');
+  const theme = collectTheme();
+  const slug = currentSlug();
+  const banner = document.getElementById('bannerMainPreview')?.src || '';
+  const patch = {
+    nome: data.titulo || platName, desc: data.descricao,
+    depMin: Number(data.depMin), depMax: Number(data.depMax),
+    saqMin: Number(data.saqMin), saqMax: Number(data.saqMax),
+    rtp: data.rtp, suporte: data.suporte, instagram: data.insta,
+    telegram: data.telegram, whatsapp: data.whatsapp,
+    theme, slug,
+    oferta: { titulo: document.getElementById('ofTitulo')?.value || data.titulo || platName, sub: document.getElementById('ofSub')?.value || data.descricao || '', banner: banner.startsWith('data:') ? banner : '' },
+    published: document.getElementById('cfgPublished')?.checked || false,
+    dominio: (document.getElementById('domainName')?.textContent || '').trim()
+  };
+  const saved = await persistPlatform(patch);
+  document.getElementById('platTitle').textContent = data.titulo || platName;
+  document.title = (data.titulo || platName) + ' | StratonPay Bets';
+  updatePublicLink();
+  toast('Configurações salvas! Página pública: p.html?p=' + slug);
 });
+document.getElementById('btnSalvarGateway')?.addEventListener('click', async ()=>{
+  const patch = { gateway: { provider: document.getElementById('gwProvider')?.value||'manual', url: document.getElementById('gwUrl')?.value||'', client_id: document.getElementById('gwClientId')?.value||'' } };
+  await persistPlatform(patch);
+  toast('Gateway salvo! (secret fica na Edge Function, não no navegador)');
+});
+// ao abrir, preenche tema/gateway/oferta salvos
+try{
+  const plats = JSON.parse(localStorage.getItem(getPlataformasKey())||'[]');
+  const p = plats.find(x=>x.id===id);
+  if(p){
+    fillThemeInputs(p.theme);
+    if(p.slug && document.getElementById('cfgSlug')) document.getElementById('cfgSlug').value = p.slug;
+    if(p.oferta){ if(document.getElementById('ofTitulo')) document.getElementById('ofTitulo').value = p.oferta.titulo||''; if(document.getElementById('ofSub')) document.getElementById('ofSub').value = p.oferta.sub||''; }
+    if(p.gateway){ if(document.getElementById('gwProvider')) document.getElementById('gwProvider').value = p.gateway.provider||'manual'; if(document.getElementById('gwUrl')) document.getElementById('gwUrl').value = p.gateway.url||''; if(document.getElementById('gwClientId')) document.getElementById('gwClientId').value = p.gateway.client_id||''; }
+    if(p.published && document.getElementById('cfgPublished')) document.getElementById('cfgPublished').checked = true;
+  }
+}catch(e){}
+updatePublicLink();
+document.getElementById('cfgSlug')?.addEventListener('input', updatePublicLink);
 // upload logo / loading
 function bindDrop(dropId, inputId, previewId, placeholderId){
   const drop=document.getElementById(dropId), input=document.getElementById(inputId), preview=document.getElementById(previewId), ph=document.getElementById(placeholderId);

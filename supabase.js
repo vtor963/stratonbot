@@ -5,7 +5,33 @@ export const supabase = createClient(
   'sb_publishable_IwpOfl9X9q4h22nU6pmVBw_rE-G6ViI'
 );
 
-// helper auth
+// Normaliza linha do Supabase -> objeto usado no app (vitrine completa)
+function mapPlatform(r){
+  return {
+    id:r.id, nome:r.nome, desc:r.descricao, layout:r.layout, img:r.img,
+    badges:r.badges, dominio:r.dominio,
+    slug:r.slug||'',
+    theme:r.theme||{}, oferta:r.oferta||{}, gateway:r.gateway||{},
+    depMin:r.dep_min??20, depMax:r.dep_max??10000,
+    saqMin:r.saq_min??20, saqMax:r.saq_max??10000,
+    rtp:r.rtp||'medio', suporte:r.suporte||'',
+    whatsapp:r.whatsapp||'', telegram:r.telegram||'', instagram:r.instagram||'',
+    published:!!r.published
+  };
+}
+function unmapPlatform(p){
+  return {
+    id:p.id, nome:p.nome, descricao:p.desc||'', layout:p.layout||'',
+    img:p.img||'', badges:p.badges||[], dominio:p.dominio||'',
+    slug:(p.slug||'').toLowerCase().replace(/[^a-z0-9-]/g,'').slice(0,40)||null,
+    theme:p.theme||{}, oferta:p.oferta||{}, gateway:{ provider:p.gateway?.provider||'manual', url:p.gateway?.url||'', client_id:p.gateway?.client_id||'' },
+    dep_min:p.depMin??20, dep_max:p.depMax??10000,
+    saq_min:p.saqMin??20, saq_max:p.saqMax??10000,
+    rtp:p.rtp||'medio', suporte:p.suporte||'',
+    whatsapp:p.whatsapp||'', telegram:p.telegram||'', instagram:p.instagram||'',
+    published:!!p.published
+  };
+}
 export async function getSession(){
   const { data } = await supabase.auth.getSession();
   return data.session;
@@ -36,7 +62,7 @@ export async function sbLoadPlatforms(){
     try{
       const { data, error } = await supabase.from('platforms').select('*').eq('owner_email', email).order('created_at', {ascending:false});
       if(error) throw error;
-      return (data||[]).map(r=> ({id:r.id, nome:r.nome, desc:r.descricao, layout:r.layout, img:r.img, badges:r.badges, dominio:r.dominio}));
+      return (data||[]).map(mapPlatform);
     }catch(e){
       return JSON.parse(localStorage.getItem(getPlataformasKey())||'[]');
     }
@@ -44,7 +70,7 @@ export async function sbLoadPlatforms(){
   try{
     const { data, error } = await supabase.from('platforms').select('*').eq('owner_id', user.id).order('created_at', {ascending:false});
     if(error) throw error;
-    return (data||[]).map(r=> ({id:r.id, nome:r.nome, desc:r.descricao, layout:r.layout, img:r.img, badges:r.badges, dominio:r.dominio}));
+    return (data||[]).map(mapPlatform);
   }catch(e){
     console.warn('sbLoadPlatforms secure fallback', e.message);
     return JSON.parse(localStorage.getItem(getPlataformasKey())||'[]');
@@ -60,7 +86,7 @@ export async function sbSavePlatforms(list){
     if(!email) return;
     // anon upsert por owner_email (RLS antigo allow all)
     for(const p of list){
-      try{ await supabase.from('platforms').upsert({ id:p.id, owner_email:email, owner_id: null, nome:p.nome, descricao:p.desc||'', layout:p.layout||'', img:p.img||'', badges:p.badges||[], dominio:p.dominio||'' }, {onConflict:'id'}); }catch(e){}
+      try{ await supabase.from('platforms').upsert({ id:p.id, owner_email:email, owner_id: null, ...unmapPlatform(p), nome:p.nome }, {onConflict:'id'}); }catch(e){}
     }
     return;
   }
@@ -70,15 +96,68 @@ export async function sbSavePlatforms(list){
         id: p.id,
         owner_id: user.id,
         owner_email: user.email,
+        ...unmapPlatform(p),
         nome: p.nome,
-        descricao: p.desc||'',
-        layout: p.layout||'',
-        img: p.img||'',
-        badges: p.badges||[],
-        dominio: p.dominio||''
       }, {onConflict:'id'});
     }catch(e){ console.warn('sbSavePlatforms', e.message); }
   }
+}
+
+// Vitrine pública: acha plataforma por slug ou dominio (oferta, tema, gateway público)
+export async function sbLoadPublicPlatform(slugOrDomain){
+  const s = (slugOrDomain||'').toLowerCase().trim();
+  if(!s) return null;
+  try{
+    let { data } = await supabase.from('platforms').select('*').eq('slug', s).limit(1).maybeSingle();
+    if(!data){
+      const r2 = await supabase.from('platforms').select('*').eq('dominio', s).limit(1).maybeSingle();
+      data = r2.data;
+    }
+    if(data) return mapPlatform(data);
+  }catch(e){}
+  // fallback: procura no localStorage de qualquer conta (demo local)
+  try{
+    for(let i=0;i<localStorage.length;i++){
+      const k = localStorage.key(i);
+      if(k && k.startsWith('platforms_')){
+        const arr = JSON.parse(localStorage.getItem(k)||'[]');
+        const f = (arr||[]).find(x=> (x.slug||'').toLowerCase()===s || (x.dominio||'').toLowerCase()===s || x.id===s);
+        if(f) return f;
+      }
+    }
+  }catch{}
+  return null;
+}
+
+// Carteira do jogador na plataforma (local primeiro, Supabase quando der)
+export function getPlayerKey(platformId){ return 'player_' + platformId; }
+export function getPlayer(platformId){
+  try{ return JSON.parse(localStorage.getItem(getPlayerKey(platformId))||'null'); }catch{ return null; }
+}
+export function savePlayer(platformId, player){
+  try{ localStorage.setItem(getPlayerKey(platformId), JSON.stringify(player)); }catch{}
+}
+export async function sbUpsertPlayer(platformId, player){
+  savePlayer(platformId, player);
+  try{
+    const payload = { platform_id: platformId, nome: player.nome||'', email: player.email||'', cpf: player.cpf||'', pix_key: player.pix_key||'', saldo: player.saldo||0, bonus: player.bonus||0 };
+    if(player.id) payload.id = player.id;
+    const { data, error } = await supabase.from('platform_players').upsert(payload, {onConflict:'id'}).select().single();
+    if(!error && data){ savePlayer(platformId, { ...player, id: data.id, saldo: Number(data.saldo||0) }); return data; }
+  }catch(e){}
+  return player;
+}
+export async function sbCreateTransaction(tx){
+  try{ await supabase.from('platform_transactions').insert(tx); }catch(e){}
+  try{
+    const k = 'txs_' + tx.platform_id;
+    const arr = JSON.parse(localStorage.getItem(k)||'[]');
+    arr.unshift({ ...tx, created_at: new Date().toISOString() });
+    localStorage.setItem(k, JSON.stringify(arr.slice(0,100)));
+  }catch{}
+}
+export async function sbCreateBet(bet){
+  try{ await supabase.from('platform_bets').insert(bet); }catch(e){}
 }
 
 // Perfil 100% por conta
