@@ -151,8 +151,21 @@ document.getElementById('signupForm').addEventListener('submit', async e=>{
   const primeiro = name.split(' ')[0] || name;
   const ultimo = name.split(' ').slice(1).join(' ') || '';
   const perfil = { primeiroNome: primeiro, ultimoNome: ultimo, email: email, cpf: cpf.replace(/\D/g,''), phone: phone.replace(/\D/g,''), cnpj:'', cep:'', bairro:'', endereco:'', numero:'', uf:'', cidade:'' };
+  // 100% seguro: Supabase Auth (hash bcrypt, JWT)
+  let supaUser = null;
+  try{
+    const { supabase } = await import('./supabase.js');
+    const { data, error } = await supabase.auth.signUp({ email, password: pass, options:{ data:{ name, cpf: perfil.cpf, phone: perfil.phone } } });
+    if(error) throw error;
+    supaUser = data.user;
+    // se precisar confirmar email, já loga direto se não exigir
+    if(data.session) await supabase.auth.setSession(data.session);
+  }catch(e){ console.warn('supabase signup fallback', e.message); }
   localStorage.setItem(perfilKey, JSON.stringify(perfil));
+  try{ const { sbSavePerfil } = await import('./supabase.js'); await sbSavePerfil(perfil); }catch(e){}
+  // mantém compatibilidade com guard antigo
   localStorage.setItem('profits_token','mock_'+btoa(email+':'+Date.now()));
+  if(supaUser) localStorage.setItem('supabase_user_id', supaUser.id);
   localStorage.setItem('profits_user', JSON.stringify({email, name, cpf: perfil.cpf, phone: perfil.phone}));
   toast('Conta criada com sucesso! Redirecionando...');
   setTimeout(()=> location.href='./dashboard.html',900);

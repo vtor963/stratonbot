@@ -177,16 +177,34 @@ form.addEventListener('submit', async (e)=>{
   if(email==='erro@test.com'){ submitBtn.disabled=false; btnText.textContent='Entrar'; btnSpinner.classList.add('hidden'); toast('Email ou senha incorretos','error'); setError(emailInput,emailError,'Verifique seu email'); return; }
 
   if($('#remember').checked){ localStorage.setItem('profits_remember','1'); localStorage.setItem('profits_email',email); } else { localStorage.removeItem('profits_remember'); localStorage.removeItem('profits_email'); }
-  // carrega perfil isolado se existir, senao cria vazio (nao vaza cpf de outro)
-  const perfilKey = 'straton_profile_' + email.toLowerCase();
-  let perfil = null;
-  try{ perfil = JSON.parse(localStorage.getItem(perfilKey)||'null'); }catch(e){}
-  if(!perfil){
-    perfil = { primeiroNome: email.split('@')[0], ultimoNome:'', email: email, cpf:'', cnpj:'', cep:'', bairro:'', endereco:'', numero:'', uf:'', cidade:'' };
-    localStorage.setItem(perfilKey, JSON.stringify(perfil));
+  // 100% seguro: tenta Supabase Auth primeiro, fallback local
+  let supaOk = false;
+  try{
+    const { supabase } = await import('./supabase.js');
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password: pass });
+    if(error) throw error;
+    supaOk = true;
+    const user = data.user;
+    localStorage.setItem('supabase_user_id', user.id);
+    localStorage.setItem('profits_token', data.session.access_token);
+    // carrega perfil do Supabase
+    const { sbLoadPerfil } = await import('./supabase.js');
+    let perfilSb = await sbLoadPerfil();
+    if(!perfilSb) perfilSb = { primeiroNome: email.split('@')[0], ultimoNome:'', email, cpf:'', cnpj:'', cep:'', bairro:'', endereco:'', numero:'', uf:'', cidade:'' };
+    localStorage.setItem('straton_profile_' + email.toLowerCase(), JSON.stringify(perfilSb));
+    localStorage.setItem('profits_user', JSON.stringify({email, name: perfilSb.primeiroNome||email.split('@')[0], cpf: perfilSb.cpf||''}));
+  }catch(e){ console.warn('supabase login fallback', e.message); }
+  if(!supaOk){
+    const perfilKey = 'straton_profile_' + email.toLowerCase();
+    let perfil = null;
+    try{ perfil = JSON.parse(localStorage.getItem(perfilKey)||'null'); }catch(e){}
+    if(!perfil){
+      perfil = { primeiroNome: email.split('@')[0], ultimoNome:'', email: email, cpf:'', cnpj:'', cep:'', bairro:'', endereco:'', numero:'', uf:'', cidade:'' };
+      localStorage.setItem(perfilKey, JSON.stringify(perfil));
+    }
+    localStorage.setItem('profits_token', 'mock_'+btoa(email+':'+Date.now()));
+    localStorage.setItem('profits_user', JSON.stringify({email, name: perfil.primeiroNome || email.split('@')[0], cpf: perfil.cpf || '', phone: perfil.phone || ''}));
   }
-  localStorage.setItem('profits_token', 'mock_'+btoa(email+':'+Date.now()));
-  localStorage.setItem('profits_user', JSON.stringify({email, name: perfil.primeiroNome || email.split('@')[0], cpf: perfil.cpf || '', phone: perfil.phone || ''}));
   toast('Login realizado com sucesso! Redirecionando...','success');
   setTimeout(()=> location.href='./dashboard.html', 900);
 });

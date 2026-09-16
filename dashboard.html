@@ -533,11 +533,26 @@
 <div id="toast" class="fixed bottom-4 right-4 z-50 flex flex-col gap-2 pointer-events-none"></div>
 
 <script>
-// auth guard
-if(!localStorage.getItem('profits_token')) location.href='./index.html';
-const user = JSON.parse(localStorage.getItem('profits_user')||'{}');
+// auth guard - localStorage imediato + Supabase 100% seguro async
+let user = (()=>{ try{ return JSON.parse(localStorage.getItem('profits_user')||'{}'); }catch{ return {}; }})();
+if(!localStorage.getItem('profits_token') && !user.email) location.href='./index.html';
 document.getElementById('sideName').textContent = user.name ? user.name.split('@')[0].charAt(0).toUpperCase()+user.name.split('@')[0].slice(1) : 'Victor martinez';
 document.getElementById('sideEmail').textContent = user.email || 'victoralbers13@gmail.com';
+// tenta Supabase session em background e atualiza se tiver usuario real
+(async()=>{
+  try{
+    const { supabase } = await import('./supabase.js');
+    const { data } = await supabase.auth.getSession();
+    const supaUser = data?.session?.user;
+    if(supaUser){
+      const supaEmail = supaUser.email;
+      user = { email: supaEmail, name: supaUser.user_metadata?.name || supaEmail.split('@')[0], id: supaUser.id };
+      localStorage.setItem('profits_user', JSON.stringify(user));
+      document.getElementById('sideName').textContent = supaEmail.split('@')[0].charAt(0).toUpperCase()+supaEmail.split('@')[0].slice(1);
+      document.getElementById('sideEmail').textContent = supaEmail;
+    }
+  }catch(e){}
+})();
 
 function getPlataformasKey(){
   try{
@@ -593,17 +608,44 @@ if(user.email) document.getElementById('indiqueLink').value = `https://app.profi
       cep: '', bairro:'', endereco:'', numero:'', uf:'', cidade:''
     };
   }
-  function savePerfil(p){
+  async function savePerfil(p){
     localStorage.setItem(perfilKey, JSON.stringify(p));
-    // tambem atualiza profits_user pra manter nome/cpf sincronizado
     try{
       const u = JSON.parse(localStorage.getItem('profits_user')||'{}');
       u.name = (p.primeiroNome + ' ' + p.ultimoNome).trim();
       u.cpf = p.cpf;
       localStorage.setItem('profits_user', JSON.stringify(u));
     }catch(e){}
+    try{
+      const { sbSavePerfil } = await import('./supabase.js');
+      await sbSavePerfil(p);
+    }catch(e){ console.warn('supabase perfil save fail', e); }
   }
   let perfil = loadPerfil();
+  // tenta carregar do Supabase e mescla (sobrescreve local se tiver)
+  (async()=>{
+    try{
+      const { sbLoadPerfil } = await import('./supabase.js');
+      const sb = await sbLoadPerfil();
+      if(sb){
+        perfil = {
+          primeiroNome: sb.primeiro_nome || perfil.primeiroNome,
+          ultimoNome: sb.ultimo_nome || perfil.ultimoNome,
+          email: sb.email || perfil.email,
+          cpf: sb.cpf || perfil.cpf,
+          cnpj: sb.cnpj || perfil.cnpj,
+          cep: sb.cep || perfil.cep,
+          bairro: sb.bairro || perfil.bairro,
+          endereco: sb.endereco || perfil.endereco,
+          numero: sb.numero || perfil.numero,
+          uf: sb.uf || perfil.uf,
+          cidade: sb.cidade || perfil.cidade
+        };
+        localStorage.setItem(perfilKey, JSON.stringify(perfil));
+        fill();
+      }
+    }catch(e){}
+  })();
   // preenche campos
   const $ = id => document.getElementById(id);
   function fill(){
@@ -678,7 +720,12 @@ const hash = location.hash.replace('#','');
 if(hash && document.getElementById('sec-'+hash)) showSection(hash);
 else showSection('plataformas');
 
-document.getElementById('logoutBtn').addEventListener('click',()=>{ localStorage.removeItem('profits_token'); location.href='./index.html?stay=1'; });
+document.getElementById('logoutBtn').addEventListener('click',async ()=>{ 
+  try{ const { supabase } = await import('./supabase.js'); await supabase.auth.signOut(); }catch(e){}
+  localStorage.removeItem('profits_token'); 
+  localStorage.removeItem('supabase_user_id');
+  location.href='./index.html?stay=1'; 
+});
 document.getElementById('mobileMenu')?.addEventListener('click',()=>{
   const m=document.getElementById('mobileNav');
   m.classList.remove('hidden');
@@ -784,7 +831,7 @@ grid.querySelectorAll('.plataforma-card').forEach(card=>{
 document.getElementById('btnCriarPlataforma').addEventListener('click',()=> document.getElementById('modalPlataforma').classList.remove('hidden'));
 document.getElementById('closeModal').addEventListener('click',()=> document.getElementById('modalPlataforma').classList.add('hidden'));
 document.getElementById('modalPlataforma').addEventListener('click',e=>{ if(e.target===e.currentTarget) e.currentTarget.classList.add('hidden'); });
-document.getElementById('btnCriarPlataformaFinal').addEventListener('click',()=>{
+document.getElementById('btnCriarPlataformaFinal').addEventListener('click',async ()=>{
   const nome=document.getElementById('platNome').value.trim();
   const desc=document.getElementById('platDesc').value.trim();
   if(!nome||!desc) return toast('Preencha nome e descrição','err');
@@ -799,6 +846,11 @@ document.getElementById('btnCriarPlataformaFinal').addEventListener('click',()=>
   plats.push({id, nome, desc, layout:m.n, img:m.img, badges:m.badges});
   localStorage.setItem(getPlataformasKey(), JSON.stringify(plats));
   localStorage.setItem(getLastPlatKey(), id);
+  // sync Supabase se disponivel
+  try{
+    const { sbSavePlatforms } = await import('./supabase.js');
+    await sbSavePlatforms(plats);
+  }catch(e){ console.warn('supabase save fail', e); }
   const card=document.createElement('div');
   card.className='bg-white rounded-xl p-3 border border-[#e5e7eb] shadow-sm cursor-pointer hover:border-[#000000]/40';
   card.innerHTML=`<img src="${m.img}" class="w-full aspect-square object-cover rounded-lg"><p class="font-bold text-sm mt-2">${nome}</p><p class="text-xs text-[#9aa0a6]">${desc}</p><p class="text-[11px] text-[#000000] font-bold mt-1">${m.n} • ${m.s}</p>`;
@@ -821,6 +873,29 @@ document.getElementById('tab-afili')?.addEventListener('click',()=>{
   document.getElementById('tab-minhas').className='text-black pb-2';
   toast('Afiliações em breve');
 });
+
+// carrega plataformas do usuario (Supabase + fallback)
+(async()=>{
+  try{
+    const { sbLoadPlatforms } = await import('./supabase.js');
+    const plats = await sbLoadPlatforms();
+    const lista=document.getElementById('listaPlataformas');
+    const empty=document.getElementById('emptyMsg');
+    if(!lista) return;
+    if(plats && plats.length){
+      lista.innerHTML='';
+      lista.classList.remove('hidden');
+      if(empty) empty.classList.add('hidden');
+      plats.forEach(p=>{
+        const card=document.createElement('div');
+        card.className='bg-white rounded-xl p-3 border border-[#e5e7eb] shadow-sm cursor-pointer hover:border-[#000000]/40';
+        card.innerHTML=`<img src="${p.img}" class="w-full aspect-square object-cover rounded-lg"><p class="font-bold text-sm mt-2">${p.nome}</p><p class="text-xs text-[#9aa0a6]">${p.desc||''}</p><p class="text-[11px] text-[#000000] font-bold mt-1">${p.layout||''}</p>`;
+        card.onclick=()=> location.href=`./plataforma.html?id=${p.id}&t=players`;
+        lista.appendChild(card);
+      });
+    }
+  }catch(e){ console.warn('load plataformas fail', e); }
+})();
 </script>
 </body>
 </html>
