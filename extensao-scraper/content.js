@@ -49,6 +49,33 @@ function scrapePage() {
   return data;
 }
 
+async function getFullSourceWithInlineStyles(){
+  // tenta inline <link rel=stylesheet> para o HTML ficar 100% offline
+  const clone = document.documentElement.cloneNode(true);
+  const links = [...clone.querySelectorAll('link[rel="stylesheet"]')];
+  for(const link of links){
+    const href = link.getAttribute('href');
+    if(!href || href.startsWith('chrome-')) continue;
+    try{
+      const abs = new URL(href, location.href).href;
+      const css = await fetch(abs).then(r=>r.text()).then(t=>t.slice(0,200000)).catch(()=>null);
+      if(css){
+        const style = document.createElement('style');
+        style.textContent = '/* inlined from '+href+' */\n' + css;
+        link.replaceWith(style);
+      }
+    }catch(e){}
+    // limita para não travar
+    if(clone.outerHTML.length>800000) break;
+  }
+  // injeta base href para imagens relativas funcionarem
+  let html = '<!DOCTYPE html>\n' + clone.outerHTML;
+  if(!html.includes('<base')) {
+    html = html.replace('<head>', '<head><base href="'+location.origin+'/">');
+  }
+  return html.slice(0, 900000);
+}
+
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse)=>{
   if(msg.type==='SCRAPE'){
     (async()=>{
@@ -60,6 +87,20 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse)=>{
         chrome.storage.local.set({profits_scrapes: arr, last_scrape: d});
       });
       sendResponse(d);
+    })();
+    return true;
+  }
+  if(msg.type==='DOWNLOAD_SOURCE'){
+    (async()=>{
+      await waitForApp();
+      const html = await getFullSourceWithInlineStyles();
+      // salva também
+      chrome.storage.local.get(['profits_scrapes'], res=>{
+        const arr = res.profits_scrapes||[];
+        arr.push({url: location.href, title: document.title, html: html.slice(0,500000), timestamp: new Date().toISOString(), type:'source'});
+        chrome.storage.local.set({profits_scrapes: arr});
+      });
+      sendResponse({html, url: location.href, title: document.title});
     })();
     return true;
   }

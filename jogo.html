@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jogo | StratonPay Bets</title>
+<link rel="icon" href="./public/logo.png">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@600;800&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<style>*{font-family:Inter,sans-serif}</style>
+</head>
+<body class="bg-[#0f1923] min-h-screen text-white">
+<!-- Header -->
+<header class="h-[56px] bg-[#1d2730] border-b border-white/10 flex items-center justify-between px-4 sticky top-0 z-20">
+  <div class="flex items-center gap-3">
+    <a href="./dashboard.html" class="flex items-center gap-2">
+      <img src="./public/logo.png" class="w-8 h-8 rounded-lg" alt="StratonPay">
+      <span class="font-extrabold text-white">StratonPay Bets</span>
+    </a>
+    <span id="gameBadge" class="ml-2 hidden sm:inline-flex bg-white/10 px-2 py-1 rounded-full text-xs font-bold">JOGO</span>
+  </div>
+  <div class="flex items-center gap-2">
+    <a href="./dashboard.html" class="px-3 py-1.5 bg-white/10 hover:bg-white/20 rounded-full text-xs font-bold">← Voltar</a>
+    <a href="./dashboard.html#plataformas" class="px-3 py-1.5 bg-white text-black rounded-full text-xs font-bold">Minhas Plataformas</a>
+  </div>
+</header>
+
+<!-- Game Container -->
+<main class="max-w-[1100px] mx-auto p-4">
+  <div class="bg-[#1d2730] rounded-2xl overflow-hidden border border-white/10">
+    <!-- Game Header -->
+    <div class="p-4 flex items-center justify-between border-b border-white/10">
+      <div>
+        <h1 id="gameTitle" class="text-lg font-extrabold">Carregando jogo...</h1>
+        <p id="gameProvider" class="text-xs text-white/60">Aguarde</p>
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+        <span class="text-xs font-bold text-white/80">AO VIVO</span>
+      </div>
+    </div>
+    <!-- Game Frame -->
+    <div id="gameFrameWrap" class="relative bg-black aspect-[16/9] flex items-center justify-center overflow-hidden">
+      <div id="gamePlaceholder" class="text-center p-8">
+        <div class="w-16 h-16 mx-auto bg-white/10 rounded-2xl grid place-items-center mb-4">
+          <svg class="w-8 h-8 text-white/60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        </div>
+        <p class="font-bold">Jogo não carregado</p>
+        <p class="text-xs text-white/60 mt-1 max-w-[400px]">Use a extensão para baixar o código-fonte da página do jogo na ProfitsBet. Depois cole o HTML aqui ou use o arquivo baixado.</p>
+        <div class="mt-4 flex gap-2 justify-center">
+          <button onclick="document.getElementById('uploadGameHtml').click()" class="px-4 py-2 bg-white text-black rounded-full text-xs font-bold">📁 Carregar HTML baixado</button>
+          <button id="btnDemoGame" class="px-4 py-2 bg-white/10 text-white rounded-full text-xs font-bold">▶ Demo</button>
+        </div>
+        <input type="file" id="uploadGameHtml" accept=".html" class="hidden">
+      </div>
+      <iframe id="gameFrame" class="absolute inset-0 w-full h-full hidden border-0 bg-black"></iframe>
+    </div>
+    <!-- Game Info -->
+    <div class="p-4 grid sm:grid-cols-3 gap-4 text-xs">
+      <div class="bg-[#0f1923] rounded-xl p-3 border border-white/5">
+        <p class="text-white/60">RTP</p>
+        <p class="font-extrabold text-white">96.5%</p>
+      </div>
+      <div class="bg-[#0f1923] rounded-xl p-3 border border-white/5">
+        <p class="text-white/60">Volatilidade</p>
+        <p class="font-extrabold text-white">Média</p>
+      </div>
+      <div class="bg-[#0f1923] rounded-xl p-3 border border-white/5">
+        <p class="text-white/60">Provider</p>
+        <p class="font-extrabold text-white" id="providerName2">—</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Instructions -->
+  <div class="mt-4 bg-white rounded-2xl p-4 border">
+    <h3 class="font-extrabold text-black">Como clonar 1 por 1 da Profits</h3>
+    <ol class="list-decimal ml-5 mt-2 text-sm text-[#6b7280] space-y-1">
+      <li>Instale a extensão em <code>chrome://extensions</code> → Ativar modo desenvolvedor → Carregar sem compactação → selecione pasta <code>extensao-scraper</code></li>
+      <li>Abra <code>https://app.profitsbet.co</code> e navegue até o <b>jogo</b> que quer clonar</li>
+      <li>Clique no ícone da extensão → <b>⬇️ Baixar código-fonte desta página (HTML)</b></li>
+      <li>Salve o arquivo em <code>games/nome-do-jogo/index.html</code> dentro do app1k</li>
+      <li>Recarregue <code>jogo.html?game=nome-do-jogo</code> para testar. Repete para cada jogo.</li>
+    </ol>
+    <p class="text-xs text-[#9aa0a6] mt-3">Dica: use também “Ler site inteiro” + “Exportar JSON” para pegar cores, imagens e estrutura de cada página.</p>
+  </div>
+</main>
+
+<script>
+// read ?game=xxx or ?id=xxx
+const params = new URLSearchParams(location.search);
+const gameSlug = params.get('game') || params.get('id') || params.get('jogo') || '';
+const titleEl = document.getElementById('gameTitle');
+const providerEl = document.getElementById('gameProvider');
+const provider2 = document.getElementById('providerName2');
+const badge = document.getElementById('gameBadge');
+
+if(gameSlug){
+  titleEl.textContent = decodeURIComponent(gameSlug).replace(/[-_]/g,' ').replace(/\b\w/g,c=>c.toUpperCase());
+  providerEl.textContent = 'StratonPay Bets • ' + gameSlug;
+  if(provider2) provider2.textContent = gameSlug;
+  if(badge) { badge.textContent = gameSlug.slice(0,12); badge.classList.remove('hidden'); }
+  // tenta carregar games/<slug>/index.html se existir
+  const tryPath = `./games/${gameSlug}/index.html`;
+  fetch(tryPath, {method:'HEAD'}).then(r=>{
+    if(r.ok){
+      document.getElementById('gameFrame').src = tryPath;
+      document.getElementById('gameFrame').classList.remove('hidden');
+      document.getElementById('gamePlaceholder').classList.add('hidden');
+    }
+  }).catch(()=>{});
+  document.title = titleEl.textContent + ' | StratonPay Bets';
+}
+
+// upload HTML baixado
+document.getElementById('uploadGameHtml').addEventListener('change', e=>{
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = ev=>{
+    const html = ev.target.result;
+    const frame = document.getElementById('gameFrame');
+    const blob = new Blob([html], {type:'text/html'});
+    const url = URL.createObjectURL(blob);
+    frame.src = url;
+    frame.classList.remove('hidden');
+    document.getElementById('gamePlaceholder').classList.add('hidden');
+    titleEl.textContent = file.name.replace('.html','').replace(/profits_/,'').replace(/_/g,' ');
+  };
+  reader.readAsText(file);
+});
+document.getElementById('btnDemoGame').addEventListener('click', ()=>{
+  const frame = document.getElementById('gameFrame');
+  // demo simples: mostra um grid de slots
+  frame.srcdoc = `
+    <style>body{margin:0;background:#0f1923;color:white;font-family:Inter,sans-serif;display:grid;place-items:center;min-height:100vh}
+    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;padding:20px;max-width:600px}
+    .card{background:#1d2730;border-radius:16px;padding:20px;text-align:center;border:1px solid #26323e}
+    .spin{width:40px;height:40px;border:3px solid #333;border-top-color:white;border-radius:9999px;animation:spin 1s linear infinite;margin:0 auto 12px}
+    @keyframes spin{to{transform:rotate(360deg)}}</style>
+    <div style="text-align:center;padding:20px">
+      <div class="spin"></div>
+      <h2>Demo - ${gameSlug || 'Jogo'}</h2>
+      <p style="color:#9aa0a6;font-size:13px">Este é um placeholder até você carregar o HTML real da Profits</p>
+      <div class="grid"><div class="card">🎰 Tiger</div><div class="card">✈️ Aviator</div><div class="card">💣 Mines</div><div class="card">♠️ Blackjack</div><div class="card">🎡 Roleta</div><div class="card">🍭 Sweet Bonanza</div></div>
+    </div>
+  `;
+  frame.classList.remove('hidden');
+  document.getElementById('gamePlaceholder').classList.add('hidden');
+});
+</script>
+</body>
+</html>

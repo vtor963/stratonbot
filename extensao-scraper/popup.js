@@ -19,6 +19,32 @@ document.getElementById('scan').addEventListener('click', async ()=>{
   }catch(e){ log('❌ Erro: '+e.message+'\nDica: 1) Recarregue a página com F5 2) Clique em Atualizar na chrome://extensions 3) Clique de novo em Ler'); }
 });
 
+document.getElementById('downloadSource').addEventListener('click', async ()=>{
+  logEl.textContent=''; log('⬇️ Baixando código-fonte...');
+  const [tab]=await chrome.tabs.query({active:true, currentWindow:true});
+  try{ await chrome.scripting.executeScript({target:{tabId:tab.id}, files:['content.js']}); }catch(e){}
+  try{
+    const res = await chrome.tabs.sendMessage(tab.id, {type:'DOWNLOAD_SOURCE'});
+    if(!res || !res.html) throw new Error('Não retornou HTML');
+    // tenta inline CSS antes de baixar
+    let html = res.html;
+    // baixa via data URL
+    const blob = new Blob([html], {type:'text/html'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const slug = new URL(tab.url).pathname.replace(/[^a-z0-9]/gi,'_').replace(/^_+/,'') || 'index';
+    a.href = url; a.download = `profits_${slug}_${Date.now()}.html`; document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url), 2000);
+    // também salva no storage para exportar depois
+    const {profits_sources=[]} = await chrome.storage.local.get(['profits_sources']);
+    profits_sources.push({url: tab.url, html: html.slice(0,500000), timestamp: new Date().toISOString()});
+    await chrome.storage.local.set({profits_sources});
+    log('✅ Código-fonte baixado! ('+ (html.length/1000).toFixed(1) +' KB)');
+    log('   Salvo em storage.profits_sources ('+profits_sources.length+' páginas)');
+    log('   Abra o arquivo HTML baixado para testar offline.');
+  }catch(e){ log('❌ Erro: '+e.message); }
+});
+
 document.getElementById('capture').addEventListener('click', async ()=>{
   logEl.textContent=''; log('📸 Capturando...');
   const [tab]=await chrome.tabs.query({active:true, currentWindow:true});
