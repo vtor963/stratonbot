@@ -1,0 +1,6 @@
+{
+  "installCommand": "echo no install",
+  "buildCommand": "echo no build && mkdir -p public",
+  "outputDirectory": ".",
+  "cleanUrls": true
+}
