@@ -291,9 +291,9 @@
         <div id="tab-domains" class="tab-panel hidden p-4">
           <div class="flex gap-2 mb-4"><input placeholder="Buscar domínios" class="flex-1 h-10 rounded-xl border px-4 text-sm"><button class="px-5 py-2 bg-black text-white rounded-xl font-bold">+ Adicionar Domínio</button></div>
           <div class="rounded-xl border overflow-hidden">
-            <table class="w-full text-sm"><thead><tr class="bg-[#f9fafb] text-xs text-[#6b7280]"><th class="text-left px-4 py-3">Domínio</th><th class="text-center px-4">Status</th><th class="text-center px-4">Tipo</th><th class="text-center px-4">Criado em</th><th class="text-right px-4">Ações</th></tr></thead><tbody><tr class="border-t"><td class="px-4 py-3 text-[#2563eb] font-medium flex items-center gap-1" id="domainName">vavava-1792.stratonpay.bet </td><td class="text-center"><span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 justify-center">Ativo</span></td><td class="text-center">Pré-visualização</td><td class="text-center">Há 3 Minutos</td><td></td></tr></tbody></table>
-          </div>
-          <div class="mt-4 p-4 border rounded-xl bg-[#f5f5f5]"><p class="font-bold">Publicar Magic Link</p><div class="flex gap-2 mt-2"><input id="magicSubdomain" placeholder="Digite seu subdomínio" class="flex-1 h-10 rounded-xl border px-4 text-sm"><select id="magicDomain" class="h-10 rounded-xl border px-3 text-sm"><option value="ofc.bet">ofc.bet</option><option value="ofcbr.com">ofcbr.com</option><option value="ofc-bet.com">ofc-bet.com</option><option value="ofc-br.bet">ofc-br.bet</option><option value="ofcbr.bet">ofcbr.bet</option><option value="seu-dominio.com">seu-dominio.com</option></select></div><p class="text-xs bg-zinc-100 text-orange-700 p-2 rounded mt-2">Nota: Você só poderá alterar seu MagicLink apenas uma vez! Escolha com atenção</p><p class="text-xs mt-2">Seu link: <span id="magicLinkPreview" class="font-bold text-[#000000]">—</span></p></div>
+            <table class="w-full text-sm"><thead><tr class="bg-[#f9fafb] text-xs text-[#6b7280]"><th class="text-left px-4 py-3">Domínio</th><th class="text-center px-4">Status</th><th class="text-center px-4">Tipo</th><th class="text-center px-4">Criado em</th><th class="text-right px-4">Ações</th></tr></thead><tbody><tr class="border-t"><td class="px-4 py-3 text-[#2563eb] font-medium flex items-center gap-1" id="domainName">https://stratonbot.vercel.app</td><td class="text-center"><span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 justify-center">Ativo</span></td><td class="text-center">Produção</td><td class="text-center">Agora</td><td><a href="https://stratonbot.vercel.app" target="_blank" class="text-xs font-bold text-black underline">Abrir</a></td></tr></tbody></table>
+           </div>
+           <div class="mt-4 p-4 border rounded-xl bg-[#f5f5f5]"><p class="font-bold">Publicar Magic Link</p><div class="flex gap-2 mt-2"><input id="magicSubdomain" placeholder="Digite seu subdomínio (opcional)" class="flex-1 h-10 rounded-xl border px-4 text-sm"><select id="magicDomain" class="h-10 rounded-xl border px-3 text-sm"><option value="stratonbot.vercel.app" selected>stratonbot.vercel.app</option><option value="seu-dominio.com">seu-dominio.com</option></select></div><p class="text-xs bg-zinc-100 text-zinc-700 p-2 rounded mt-2">Domínio verificado: <span class="font-bold">https://stratonbot.vercel.app</span> — clique em Publicar para liberar o acesso.</p><p class="text-xs mt-2">Seu link: <span id="magicLinkPreview" class="font-bold text-[#000000]">https://stratonbot.vercel.app</span></p></div>
         </div>
 
         <!-- PIXEL -->
@@ -398,8 +398,15 @@ if(id){
 if(params.get('t')==='players' && !id) platName = 'vavava';
 document.getElementById('platTitle').textContent = platName;
 function updateDomainDisplay(){
+  const dom=document.getElementById('magicDomain')?.value || 'stratonbot.vercel.app';
+  if(dom.includes('vercel.app')){
+    const full='https://stratonbot.vercel.app';
+    document.getElementById('domainName').textContent = full;
+    const preview=document.getElementById('magicLinkPreview');
+    if(preview) preview.textContent = full;
+    return;
+  }
   const sub=document.getElementById('magicSubdomain')?.value?.trim() || platName.toLowerCase().replace(/[^a-z0-9]/g,'');
-  const dom=document.getElementById('magicDomain')?.value || 'ofc.bet';
   const full=(sub||'seu-subdominio')+'.'+dom;
   document.getElementById('domainName').textContent = full;
   const preview=document.getElementById('magicLinkPreview');
