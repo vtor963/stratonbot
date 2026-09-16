@@ -740,6 +740,100 @@ document.getElementById('promoNome')?.addEventListener('input', renderWizard);
 document.getElementById('promoQtd')?.addEventListener('input', renderWizard);
 document.querySelectorAll('input[name="gatilho"],input[name="jogo"]').forEach(el=> el.addEventListener('change', renderWizard));
 document.getElementById('promoWizard')?.addEventListener('click', e=>{ if(e.target===e.currentTarget) e.currentTarget.classList.add('hidden'); });
+
+// SIDEBAR ROUTING REAL - plataforma.html -> dashboard.html
+(function(){
+  const map = { dashboard:'dashboard', plataformas:'plataformas', financeiro:'financeiro', visaogeral:'visaogeral', saquejogadores:'saquejogadores', transacoes:'transacoes', indique:'indique', perfil:'perfil' };
+  document.querySelectorAll('aside [data-nav]').forEach(a=>{
+    a.style.cursor='pointer';
+    a.addEventListener('click', e=>{
+      e.preventDefault();
+      const sec = map[a.dataset.nav] || a.dataset.nav;
+      window.location.href = './dashboard.html#' + sec;
+    });
+  });
+  const logo = document.querySelector('aside img');
+  if(logo) { logo.style.cursor='pointer'; logo.addEventListener('click', ()=> window.location.href='./dashboard.html'); }
+})();
+
+// DEMO STATE REAL - localStorage, sem mocks estaticos
+(function(){
+  const KEY='straton_demo_accounts';
+  const tbody = document.querySelector('#tab-demo tbody');
+  const countActiveEl = document.querySelector('#tab-demo .border-l-4.border-orange-400 .text-2xl');
+  const countExpiredEl = document.querySelector('#tab-demo .border-l-4.border-red-400 .text-2xl');
+  const saldoEl = document.querySelector('#tab-demo .border-l-4.border-green-400 .text-2xl');
+  const titleCount = document.querySelector('#tab-demo .font-bold');
+  // load
+  function load(){ try{ return JSON.parse(localStorage.getItem(KEY)||'[]'); }catch{ return []; } }
+  function save(arr){ localStorage.setItem(KEY, JSON.stringify(arr)); }
+  function fmtDate(d){ return new Date(d).toLocaleDateString('pt-BR'); }
+  function render(){
+    const arr = load();
+    const now = Date.now();
+    const ativos = arr.filter(a=> new Date(a.expira).getTime() > now).length;
+    const expirados = arr.length - ativos;
+    const saldo = arr.reduce((s,a)=> s + (Number(a.saldo)||0), 0);
+    if(countActiveEl) countActiveEl.textContent = String(ativos);
+    if(countExpiredEl) countExpiredEl.textContent = String(expirados);
+    if(saldoEl) saldoEl.textContent = 'R$ ' + saldo.toFixed(2).replace('.',',');
+    const title = document.querySelector('#tab-demo table')?.previousElementSibling?.querySelector('p');
+    if(title) title.textContent = `Contas Demo (${arr.length})`;
+    if(!tbody) return;
+    if(arr.length===0){
+      tbody.innerHTML = '<tr><td colspan="9" class="text-center py-8 text-[#9aa0a6]">Nenhuma conta demo</td></tr>';
+      return;
+    }
+    tbody.innerHTML = arr.map((a,i)=>`
+      <tr class="border-t hover:bg-zinc-50">
+        <td class="py-2 flex items-center gap-2"><input type="checkbox" data-idx="${i}"> ${a.usuario}</td>
+        <td>${a.email}</td>
+        <td class="font-mono text-[11px]">${a.senha}</td>
+        <td>R$ ${Number(a.saldo).toFixed(2).replace('.',',')}</td>
+        <td><span class="px-2 py-1 rounded-full text-[10px] font-bold ${new Date(a.expira).getTime()>now?'bg-green-100 text-green-700':'bg-red-100 text-red-600'}">${new Date(a.expira).getTime()>now?'Ativa':'Expirada'}</span></td>
+        <td>${fmtDate(a.criada)}</td>
+        <td>${fmtDate(a.expira)}</td>
+        <td>${a.ultimoLogin?fmtDate(a.ultimoLogin):'-'}</td>
+        <td><button onclick="window._demoDel(${i})" class="text-red-600 hover:underline text-xs">Excluir</button></td>
+      </tr>
+    `).join('');
+  }
+  window._demoDel = function(i){
+    const arr=load(); arr.splice(i,1); save(arr); render(); toast('Conta removida');
+  };
+  function criar(qtd, perfilCompleto){
+    const arr=load();
+    for(let k=0;k<qtd;k++){
+      const id=Math.random().toString(36).slice(2,6);
+      const n=Math.floor(Math.random()*9000+1000);
+      const usuario='demo_'+id;
+      const email=`demo${n}@teste.com`;
+      const senha=Math.random().toString(36).slice(-8);
+      const saldo= perfilCompleto? Number((Math.random()*500+50).toFixed(2)) : Number((Math.random()*200+10).toFixed(2));
+      const criada=new Date();
+      const expira=new Date(Date.now()+7*24*60*60*1000);
+      arr.push({usuario,email,senha,saldo,status:'Ativa',criada:criada.toISOString(),expira:expira.toISOString(),ultimoLogin:null});
+    }
+    save(arr); render(); toast(qtd+' conta(s) demo criada(s)');
+  }
+  // bind buttons
+  const btnNova = document.querySelector('#tab-demo button.bg-black');
+  // the two buttons in header: Criar em Lote (first) and Nova Conta Demo (second with bg-black)
+  const btns = document.querySelectorAll('#tab-demo button');
+  btns.forEach(b=>{
+    const txt=b.textContent.trim();
+    if(txt.includes('Nova Conta Demo')){
+      b.onclick=()=> criar(1,false);
+    } else if(txt.includes('Criar em Lote')){
+      b.onclick=()=> criar(5,false);
+    } else if(txt.includes('Perfil Completo')){
+      b.onclick=()=> criar(1,true);
+    }
+  });
+  render();
+  // expose for debugging
+  window._demoRender=render;
+})();
 </script>
 </body>
 </html>
