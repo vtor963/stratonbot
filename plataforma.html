@@ -456,24 +456,14 @@ function genSuffix(){
 function updateDomainDisplay(){
   const dom=document.getElementById('magicDomain')?.value || 'stratonbot.vercel.app';
   const subInput=document.getElementById('magicSubdomain')?.value?.trim();
-  const base=subInput || platName.toLowerCase().replace(/[^a-z0-9]/g,'').slice(0,18) || 'testeawdad';
-  const suffix=genSuffix();
-  if(dom.includes('vercel.app')){
-    const full= base + '-' + suffix + '.' + dom;
-    const href='https://stratonbot.vercel.app/plataforma?id='+encodeURIComponent(id)+'&t=domains';
-    // se for vercel, o dominio exibido é nome-numero.vercel.app mas aponta pro vercel
-    const dn=document.getElementById('domainName');
-    if(dn){ dn.textContent=full; dn.href=href; }
-    const preview=document.getElementById('magicLinkPreview');
-    if(preview){ preview.textContent='https://'+full; preview.href=href; }
-    return;
-  }
-  const sub=base;
-  const full=(sub||'seu-subdominio')+'.'+dom;
+  const base=(subInput || document.getElementById('cfgSlug')?.value || platName).toLowerCase().replace(/[^a-z0-9-]/g,'').slice(0,40) || 'minha-plataforma';
+  // Link real da página da oferta (jogador): p.html?p=slug — é aqui que ele cadastra, loga, deposita e aposta
+  const href='https://stratonbot.vercel.app/p.html?p='+encodeURIComponent(base);
+  const label=base+'.'+dom;
   const dn=document.getElementById('domainName');
-  if(dn){ dn.textContent=full; dn.href='https://'+full; }
+  if(dn){ dn.textContent=label; dn.href=href; }
   const preview=document.getElementById('magicLinkPreview');
-  if(preview){ preview.textContent='https://'+full; preview.href='https://'+full; }
+  if(preview){ preview.textContent=href; preview.href=href; }
 }
 document.getElementById('btnAddDomain')?.addEventListener('click',()=>{
   const sub=document.getElementById('magicSubdomain')?.value?.trim();
