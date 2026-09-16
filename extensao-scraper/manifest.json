@@ -1,0 +1,22 @@
+{
+  "manifest_version": 3,
+  "name": "ProfitsBet Scraper - Leitor Completo",
+  "version": "1.0.0",
+  "description": "Lê site inteiro app.profitsbet.co - cada seção, HTML, CSS, JS, prints e estrutura",
+  "permissions": ["activeTab", "scripting", "storage", "downloads"],
+  "host_permissions": ["https://app.profitsbet.co/*", "https://*.profitsbet.co/*"],
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://app.profitsbet.co/*"],
+      "js": ["content.js"],
+      "css": ["content.css"],
+      "run_at": "document_idle"
+    }
+  ]
+}

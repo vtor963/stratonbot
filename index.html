@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Profits | Entrar</title>
+<meta name="description" content="Tenha seu próprio cassino online! com diversos slots e jogos retrô">
+<link rel="icon" href="https://framerusercontent.com/images/QriKlhvYbks7DzCxm0yJrWx3eY.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      fontFamily: { sans: ['DM Sans','Inter','sans-serif'] },
+      colors: {
+        profits: { navy:'#2b3674', muted:'#a3aed0', border:'#e8ebf5', light:'#f4f7fe', orange:'#FF6B00', orangeDark:'#F84300', orangeLight:'#FFA300', grayLink:'#BABABA' }
+      }
+    }
+  }
+}
+</script>
+<style>
+* { font-family: 'DM Sans', Inter, sans-serif; }
+/* chrome autofill fix */
+input:-webkit-autofill { -webkit-box-shadow: 0 0 0 1000px white inset; -webkit-text-fill-color:#2b3674; }
+.shake { animation: shake 0.3s ease; }
+@keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-4px)} 75%{transform:translateX(4px)} }
+</style>
+</head>
+<body class="bg-white overflow-x-hidden antialiased">
+<div class="w-full lg:grid lg:min-h-screen lg:grid-cols-2">
+  <!-- LEFT -->
+  <div class="flex flex-col items-center justify-center px-6 py-8 lg:py-0 min-h-screen lg:min-h-screen">
+    <img src="./public/logo-orange-icon.svg" alt="Profitsbet Logo" class="w-16 h-16 my-10 lg:hidden flex object-contain">
+    
+    <div class="mx-auto w-full max-w-[350px] grid gap-6">
+      <div class="grid gap-2 text-left">
+        <h1 class="text-[30px] font-bold text-[#2b3674] leading-none tracking-tight">Entrar</h1>
+        <p class="text-[#a3aed0] text-[14px] font-medium">Insira seu email e sua senha para entrar</p>
+      </div>
+
+      <button id="googleBtn" type="button" class="inline-flex items-center justify-center gap-2 w-full h-[44px] bg-[#f4f7fe] hover:bg-[#e8ebf7] active:scale-[0.98] transition-all rounded-xl text-[#2b3674] font-semibold text-[14px] border border-transparent hover:border-[#e8ebf5]">
+        <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.1H42V20H24v8h11.3c-1.65 4.66-6.08 8-11.3 8c-6.63 0-12-5.37-12-12s5.37-12 12-12c3.06 0 5.84 1.15 7.96 3.04l5.66-5.66C34.05 6.05 29.27 4 24 4C12.95 4 4 12.95 4 24s8.95 20 20 20c11.05 0 20-8.95 20-20c0-1.34-.14-2.65-.4-3.9z"/><path fill="#FF3D00" d="M6.31 14.69l6.57 4.82C14.66 15.11 18.96 12 24 12c3.06 0 5.84 1.15 7.96 3.04l5.66-5.66C34.05 6.05 29.27 4 24 4C16.32 4 9.66 8.34 6.31 14.69z"/><path fill="#4CAF50" d="M24 44c5.17 0 9.86-1.98 13.41-5.19l-6.19-5.24C29.21 35.09 26.72 36 24 36c-5.2 0-9.62-3.32-11.28-7.95l-6.52 5.03C9.51 39.56 16.23 44 24 44z"/><path fill="#1976D2" d="M43.61 20.08H42V20H24v8h11.3c-.79 2.24-2.23 4.17-4.09 5.57l6.19 5.24C36.97 39.21 44 34 44 24c0-1.34-.14-2.65-.39-3.92z"/></svg>
+        Entrar com Google
+      </button>
+
+      <div class="relative my-1">
+        <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-[#e8ebf5]"></div></div>
+        <div class="relative flex justify-center"><span class="bg-white px-5 text-[#a3aed0] text-sm font-medium">ou</span></div>
+      </div>
+
+      <form id="loginForm" class="grid gap-4" novalidate>
+        <div class="grid gap-2">
+          <label for="email" class="text-[14px] font-semibold text-[#2b3674]">Email<span class="text-[#F84300] ml-1">*</span></label>
+          <input id="email" name="email" type="email" autocomplete="email" placeholder="mail@profitsbet.com" required
+            class="flex h-[44px] w-full rounded-xl border border-[#e8ebf5] bg-white px-3.5 py-2 text-[14px] font-semibold text-[#2b3674] placeholder:text-[#a3aed0] placeholder:font-medium focus:outline-none focus:border-[#6b7cff]/30 focus:ring-4 focus:ring-[#6b7cff]/10 transition-all">
+          <p id="emailError" class="hidden text-xs font-medium text-red-500 -mt-1"></p>
+        </div>
+        <div class="grid gap-2">
+          <label for="password" class="text-[14px] font-semibold text-[#2b3674]">Senha<span class="text-[#F84300] ml-1">*</span></label>
+          <div class="relative">
+            <input id="password" name="password" type="password" autocomplete="current-password" placeholder="Mín. 8 caracteres" required
+              class="flex h-[44px] w-full rounded-xl border border-[#e8ebf5] bg-white px-3.5 pr-10 py-2 text-[14px] font-semibold text-[#2b3674] placeholder:text-[#a3aed0] placeholder:font-medium focus:outline-none focus:border-[#6b7cff]/30 focus:ring-4 focus:ring-[#6b7cff]/10 transition-all">
+            <button type="button" id="togglePass" class="absolute inset-y-0 right-0 pr-3 flex items-center text-[#a3aed0] hover:text-[#2b3674] transition">
+              <svg id="eyeOpen" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"/></svg>
+              <svg id="eyeClosed" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 12h.01"/></svg>
+            </button>
+          </div>
+          <p id="passError" class="hidden text-xs font-medium text-red-500 -mt-1"></p>
+        </div>
+
+        <div class="grid grid-cols-2 items-center mt-1 mb-1">
+          <label class="flex items-center gap-2 cursor-pointer group">
+            <input id="remember" type="checkbox" class="w-4 h-4 rounded border-[#e8ebf5] text-[#FF6B00] focus:ring-[#FF6B00]/20 accent-[#FB6501] cursor-pointer">
+            <span class="text-[13px] font-semibold text-[#2b3674] group-hover:text-[#1a234f] transition">Mantenha-me logado</span>
+          </label>
+          <a href="./forgot-password.html" class="ml-auto text-[13px] font-semibold text-[#FF6B00] hover:text-[#F84300] hover:underline transition text-right">Esqueceu sua senha?</a>
+        </div>
+
+        <button id="submitBtn" type="submit" class="inline-flex items-center justify-center w-full h-[48px] bg-gradient-to-r from-[#F84300] to-[#FFA300] hover:from-[#e03d00] hover:to-[#ff9500] active:scale-[0.98] text-white font-bold text-[14px] rounded-2xl shadow-[0_8px_20px_rgba(248,67,0,0.25)] hover:shadow-[0_12px_28px_rgba(248,67,0,0.35)] transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed disabled:active:scale-100">
+          <span id="btnText">Entrar</span>
+          <svg id="btnSpinner" class="hidden ml-2 w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path></svg>
+        </button>
+      </form>
+
+      <p class="text-[14px] font-semibold text-[#2b3674] flex gap-1.5 justify-start">Não tem uma conta?<a href="./sign-up.html" class="font-bold text-[#BABABA] hover:text-[#2b3674] transition">Criar uma conta</a></p>
+    </div>
+  </div>
+
+  <!-- RIGHT -->
+  <div class="hidden lg:flex relative overflow-hidden bg-[#FF6B00] h-screen justify-center items-center rounded-bl-[140px] lg:rounded-bl-[170px]">
+    <div class="absolute inset-0">
+      <img src="./public/Background.png" alt="" class="w-full h-full object-cover object-bottom opacity-90">
+      <div class="absolute inset-0 bg-gradient-to-b from-[#FF6B00]/10 via-transparent to-[#FF6B00]/20"></div>
+    </div>
+    <div class="relative w-full flex flex-col items-center justify-center max-w-[500px] px-10">
+      <img src="./public/logo-white-icon.svg" alt="Profits" class="w-[200px] lg:w-[260px] h-auto object-contain drop-shadow-[0_8px_24px_rgba(0,0,0,0.15)]">
+      <h2 class="w-full text-center mt-6 text-[56px] lg:text-[60px] font-bold text-white tracking-tight leading-none drop-shadow-sm">Profits</h2>
+      <p class="text-white/80 text-center mt-3 text-sm font-medium">Sua plataforma de cassino completa</p>
+    </div>
+    <!-- decorative circles -->
+    <div class="absolute -top-20 -right-20 w-72 h-72 bg-white/10 rounded-full blur-3xl"></div>
+    <div class="absolute -bottom-20 -left-20 w-96 h-96 bg-white/10 rounded-full blur-3xl"></div>
+  </div>
+
+  <!-- footer copyright -->
+  <div class="hidden lg:grid fixed w-full grid-cols-2 bottom-8 pointer-events-none">
+    <p class="w-full text-center text-xs font-medium text-[#A3AED0]">© 2024 Profits. Todos os direitos reservados.</p>
+    <p class="w-full text-center text-xs font-medium text-white/60">Suporte 24/7 • Seguro & Rápido</p>
+  </div>
+  <p class="lg:hidden text-center text-xs font-medium text-[#A3AED0] pb-8 -mt-6">© 2024 Profits. Todos os direitos reservados.</p>
+</div>
+
+<!-- Toast container -->
+<div id="toastContainer" class="fixed top-4 right-4 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+<script>
+const $ = s => document.querySelector(s);
+const emailInput = $('#email');
+const passInput = $('#password');
+const form = $('#loginForm');
+const submitBtn = $('#submitBtn');
+const btnText = $('#btnText');
+const btnSpinner = $('#btnSpinner');
+const emailError = $('#emailError');
+const passError = $('#passError');
+
+function toast(msg, type='success') {
+  const c = $('#toastContainer');
+  const el = document.createElement('div');
+  const bg = type==='error' ? 'bg-[#2b3674] border-red-400' : type==='info' ? 'bg-[#2b3674]' : 'bg-[#2b3674]';
+  el.className = `pointer-events-auto min-w-[300px] max-w-[420px] ${bg} text-white px-4 py-3 rounded-2xl shadow-2xl flex items-center gap-3 border border-white/10 translate-x-full opacity-0 transition-all duration-300`;
+  el.innerHTML = `<div class="w-8 h-8 rounded-full ${type==='error'?'bg-red-500':'bg-gradient-to-r from-[#F84300] to-[#FFA300]'} flex items-center justify-center shrink-0">${type==='error'?'✕':'✓'}</div><div class="flex-1 text-sm font-medium leading-tight">${msg}</div><button onclick="this.parentElement.remove()" class="text-white/60 hover:text-white">✕</button>`;
+  c.appendChild(el);
+  requestAnimationFrame(()=>{ el.classList.remove('translate-x-full','opacity-0'); });
+  setTimeout(()=>{ el.classList.add('translate-x-full','opacity-0'); setTimeout(()=>el.remove(),300); }, 4000);
+}
+
+function setError(input, errorEl, msg) {
+  if(msg){ errorEl.textContent=msg; errorEl.classList.remove('hidden'); input.classList.add('border-red-400','ring-4','ring-red-50'); input.classList.remove('border-[#e8ebf5]'); input.parentElement?.classList.add('shake'); setTimeout(()=>input.parentElement?.classList.remove('shake'),300); }
+  else { errorEl.classList.add('hidden'); input.classList.remove('border-red-400','ring-4','ring-red-50'); input.classList.add('border-[#e8ebf5]'); }
+}
+function validateEmail(v){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
+
+$('#togglePass').addEventListener('click', ()=>{
+  const t = passInput.type==='password'?'text':'password';
+  passInput.type=t;
+  $('#eyeOpen').classList.toggle('hidden', t==='text');
+  $('#eyeClosed').classList.toggle('hidden', t==='password');
+});
+emailInput.addEventListener('input', ()=> setError(emailInput,emailError,''));
+passInput.addEventListener('input', ()=> setError(passInput,passError,''));
+
+// keep logged - load
+if(localStorage.getItem('profits_remember')==='1'){ $('#remember').checked=true; const saved=localStorage.getItem('profits_email'); if(saved) emailInput.value=saved; }
+
+form.addEventListener('submit', async (e)=>{
+  e.preventDefault();
+  let ok=true;
+  const email = emailInput.value.trim();
+  const pass = passInput.value;
+  if(!email){ setError(emailInput,emailError,'Email é obrigatório'); ok=false; }
+  else if(!validateEmail(email)){ setError(emailInput,emailError,'Email inválido'); ok=false; }
+  else setError(emailInput,emailError,'');
+  if(!pass){ setError(passInput,passError,'Senha é obrigatória'); ok=false; }
+  else if(pass.length<8){ setError(passInput,passError,'Mínimo 8 caracteres'); ok=false; }
+  else setError(passInput,passError,'');
+  if(!ok){ toast('Corrija os campos destacados','error'); return; }
+
+  submitBtn.disabled=true; btnText.textContent='Entrando...'; btnSpinner.classList.remove('hidden');
+  // mock api delay
+  await new Promise(r=>setTimeout(r, 1300));
+
+  // mock auth - any valid email/pass passes, but we demo error for specific
+  if(email==='erro@test.com'){ submitBtn.disabled=false; btnText.textContent='Entrar'; btnSpinner.classList.add('hidden'); toast('Email ou senha incorretos','error'); setError(emailInput,emailError,'Verifique seu email'); return; }
+
+  if($('#remember').checked){ localStorage.setItem('profits_remember','1'); localStorage.setItem('profits_email',email); } else { localStorage.removeItem('profits_remember'); localStorage.removeItem('profits_email'); }
+  localStorage.setItem('profits_token', 'mock_'+btoa(email+':'+Date.now()));
+  localStorage.setItem('profits_user', JSON.stringify({email, name: email.split('@')[0]}));
+  toast('Login realizado com sucesso! Redirecionando...','success');
+  setTimeout(()=> location.href='./dashboard.html', 900);
+});
+
+$('#googleBtn').addEventListener('click', ()=>{
+  toast('Login com Google em breve — conecte OAuth aqui','info');
+  // simulate google flow
+  $('#googleBtn').innerHTML = '<svg class="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path></svg> Conectando...';
+  setTimeout(()=>{ $('#googleBtn').innerHTML = '<svg width="20" height="20" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.1H42V20H24v8h11.3c-1.65 4.66-6.08 8-11.3 8c-6.63 0-12-5.37-12-12s5.37-12 12-12c3.06 0 5.84 1.15 7.96 3.04l5.66-5.66C34.05 6.05 29.27 4 24 4C12.95 4 4 12.95 4 24s8.95 20 20 20c11.05 0 20-8.95 20-20c0-1.34-.14-2.65-.4-3.9z"/><path fill="#FF3D00" d="M6.31 14.69l6.57 4.82C14.66 15.11 18.96 12 24 12c3.06 0 5.84 1.15 7.96 3.04l5.66-5.66C34.05 6.05 29.27 4 24 4C16.32 4 9.66 8.34 6.31 14.69z"/><path fill="#4CAF50" d="M24 44c5.17 0 9.86-1.98 13.41-5.19l-6.19-5.24C29.21 35.09 26.72 36 24 36c-5.2 0-9.62-3.32-11.28-7.95l-6.52 5.03C9.51 39.56 16.23 44 24 44z"/><path fill="#1976D2" d="M43.61 20.08H42V20H24v8h11.3c-.79 2.24-2.23 4.17-4.09 5.57l6.19 5.24C36.97 39.21 44 34 44 24c0-1.34-.14-2.65-.39-3.92z"/></svg> Entrar com Google'; toast('Google OAuth mock — defina CLIENT_ID','info'); }, 1400);
+});
+
+// if already logged redirect?
+if(localStorage.getItem('profits_token') && location.search!=='?stay'){ /* don't auto-redirect to allow seeing page */ }
+</script>
+</body>
+</html>

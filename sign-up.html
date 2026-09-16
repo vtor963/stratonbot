@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Profits | Registrar</title>
+<link rel="icon" href="https://framerusercontent.com/images/QriKlhvYbks7DzCxm0yJrWx3eY.png">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>tailwind.config={theme:{extend:{fontFamily:{sans:['DM Sans','sans-serif']}}}}</script>
+<style>*{font-family:'DM Sans',sans-serif} .shake{animation:shake .3s ease} @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}</style>
+</head>
+<body class="bg-white overflow-x-hidden antialiased">
+<div class="w-full lg:grid lg:min-h-screen lg:grid-cols-2">
+  <div class="flex flex-col items-center lg:justify-center px-6 py-8 lg:py-6 min-h-screen">
+    <img src="./public/logo-orange-icon.svg" class="w-16 h-16 my-8 lg:hidden object-contain" alt="">
+    <div class="mx-auto w-full max-w-[350px] grid gap-5 bg-white">
+      <div class="grid gap-1.5">
+        <h1 class="text-[30px] font-bold text-[#2b3674] leading-none">Registrar</h1>
+        <p class="text-[#a3aed0] text-[14px] font-medium">Insira seus dados para registrar</p>
+      </div>
+
+      <form id="signupForm" class="grid gap-3.5" novalidate>
+        <div class="grid gap-1.5">
+          <label class="text-[13px] font-semibold text-[#2b3674]">Nome Completo<span class="text-[#F84300] ml-1">*</span></label>
+          <input id="name" placeholder="Digite seu nome" class="h-[42px] w-full rounded-xl border border-[#e8ebf5] bg-white px-3.5 text-[14px] font-semibold text-[#2b3674] placeholder:text-[#a3aed0] placeholder:font-medium focus:outline-none focus:border-[#6b7cff]/30 focus:ring-4 focus:ring-[#6b7cff]/10 transition">
+          <p id="e-name" class="hidden text-xs font-medium text-red-500"></p>
+        </div>
+        <div class="grid gap-1.5">
+          <label class="text-[13px] font-semibold text-[#2b3674]">Email<span class="text-[#F84300] ml-1">*</span></label>
+          <input id="email" type="email" placeholder="mail@profitsbet.com" class="h-[42px] w-full rounded-xl border border-[#e8ebf5] bg-white px-3.5 text-[14px] font-semibold text-[#2b3674] placeholder:text-[#a3aed0] placeholder:font-medium focus:outline-none focus:border-[#6b7cff]/30 focus:ring-4 focus:ring-[#6b7cff]/10 transition">
+          <p id="e-email" class="hidden text-xs font-medium text-red-500"></p>
+        </div>
+        <div class="grid gap-1.5">
+          <label class="text-[13px] font-semibold text-[#2b3674]">CPF<span class="text-[#F84300] ml-1">*</span></label>
+          <input id="cpf" placeholder="000.000.000-00" maxlength="14" inputmode="numeric" class="h-[42px] w-full rounded-xl border border-[#e8ebf5] bg-white px-3.5 text-[14px] font-semibold text-[#2b3674] placeholder:text-[#a3aed0] placeholder:font-medium focus:outline-none focus:border-[#6b7cff]/30 focus:ring-4 focus:ring-[#6b7cff]/10 transition">
+          <p id="e-cpf" class="hidden text-xs font-medium text-red-500"></p>
+        </div>
+        <div class="grid gap-1.5">
+          <label class="text-[13px] font-semibold text-[#2b3674]">Telefone<span class="text-[#F84300] ml-1">*</span></label>
+          <input id="phone" placeholder="(00) 00000-0000" maxlength="15" inputmode="numeric" class="h-[42px] w-full rounded-xl border border-[#e8ebf5] bg-white px-3.5 text-[14px] font-semibold text-[#2b3674] placeholder:text-[#a3aed0] placeholder:font-medium focus:outline-none focus:border-[#6b7cff]/30 focus:ring-4 focus:ring-[#6b7cff]/10 transition">
+          <p id="e-phone" class="hidden text-xs font-medium text-red-500"></p>
+        </div>
+        <div class="grid gap-1.5">
+          <label class="text-[13px] font-semibold text-[#2b3674]">Senha<span class="text-[#F84300] ml-1">*</span></label>
+          <div class="relative">
+            <input id="pass" type="password" placeholder="Digite sua senha" class="h-[42px] w-full rounded-xl border border-[#e8ebf5] bg-white px-3.5 pr-10 text-[14px] font-semibold text-[#2b3674] placeholder:text-[#a3aed0] placeholder:font-medium focus:outline-none focus:border-[#6b7cff]/30 focus:ring-4 focus:ring-[#6b7cff]/10 transition">
+            <button type="button" data-toggle="pass" class="absolute inset-y-0 right-0 pr-3 flex items-center text-[#a3aed0] hover:text-[#2b3674]"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"/></svg></button>
+          </div>
+          <p id="e-pass" class="hidden text-xs font-medium text-red-500"></p>
+        </div>
+        <div class="grid gap-1.5">
+          <label class="text-[13px] font-semibold text-[#2b3674]">Confirme sua senha<span class="text-[#F84300] ml-1">*</span></label>
+          <input id="pass2" type="password" placeholder="Confirme sua senha" class="h-[42px] w-full rounded-xl border border-[#e8ebf5] bg-white px-3.5 text-[14px] font-semibold text-[#2b3674] placeholder:text-[#a3aed0] placeholder:font-medium focus:outline-none focus:border-[#6b7cff]/30 focus:ring-4 focus:ring-[#6b7cff]/10 transition">
+          <p id="e-pass2" class="hidden text-xs font-medium text-red-500"></p>
+        </div>
+        <div class="grid gap-1.5">
+          <label class="text-[13px] font-semibold text-[#2b3674]">Código de acesso <span class="text-[#a3aed0] font-medium">(opcional)</span></label>
+          <input id="inviter" placeholder="Código de acesso" class="h-[42px] w-full rounded-xl border border-[#e8ebf5] bg-white px-3.5 text-[14px] font-semibold text-[#2b3674] placeholder:text-[#a3aed0] placeholder:font-medium focus:outline-none focus:border-[#6b7cff]/30 focus:ring-4 focus:ring-[#6b7cff]/10 transition">
+        </div>
+
+        <button id="submitBtn" type="submit" class="mt-2 inline-flex items-center justify-center w-full h-[48px] bg-gradient-to-r from-[#F84300] to-[#FFA300] hover:from-[#e03d00] hover:to-[#ff9500] active:scale-[0.98] text-white font-bold text-[14px] rounded-2xl shadow-[0_8px_20px_rgba(248,67,0,0.25)] transition-all disabled:opacity-60">
+          <span id="btnText">Registrar</span>
+          <svg id="btnSpin" class="hidden ml-2 w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/></svg>
+        </button>
+      </form>
+      <p class="text-[14px] font-semibold text-[#2b3674] flex gap-1.5">Já tem uma conta?<a href="./index.html" class="font-bold text-[#BABABA] hover:text-[#2b3674] transition">Entrar</a></p>
+    </div>
+  </div>
+
+  <div class="hidden lg:flex relative overflow-hidden bg-[#FF6B00] h-screen justify-center items-center rounded-bl-[170px]">
+    <div class="absolute inset-0"><img src="./public/Background.png" class="w-full h-full object-cover object-bottom opacity-90"><div class="absolute inset-0 bg-gradient-to-b from-[#FF6B00]/10 to-[#FF6B00]/20"></div></div>
+    <div class="relative flex flex-col items-center max-w-[500px] px-10">
+      <img src="./public/logo-white-icon.svg" class="w-[260px] object-contain drop-shadow-[0_8px_24px_rgba(0,0,0,0.15)]" alt="">
+      <p class="text-[60px] font-bold text-white leading-none mt-6 tracking-tight">Profits</p>
+      <p class="text-white/80 text-sm font-medium mt-3 text-center">Crie sua conta e tenha seu cassino em minutos</p>
+    </div>
+    <div class="absolute -top-20 -right-20 w-72 h-72 bg-white/10 rounded-full blur-3xl"></div>
+  </div>
+  <div class="hidden lg:grid fixed w-full grid-cols-2 bottom-8 pointer-events-none"><p class="text-center text-xs font-medium text-[#A3AED0]">© 2024 Profits. Todos os direitos reservados.</p></div>
+  <p class="lg:hidden text-center text-xs font-medium text-[#A3AED0] pb-8">© 2024 Profits. Todos os direitos reservados.</p>
+</div>
+
+<div id="toastContainer" class="fixed top-4 right-4 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+<script>
+function toast(msg,type='success'){
+  const c=document.getElementById('toastContainer');
+  const el=document.createElement('div');
+  el.className=`pointer-events-auto min-w-[300px] max-w-[420px] bg-[#2b3674] text-white px-4 py-3 rounded-2xl shadow-2xl flex items-center gap-3 border border-white/10 translate-x-full opacity-0 transition-all duration-300`;
+  el.innerHTML=`<div class="w-8 h-8 rounded-full ${type==='error'?'bg-red-500':'bg-gradient-to-r from-[#F84300] to-[#FFA300]'} flex items-center justify-center shrink-0 text-sm">${type==='error'?'✕':'✓'}</div><div class="flex-1 text-sm font-medium">${msg}</div>`;
+  c.appendChild(el); requestAnimationFrame(()=>el.classList.remove('translate-x-full','opacity-0'));
+  setTimeout(()=>{el.classList.add('translate-x-full','opacity-0'); setTimeout(()=>el.remove(),300)},4000);
+}
+function err(id,msg){
+  const input=document.getElementById(id);
+  const e=document.getElementById('e-'+id);
+  if(msg){ e.textContent=msg; e.classList.remove('hidden'); input.classList.add('border-red-400','ring-4','ring-red-50'); }
+  else { e.classList.add('hidden'); input.classList.remove('border-red-400','ring-4','ring-red-50'); }
+}
+// masks
+document.getElementById('cpf').addEventListener('input', e=>{
+  let v=e.target.value.replace(/\D/g,'').slice(0,11);
+  v=v.replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d{1,2})$/,'$1-$2');
+  e.target.value=v;
+});
+document.getElementById('phone').addEventListener('input', e=>{
+  let v=e.target.value.replace(/\D/g,'').slice(0,11);
+  if(v.length>10) v=v.replace(/(\d{2})(\d{5})(\d{4})/,'($1) $2-$3');
+  else if(v.length>6) v=v.replace(/(\d{2})(\d{4})(\d{0,4})/,'($1) $2-$3');
+  else if(v.length>2) v=v.replace(/(\d{2})(\d{0,5})/,'($1) $2');
+  else if(v.length>0) v=v.replace(/(\d*)/,'($1');
+  e.target.value=v;
+});
+document.querySelectorAll('[data-toggle]').forEach(b=>{
+  b.addEventListener('click',()=>{
+    const inp=document.getElementById(b.dataset.toggle);
+    inp.type= inp.type==='password'?'text':'password';
+  });
+});
+['name','email','cpf','phone','pass','pass2'].forEach(id=>{
+  document.getElementById(id)?.addEventListener('input',()=> err(id,''));
+});
+function validateCPF(cpf){
+  cpf=cpf.replace(/\D/g,'');
+  if(cpf.length!==11 || /^(\d)\1+$/.test(cpf)) return false;
+  let s=0; for(let i=0;i<9;i++) s+= parseInt(cpf[i])*(10-i); let r=(s*10)%11; if(r===10) r=0; if(r!==parseInt(cpf[9])) return false;
+  s=0; for(let i=0;i<10;i++) s+= parseInt(cpf[i])*(11-i); r=(s*10)%11; if(r===10) r=0; return r===parseInt(cpf[10]);
+}
+document.getElementById('signupForm').addEventListener('submit', async e=>{
+  e.preventDefault();
+  const name=document.getElementById('name').value.trim();
+  const email=document.getElementById('email').value.trim();
+  const cpf=document.getElementById('cpf').value.trim();
+  const phone=document.getElementById('phone').value.trim();
+  const pass=document.getElementById('pass').value;
+  const pass2=document.getElementById('pass2').value;
+  let ok=true;
+  if(name.length<3){ err('name','Nome muito curto'); ok=false; }
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ err('email','Email inválido'); ok=false; }
+  if(!validateCPF(cpf)){ err('cpf','CPF inválido'); ok=false; }
+  if(phone.replace(/\D/g,'').length<10){ err('phone','Telefone inválido'); ok=false; }
+  if(pass.length<8){ err('pass','Mínimo 8 caracteres'); ok=false; }
+  if(pass!==pass2){ err('pass2','Senhas não coincidem'); ok=false; }
+  if(!ok){ toast('Corrija os campos destacados','error'); return; }
+  const btn=document.getElementById('submitBtn'), txt=document.getElementById('btnText'), spin=document.getElementById('btnSpin');
+  btn.disabled=true; txt.textContent='Registrando...'; spin.classList.remove('hidden');
+  await new Promise(r=>setTimeout(r,1500));
+  localStorage.setItem('profits_token','mock_'+btoa(email+':'+Date.now()));
+  localStorage.setItem('profits_user', JSON.stringify({email, name}));
+  toast('Conta criada com sucesso! Redirecionando...');
+  setTimeout(()=> location.href='./dashboard.html',900);
+});
+</script>
+</body>
+</html>

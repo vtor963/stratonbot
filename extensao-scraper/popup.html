@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<style>
+*{font-family:Inter,sans-serif} body{width:340px;margin:0;padding:16px;background:#0f172a;color:white}
+h1{font-size:15px;margin:0 0 8px} p{font-size:12px;color:#94a3b8;margin:0 0 12px;line-height:1.4}
+button{width:100%;padding:10px;border:0;border-radius:10px;font-weight:700;cursor:pointer;margin-bottom:8px}
+.primary{background:linear-gradient(90deg,#F84300,#FFA300);color:white}
+.secondary{background:#1e293b;color:white;border:1px solid #334155}
+.secondary:hover{background:#334155}
+.log{max-height:160px;overflow:auto;background:#020617;border:1px solid #1e293b;border-radius:10px;padding:8px;font-size:11px;line-height:1.4;white-space:pre-wrap;display:none}
+.badge{display:inline-block;background:#F84300;color:white;font-size:10px;font-weight:800;padding:2px 6px;border-radius:9999px;margin-left:6px}
+</style>
+</head>
+<body>
+<h1>ProfitsBet Scraper <span class="badge">FOAD</span></h1>
+<p>Lê o site inteiro: HTML, CSS, rotas, prints e salva tudo em JSON pra clonar 100%.</p>
+<button class="primary" id="scan">🔍 Ler site inteiro agora</button>
+<button class="secondary" id="capture">📸 Tirar print full-page</button>
+<button class="secondary" id="export">💾 Exportar dados (JSON)</button>
+<button class="secondary" id="routes">🗺️ Descobrir todas rotas</button>
+<div id="log" class="log"></div>
+<script src="popup.js"></script>
+</body>
+</html>
