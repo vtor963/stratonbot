@@ -538,6 +538,38 @@ if(!localStorage.getItem('profits_token')) location.href='./index.html';
 const user = JSON.parse(localStorage.getItem('profits_user')||'{}');
 document.getElementById('sideName').textContent = user.name ? user.name.split('@')[0].charAt(0).toUpperCase()+user.name.split('@')[0].slice(1) : 'Victor martinez';
 document.getElementById('sideEmail').textContent = user.email || 'victoralbers13@gmail.com';
+
+function getPlataformasKey(){
+  try{
+    const u = JSON.parse(localStorage.getItem('profits_user')||'{}');
+    const email = (u.email||'').toLowerCase().trim();
+    if(email) return 'platforms_' + email;
+  }catch(e){}
+  return 'platforms';
+}
+function getLastPlatKey(){
+  try{
+    const u = JSON.parse(localStorage.getItem('profits_user')||'{}');
+    const email = (u.email||'').toLowerCase().trim();
+    if(email) return 'lastPlatId_' + email;
+  }catch(e){}
+  return 'lastPlatId';
+}
+// migra plataformas globais antigas para conta atual (uma vez)
+try{
+  const old = localStorage.getItem('platforms');
+  const novoKey = getPlataformasKey();
+  if(old && novoKey!=='platforms' && !localStorage.getItem(novoKey)){
+    localStorage.setItem(novoKey, old);
+  }
+  const oldLast = localStorage.getItem('lastPlatId');
+  const novoLastKey = getLastPlatKey();
+  if(oldLast && novoLastKey!=='lastPlatId' && !localStorage.getItem(novoLastKey)){
+    localStorage.setItem(novoLastKey, oldLast);
+  }
+}catch(e){}
+
+
 if(user.email) document.getElementById('indiqueLink').value = `https://app.profitsbet.co/sign-up?promo=${user.email.split('@')[0]}`;
 
 // PERFIL ISOLADO POR CONTA - cada login ve so seus dados
@@ -763,10 +795,10 @@ document.getElementById('btnCriarPlataformaFinal').addEventListener('click',()=>
   lista.classList.remove('hidden');
   empty.classList.add('hidden');
   const id='cmu'+Math.random().toString(36).slice(2,10);
-  const plats=JSON.parse(localStorage.getItem('platforms')||'[]');
+  const plats=JSON.parse(localStorage.getItem(getPlataformasKey())||'[]');
   plats.push({id, nome, desc, layout:m.n, img:m.img, badges:m.badges});
-  localStorage.setItem('platforms', JSON.stringify(plats));
-  localStorage.setItem('lastPlatId', id);
+  localStorage.setItem(getPlataformasKey(), JSON.stringify(plats));
+  localStorage.setItem(getLastPlatKey(), id);
   const card=document.createElement('div');
   card.className='bg-white rounded-xl p-3 border border-[#e5e7eb] shadow-sm cursor-pointer hover:border-[#000000]/40';
   card.innerHTML=`<img src="${m.img}" class="w-full aspect-square object-cover rounded-lg"><p class="font-bold text-sm mt-2">${nome}</p><p class="text-xs text-[#9aa0a6]">${desc}</p><p class="text-[11px] text-[#000000] font-bold mt-1">${m.n} • ${m.s}</p>`;

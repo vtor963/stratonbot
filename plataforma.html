@@ -384,12 +384,44 @@
 <div id="toast" class="fixed bottom-4 right-4 z-50 flex flex-col gap-2"></div>
 <script>
 // dynamic title
+
+function getPlataformasKey(){
+  try{
+    const u = JSON.parse(localStorage.getItem('profits_user')||'{}');
+    const email = (u.email||'').toLowerCase().trim();
+    if(email) return 'platforms_' + email;
+  }catch(e){}
+  return 'platforms';
+}
+function getLastPlatKey(){
+  try{
+    const u = JSON.parse(localStorage.getItem('profits_user')||'{}');
+    const email = (u.email||'').toLowerCase().trim();
+    if(email) return 'lastPlatId_' + email;
+  }catch(e){}
+  return 'lastPlatId';
+}
+// migra plataformas globais antigas para conta atual (uma vez)
+try{
+  const old = localStorage.getItem('platforms');
+  const novoKey = getPlataformasKey();
+  if(old && novoKey!=='platforms' && !localStorage.getItem(novoKey)){
+    localStorage.setItem(novoKey, old);
+  }
+  const oldLast = localStorage.getItem('lastPlatId');
+  const novoLastKey = getLastPlatKey();
+  if(oldLast && novoLastKey!=='lastPlatId' && !localStorage.getItem(novoLastKey)){
+    localStorage.setItem(novoLastKey, oldLast);
+  }
+}catch(e){}
+
+
 const params = new URLSearchParams(location.search);
-const id = params.get('id') || localStorage.getItem('lastPlatId') || '';
+const id = params.get('id') || localStorage.getItem(getLastPlatKey()) || '';
 let platName = 'Plataforma';
 if(id){
   try{
-    const plats = JSON.parse(localStorage.getItem('platforms')||'[]');
+    const plats = JSON.parse(localStorage.getItem(getPlataformasKey())||'[]');
     const p = plats.find(x=>x.id===id);
     if(p) platName = p.nome;
   }catch(e){}
@@ -476,9 +508,9 @@ document.getElementById('btnSalvarDados')?.addEventListener('click', ()=>{
     whatsapp: document.getElementById('cfgWhatsapp')?.value || ''
   };
   try{
-    const plats = JSON.parse(localStorage.getItem('platforms')||'[]');
+    const plats = JSON.parse(localStorage.getItem(getPlataformasKey())||'[]');
     const idx = plats.findIndex(x=>x.id===id);
-    if(idx>=0){ plats[idx]={...plats[idx], ...data, nome: data.titulo || plats[idx].nome}; localStorage.setItem('platforms', JSON.stringify(plats)); }
+    if(idx>=0){ plats[idx]={...plats[idx], ...data, nome: data.titulo || plats[idx].nome}; localStorage.setItem(getPlataformasKey(), JSON.stringify(plats)); }
     document.getElementById('platTitle').textContent = data.titulo || platName;
     document.title = (data.titulo || platName) + ' | StratonPay Bets';
   }catch(e){}
@@ -499,7 +531,7 @@ bindDrop('logoDrop','logoInput','logoPreview','logoPlaceholder');
 bindDrop('loadingDrop','loadingInput','loadingPreview','loadingPlaceholder');
 // carregar dados salvos
 try{
-  const plats=JSON.parse(localStorage.getItem('platforms')||'[]');
+  const plats=JSON.parse(localStorage.getItem(getPlataformasKey())||'[]');
   const p=plats.find(x=>x.id===id);
   if(p){
     if(p.titulo) document.getElementById('cfgTitulo').value=p.titulo;
