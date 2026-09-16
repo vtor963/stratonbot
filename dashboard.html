@@ -533,25 +533,22 @@
 <div id="toast" class="fixed bottom-4 right-4 z-50 flex flex-col gap-2 pointer-events-none"></div>
 
 <script>
-// auth guard - localStorage imediato + Supabase 100% seguro async
-let user = (()=>{ try{ return JSON.parse(localStorage.getItem('profits_user')||'{}'); }catch{ return {}; }})();
-if(!localStorage.getItem('profits_token') && !user.email) location.href='./index.html';
-document.getElementById('sideName').textContent = user.name ? user.name.split('@')[0].charAt(0).toUpperCase()+user.name.split('@')[0].slice(1) : 'Victor martinez';
-document.getElementById('sideEmail').textContent = user.email || 'victoralbers13@gmail.com';
-// tenta Supabase session em background e atualiza se tiver usuario real
+// auth guard OBRIGATÓRIO: só entra com sessão Supabase (cadastro -> login). Sem sessão, volta pro login.
+let user = {};
 (async()=>{
   try{
     const { supabase } = await import('./supabase.js');
     const { data } = await supabase.auth.getSession();
     const supaUser = data?.session?.user;
-    if(supaUser){
-      const supaEmail = supaUser.email;
-      user = { email: supaEmail, name: supaUser.user_metadata?.name || supaEmail.split('@')[0], id: supaUser.id };
-      localStorage.setItem('profits_user', JSON.stringify(user));
-      document.getElementById('sideName').textContent = supaEmail.split('@')[0].charAt(0).toUpperCase()+supaEmail.split('@')[0].slice(1);
-      document.getElementById('sideEmail').textContent = supaEmail;
-    }
-  }catch(e){}
+    if(!supaUser){ location.href='./index.html'; return; }
+    const supaEmail = supaUser.email;
+    user = { email: supaEmail, name: supaUser.user_metadata?.name || supaEmail.split('@')[0], id: supaUser.id };
+    localStorage.setItem('profits_token', data.session.access_token);
+    localStorage.setItem('supabase_user_id', supaUser.id);
+    localStorage.setItem('profits_user', JSON.stringify(user));
+    document.getElementById('sideName').textContent = supaEmail.split('@')[0].charAt(0).toUpperCase()+supaEmail.split('@')[0].slice(1);
+    document.getElementById('sideEmail').textContent = supaEmail;
+  }catch(e){ location.href='./index.html'; }
 })();
 
 function getPlataformasKey(){
@@ -724,6 +721,7 @@ document.getElementById('logoutBtn').addEventListener('click',async ()=>{
   try{ const { supabase } = await import('./supabase.js'); await supabase.auth.signOut(); }catch(e){}
   localStorage.removeItem('profits_token'); 
   localStorage.removeItem('supabase_user_id');
+  localStorage.removeItem('profits_user');
   location.href='./index.html?stay=1'; 
 });
 document.getElementById('mobileMenu')?.addEventListener('click',()=>{

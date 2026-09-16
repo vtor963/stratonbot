@@ -20,6 +20,16 @@
         <p class="text-[#a3aed0] text-[14px] font-medium">Insira seus dados para registrar</p>
       </div>
 
+      <button id="googleBtn" type="button" class="inline-flex items-center justify-center gap-2 w-full h-[42px] bg-[#f4f7fe] hover:bg-[#e8ebf7] active:scale-[0.98] transition-all rounded-xl text-[#2b3674] font-semibold text-[14px]">
+        <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.1H42V20H24v8h11.3c-1.65 4.66-6.08 8-11.3 8c-6.63 0-12-5.37-12-12s5.37-12 12-12c3.06 0 5.84 1.15 7.96 3.04l5.66-5.66C34.05 6.05 29.27 4 24 4C12.95 4 4 12.95 4 24s8.95 20 20 20c11.05 0 20-8.95 20-20c0-1.34-.14-2.65-.4-3.9z"/><path fill="#FF3D00" d="M6.31 14.69l6.57 4.82C14.66 15.11 18.96 12 24 12c3.06 0 5.84 1.15 7.96 3.04l5.66-5.66C34.05 6.05 29.27 4 24 4C16.32 4 9.66 8.34 6.31 14.69z"/><path fill="#4CAF50" d="M24 44c5.17 0 9.86-1.98 13.41-5.19l-6.19-5.24C29.21 35.09 26.72 36 24 36c-5.2 0-9.62-3.32-11.28-7.95l-6.52 5.03C9.51 39.56 16.23 44 24 44z"/><path fill="#1976D2" d="M43.61 20.08H42V20H24v8h11.3c-.79 2.24-2.23 4.17-4.09 5.57l6.19 5.24C36.97 39.21 44 34 44 24c0-1.34-.14-2.65-.39-3.92z"/></svg>
+        Registrar com Google
+      </button>
+
+      <div class="relative">
+        <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-[#e8ebf5]"></div></div>
+        <div class="relative flex justify-center"><span class="bg-white px-5 text-[#a3aed0] text-sm font-medium">ou</span></div>
+      </div>
+
       <form id="signupForm" class="grid gap-3.5" novalidate>
         <div class="grid gap-1.5">
           <label class="text-[13px] font-semibold text-[#2b3674]">Nome Completo<span class="text-[#000000] ml-1">*</span></label>
@@ -145,30 +155,48 @@ document.getElementById('signupForm').addEventListener('submit', async e=>{
   if(!ok){ toast('Corrija os campos destacados','error'); return; }
   const btn=document.getElementById('submitBtn'), txt=document.getElementById('btnText'), spin=document.getElementById('btnSpin');
   btn.disabled=true; txt.textContent='Registrando...'; spin.classList.remove('hidden');
-  await new Promise(r=>setTimeout(r,1500));
-  // isola perfil por email - cada conta tem sua config
-  const perfilKey = 'straton_profile_' + email.toLowerCase();
-  const primeiro = name.split(' ')[0] || name;
-  const ultimo = name.split(' ').slice(1).join(' ') || '';
-  const perfil = { primeiroNome: primeiro, ultimoNome: ultimo, email: email, cpf: cpf.replace(/\D/g,''), phone: phone.replace(/\D/g,''), cnpj:'', cep:'', bairro:'', endereco:'', numero:'', uf:'', cidade:'' };
-  // 100% seguro: Supabase Auth (hash bcrypt, JWT)
-  let supaUser = null;
+  // Cadastro obrigatório no Supabase Auth (banco oficial de logins)
+  try{
+    const { supabase, sbSavePerfil } = await import('./supabase.js');
+    const { data, error } = await supabase.auth.signUp({ email, password: pass, options:{ data:{ name, cpf: cpf.replace(/\D/g,''), phone: phone.replace(/\D/g,'') } } });
+    if(error) throw error;
+    const primeiro = name.split(' ')[0] || name;
+    const ultimo = name.split(' ').slice(1).join(' ') || '';
+    const perfil = { primeiroNome: primeiro, ultimoNome: ultimo, email, cpf: cpf.replace(/\D/g,''), phone: phone.replace(/\D/g,''), cnpj:'', cep:'', bairro:'', endereco:'', numero:'', uf:'', cidade:'' };
+    if(data.session){
+      // email já confirmado automaticamente: salva perfil e entra
+      await supabase.auth.setSession(data.session);
+      if(data.user) localStorage.setItem('supabase_user_id', data.user.id);
+      localStorage.setItem('profits_token', data.session.access_token);
+      localStorage.setItem('profits_user', JSON.stringify({email, name, cpf: perfil.cpf, phone: perfil.phone}));
+      await sbSavePerfil(perfil);
+      toast('Conta criada com sucesso! Redirecionando...');
+      setTimeout(()=> location.href='./dashboard.html',900);
+    } else {
+      // precisa confirmar o email: conta criada, manda pro login
+      localStorage.setItem('straton_pending_email', email);
+      toast('Conta criada! Confirme seu email e faça login.');
+      setTimeout(()=> location.href='./index.html',1600);
+    }
+  }catch(e){
+    btn.disabled=false; txt.textContent='Registrar'; spin.classList.add('hidden');
+    const msg = (e.message||'');
+    if(/already registered|already exists/i.test(msg)){
+      err('email','Esse email já tem conta');
+      toast('Você já tem conta. Faça login.', 'error');
+      setTimeout(()=> location.href='./index.html',1600);
+    } else {
+      toast('Erro ao registrar: '+msg, 'error');
+    }
+  }
+});
+document.getElementById('googleBtn').addEventListener('click', async ()=>{
   try{
     const { supabase } = await import('./supabase.js');
-    const { data, error } = await supabase.auth.signUp({ email, password: pass, options:{ data:{ name, cpf: perfil.cpf, phone: perfil.phone } } });
+    const redirectTo = location.origin + location.pathname.replace(/\/[^/]*$/, '/') + 'dashboard.html';
+    const { error } = await supabase.auth.signInWithOAuth({ provider:'google', options:{ redirectTo } });
     if(error) throw error;
-    supaUser = data.user;
-    // se precisar confirmar email, já loga direto se não exigir
-    if(data.session) await supabase.auth.setSession(data.session);
-  }catch(e){ console.warn('supabase signup fallback', e.message); }
-  localStorage.setItem(perfilKey, JSON.stringify(perfil));
-  try{ const { sbSavePerfil } = await import('./supabase.js'); await sbSavePerfil(perfil); }catch(e){}
-  // mantém compatibilidade com guard antigo
-  localStorage.setItem('profits_token','mock_'+btoa(email+':'+Date.now()));
-  if(supaUser) localStorage.setItem('supabase_user_id', supaUser.id);
-  localStorage.setItem('profits_user', JSON.stringify({email, name, cpf: perfil.cpf, phone: perfil.phone}));
-  toast('Conta criada com sucesso! Redirecionando...');
-  setTimeout(()=> location.href='./dashboard.html',900);
+  }catch(e){ toast('Erro no Google: '+e.message, 'error'); }
 });
 </script>
 </body>
