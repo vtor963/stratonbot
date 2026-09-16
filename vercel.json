@@ -1,18 +1,10 @@
 {
   "version": 2,
-  "public": true,
-  "github": { "silent": true },
-  "headers": [
-    {
-      "source": "/(.*)",
-      "headers": [{ "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }]
-    }
-  ],
+  "cleanUrls": true,
   "rewrites": [
     { "source": "/sign-in", "destination": "/index.html" },
     { "source": "/sign-up", "destination": "/sign-up.html" },
     { "source": "/dashboard", "destination": "/dashboard.html" },
     { "source": "/plataforma", "destination": "/plataforma.html" }
-  ],
-  "cleanUrls": true
+  ]
 }
