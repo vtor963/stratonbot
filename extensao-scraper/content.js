@@ -104,6 +104,35 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse)=>{
     })();
     return true;
   }
+  if(msg.type==='DISCOVER_GAMES'){
+    (async()=>{
+      await waitForApp();
+      // descobre TODOS os links de jogos na página atual (inclui Not Push, etc) de forma dinâmica
+      const rawLinks = [...document.querySelectorAll('a[href]')].map(a=>a.href).filter(h=>h.startsWith('http'));
+      // filtra só links da bet ou do mesmo host
+      let filtered = rawLinks.filter(h=> h.includes('profitsbet') || h.includes(location.hostname));
+      // também pega cards que não são <a> mas têm data-href ou onclick
+      document.querySelectorAll('[data-href],[data-url], [onclick]').forEach(el=>{
+        const v=el.getAttribute('data-href')||el.getAttribute('data-url');
+        if(v && v.startsWith('http')) filtered.push(v);
+      });
+      // se ainda vazio, coleta qualquer link com texto "Jogar"/"Play"
+      if(!filtered.length){
+        document.querySelectorAll('*').forEach(el=>{
+          const t=el.textContent?.trim();
+          if(t==='Jogar' || t==='Play' || t==='JOGAR'){
+            const a=el.closest('a');
+            if(a && a.href) filtered.push(a.href);
+          }
+        });
+      }
+      // se ainda vazio, usa a URL atual como único
+      if(!filtered.length) filtered=[location.href];
+      const uniq=[...new Set(filtered)].slice(0,40);
+      sendResponse({links:uniq, count:uniq.length, url:location.href});
+    })();
+    return true;
+  }
   if(msg.type==='GET_LAST'){
     chrome.storage.local.get(['last_scrape'], r=> sendResponse(r.last_scrape));
     return true;

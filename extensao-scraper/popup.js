@@ -45,6 +45,54 @@ document.getElementById('downloadSource').addEventListener('click', async ()=>{
   }catch(e){ log('❌ Erro: '+e.message); }
 });
 
+document.getElementById('bulkDownload')?.addEventListener('click', async ()=>{
+  logEl.textContent=''; log('📦 Bulk dinâmico: descobrindo TODOS os jogos/links na página atual...');
+  const [tab]=await chrome.tabs.query({active:true, currentWindow:true});
+  try{ await chrome.scripting.executeScript({target:{tabId:tab.id}, files:['content.js']}); }catch(e){}
+  try{
+    const res = await chrome.tabs.sendMessage(tab.id, {type:'DISCOVER_GAMES'});
+    let links = res?.links || [];
+    // fallback: se nada, usa a URL atual
+    if(!links.length) links = [tab.url];
+    // filtra duplicatas e limita 25 pra não travar
+    links = [...new Set(links)].slice(0,25);
+    log('✅ Encontrados '+links.length+' links (inclui Not Push e novos):');
+    links.slice(0,10).forEach(l=>log(' - '+l));
+    if(links.length>10) log(' ... e mais '+(links.length-10));
+    log('⬇️ Baixando 1 por 1 (com inline CSS) — aguarde...');
+    for(let i=0;i<links.length;i++){
+      const url = links[i];
+      log(`[${i+1}/${links.length}] ${url}`);
+      try{
+        // tenta fetch direto (funciona se CORS liberar) senão abre aba temporária
+        let html=null;
+        try{
+          const r=await fetch(url);
+          if(r.ok) html=await r.text();
+        }catch(e){}
+        if(!html){
+          // fallback: abre aba escondida, injeta content e pega via message
+          const newTab = await chrome.tabs.create({url, active:false});
+          await new Promise(r=>setTimeout(r,3500));
+          try{ await chrome.scripting.executeScript({target:{tabId:newTab.id}, files:['content.js']}); }catch(e){}
+          const r2 = await chrome.tabs.sendMessage(newTab.id, {type:'DOWNLOAD_SOURCE'}).catch(()=>null);
+          html = r2?.html;
+          chrome.tabs.remove(newTab.id);
+        }
+        if(!html){ log(' -> falhou'); continue; }
+        const blob=new Blob([html],{type:'text/html'});
+        const blobUrl=URL.createObjectURL(blob);
+        const a=document.createElement('a');
+        const slug=new URL(url).pathname.replace(/[^a-z0-9]/gi,'_').replace(/^_+/,'').slice(0,30) || 'game';
+        a.href=blobUrl; a.download=`profits_bulk_${String(i+1).padStart(2,'0')}_${slug}.html`; document.body.appendChild(a); a.click(); a.remove();
+        setTimeout(()=>URL.revokeObjectURL(blobUrl),3000);
+        await new Promise(r=>setTimeout(r,900));
+      }catch(e){ log(' -> erro '+e.message); }
+    }
+    log('✅ Bulk concluído! Arquivos na pasta Downloads. Agora é só mover pra games/');
+  }catch(e){ log('❌ Erro bulk: '+e.message+'\nDica: recarregue a página da bet e tente de novo'); }
+});
+
 document.getElementById('capture').addEventListener('click', async ()=>{
   logEl.textContent=''; log('📸 Capturando...');
   const [tab]=await chrome.tabs.query({active:true, currentWindow:true});
