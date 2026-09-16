@@ -706,15 +706,21 @@ document.getElementById('btnCriarPlataformaFinal').addEventListener('click',()=>
   const empty=document.getElementById('emptyMsg');
   lista.classList.remove('hidden');
   empty.classList.add('hidden');
+  const id='cmu'+Math.random().toString(36).slice(2,10);
+  const plats=JSON.parse(localStorage.getItem('platforms')||'[]');
+  plats.push({id, nome, desc, layout:m.n, img:m.img, badges:m.badges});
+  localStorage.setItem('platforms', JSON.stringify(plats));
+  localStorage.setItem('lastPlatId', id);
   const card=document.createElement('div');
-  card.className='bg-white rounded-xl p-3 border border-[#e5e7eb] shadow-sm';
-  card.innerHTML=`<img src="${m.img}" class="w-full h-28 object-cover rounded-lg"><p class="font-bold text-sm mt-2">${nome}</p><p class="text-xs text-[#9aa0a6]">${desc}</p><p class="text-[11px] text-[#FF4A00] font-bold mt-1">${m.n} • ${m.s}</p>`;
+  card.className='bg-white rounded-xl p-3 border border-[#e5e7eb] shadow-sm cursor-pointer hover:border-[#FF4A00]/40';
+  card.innerHTML=`<img src="${m.img}" class="w-full aspect-square object-cover rounded-lg"><p class="font-bold text-sm mt-2">${nome}</p><p class="text-xs text-[#9aa0a6]">${desc}</p><p class="text-[11px] text-[#FF4A00] font-bold mt-1">${m.n} • ${m.s}</p>`;
+  card.onclick=()=> location.href=`./plataforma.html?id=${id}&t=players`;
   lista.appendChild(card);
   document.getElementById('modalPlataforma').classList.add('hidden');
   document.getElementById('platNome').value=''; document.getElementById('platDesc').value='';
   grid.querySelectorAll('.plataforma-card').forEach(c=> c.classList.remove('selected')); selected=null;
-  toast('Plataforma criada! (mock)');
-  showSection('plataformas');
+  toast('Plataforma criada! Abrindo...');
+  setTimeout(()=> location.href=`./plataforma.html?id=${id}&t=players`, 600);
 });
 
 // tabs plataformas

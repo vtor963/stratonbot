@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Plataforma | Profits</title>
+<link rel="icon" href="https://framerusercontent.com/images/QriKlhvYbks7DzCxm0yJrWx3eY.png">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>tailwind.config={theme:{extend:{fontFamily:{sans:['Inter','sans-serif']}}}}</script>
+<style>*{font-family:Inter,sans-serif}::-webkit-scrollbar{width:6px}::-webkit-scrollbar-thumb{background:#e5e7eb;border-radius:999px}</style>
+</head>
+<body class="bg-[#f5f5f5] min-h-screen">
+<div class="flex min-h-screen">
+  <aside class="w-[220px] shrink-0 bg-white border-r border-[#f0f0f0] hidden lg:flex flex-col fixed h-screen left-0 top-0 z-30">
+    <div class="h-[64px] flex items-center gap-2 px-5"><div class="w-8 h-8 rounded bg-[#FF4A00] grid place-items-center text-white font-black">P</div><span class="font-bold">Profits</span></div>
+    <nav class="flex-1 px-3 py-4 grid gap-1 content-start">
+      <a href="./dashboard.html" class="flex items-center gap-3 px-3 py-2.5 text-[#9aa0a6] text-[13px] font-medium">🏠 Dashboard</a>
+      <a href="./dashboard.html#plataformas" class="flex items-center gap-3 px-3 py-2.5 bg-[#fff7ed] border-l-[3px] border-[#FF4A00] text-black text-[13px] font-bold">🧩 Plataformas</a>
+      <a href="./dashboard.html#financeiro" class="flex items-center gap-3 px-3 py-2.5 text-[#9aa0a6] text-[13px]">🏦 Financeiro</a>
+      <a href="./dashboard.html#visaogeral" class="flex items-center gap-3 px-3 py-2.5 text-[#9aa0a6] text-[13px]">📊 Visão Geral</a>
+    </nav>
+  </aside>
+  <main class="flex-1 lg:ml-[220px] min-h-screen">
+    <div class="h-[160px] bg-gradient-to-r from-[#FF6402] via-[#FE3448] to-[#FF4001] flex items-end">
+      <div class="max-w-[1100px] mx-auto w-full px-6 pb-6 flex items-center justify-between">
+        <h1 id="platTitle" class="text-white text-[28px] font-extrabold tracking-tight">vavava</h1>
+        <button id="btnPublicar" class="bg-white text-[#FF4A00] font-bold px-5 py-2 rounded-xl shadow flex items-center gap-2">↗ Publicar</button>
+      </div>
+    </div>
+    <div class="max-w-[1100px] mx-auto px-6 -mt-6">
+      <div class="bg-white rounded-xl shadow-sm border border-[#e5e7eb] overflow-hidden">
+        <div class="flex flex-wrap gap-1 px-4 pt-3 border-b border-[#f0f0f0] text-[13px] font-medium overflow-auto">
+          <button data-tab="dados" class="tab-btn px-3 py-2.5 border-b-2 border-transparent text-[#6b7280] whitespace-nowrap">⚙️ Dados gerais</button>
+          <button data-tab="players" class="tab-btn px-3 py-2.5 border-b-2 border-[#FF4A00] text-black font-bold whitespace-nowrap">👥 Jogadores (0)</button>
+          <button data-tab="transactions" class="tab-btn px-3 py-2.5 border-b-2 border-transparent text-[#6b7280] whitespace-nowrap">💳 Saques e Depósitos (0)</button>
+          <button data-tab="platform" class="tab-btn px-3 py-2.5 border-b-2 border-transparent text-[#6b7280] whitespace-nowrap">🎨 Personalização</button>
+          <button data-tab="domains" class="tab-btn px-3 py-2.5 border-b-2 border-transparent text-[#6b7280] whitespace-nowrap">🌐 Domínio</button>
+          <button data-tab="pixel" class="tab-btn px-3 py-2.5 border-b-2 border-transparent text-[#6b7280] whitespace-nowrap">📡 Pixel</button>
+          <button data-tab="integrations" class="tab-btn px-3 py-2.5 border-b-2 border-transparent text-[#6b7280] whitespace-nowrap">🔗 Integrações</button>
+          <button data-tab="demo" class="tab-btn px-3 py-2.5 border-b-2 border-transparent text-[#6b7280] whitespace-nowrap">🎮 Demo</button>
+          <button data-tab="promotions" class="tab-btn px-3 py-2.5 border-b-2 border-transparent text-[#6b7280] whitespace-nowrap">🎁 Promoções</button>
+        </div>
+
+        <!-- PLAYERS -->
+        <div id="tab-players" class="tab-panel p-4">
+          <div class="flex gap-2">
+            <input id="searchPlayers" placeholder="Digite o email, ID ou btag" class="flex-1 h-10 rounded-xl border border-[#e5e7eb] px-4 text-sm focus:outline-none focus:border-[#FF4A00]/40">
+            <button class="w-10 h-10 rounded-xl border border-[#e5e7eb] grid place-items-center">🔍</button>
+          </div>
+          <div class="mt-4 overflow-auto rounded-xl border border-[#e5e7eb]">
+            <table class="w-full text-sm">
+              <thead><tr class="bg-[#FF6A00] text-white text-xs"><th class="text-left px-4 py-3 font-bold">Jogador</th><th class="text-center px-4 py-3">Saldo</th><th class="text-center px-4 py-3">Bônus</th><th class="text-center px-4 py-3">Depósito</th><th class="text-center px-4 py-3">Btag</th></tr></thead>
+              <tbody id="tbodyPlayers"><tr><td colspan="5" class="text-center py-8 text-[#9aa0a6] text-sm">Nenhum jogador ainda — crie sua plataforma e compartilhe o link</td></tr></tbody>
+            </table>
+          </div>
+          <div class="mt-3 flex gap-2 text-xs">
+            <button onclick="mockAddPlayer()" class="px-4 py-2 bg-[#FF4A00] text-white rounded-xl font-bold">+ Mock Jogador (teste)</button>
+            <button onclick="clearPlayers()" class="px-4 py-2 bg-[#f3f4f6] rounded-xl font-bold">Limpar</button>
+          </div>
+        </div>
+
+        <!-- TRANSACTIONS -->
+        <div id="tab-transactions" class="tab-panel hidden p-4">
+          <input id="searchTx" placeholder="Pesquisar transações por jogador" class="w-full h-10 rounded-xl border border-[#e5e7eb] px-4 text-sm">
+          <div class="mt-4 rounded-xl border border-[#e5e7eb] overflow-hidden">
+            <table class="w-full text-sm"><thead><tr class="bg-[#FF6A00] text-white text-xs"><th class="text-left px-4 py-3">Usuário</th><th class="text-center px-4 py-3">Tipo</th><th class="text-center px-4 py-3">Saldo</th><th class="text-center px-4 py-3">Bônus</th><th class="text-center px-4 py-3">Status</th></tr></thead><tbody id="tbodyTx"><tr><td colspan="5" class="text-center py-8 text-[#9aa0a6]">Nenhuma transação</td></tr></tbody></table>
+          </div>
+        </div>
+
+        <!-- PERSONALIZACAO -->
+        <div id="tab-platform" class="tab-panel hidden p-0">
+          <div class="grid lg:grid-cols-[1.2fr_360px] gap-0">
+            <div class="bg-[#2a2a2a] p-4 flex flex-col min-h-[620px]">
+              <div class="flex items-center gap-2 text-white text-xs mb-3">
+                <button class="w-8 h-8 rounded bg-white/10 grid place-items-center">🔍+</button><button class="w-8 h-8 rounded bg-white/10 grid place-items-center">🔍-</button><button class="w-8 h-8 rounded bg-white/10 grid place-items-center">↕️</button>
+                <div class="flex gap-1 ml-2 bg-black/30 rounded-full p-1">
+                  <button data-dev="mobile" class="dev-btn px-3 py-1.5 rounded-full bg-[#FF4A00] text-white text-xs font-bold">📱</button>
+                  <button data-dev="tablet" class="dev-btn px-3 py-1.5 rounded-full text-white/70 text-xs">📱</button>
+                  <button data-dev="laptop" class="dev-btn px-3 py-1.5 rounded-full text-white/70 text-xs">💻 Laptop</button>
+                  <button data-dev="desktop" class="dev-btn px-3 py-1.5 rounded-full text-white/70 text-xs">🖥️</button>
+                </div>
+              </div>
+              <div id="previewFrame" class="flex-1 bg-[#0f1923] rounded-xl overflow-hidden border border-white/10 flex">
+                <div class="w-[160px] bg-[#0b1220] p-3 hidden md:flex flex-col gap-2">
+                  <div class="h-8 bg-white/10 rounded"></div>
+                  <div class="flex-1 grid gap-2">
+                    <div class="bg-[#8cb506] rounded p-2 text-center text-white text-xs font-bold">Home</div>
+                    <div class="bg-[#1d2730] rounded p-2 text-white text-xs text-center">Favoritos</div>
+                    <div class="bg-[#1d2730] rounded p-2 text-white text-xs text-center">Histórico</div>
+                    <div class="bg-[#1d2730] rounded p-2 text-white text-xs text-center">Jogos</div>
+                  </div>
+                </div>
+                <div class="flex-1 p-4 overflow-auto">
+                  <div class="flex justify-between items-center mb-3"><div class="w-20 h-6 bg-white/20 rounded"></div><div class="flex gap-2"><span class="px-3 py-1 bg-[#8cb506] text-white rounded text-xs font-bold">Entrar</span><span class="px-3 py-1 bg-white text-black rounded text-xs font-bold">Cadastrar</span></div></div>
+                  <div class="space-y-3">
+                    <div><p class="text-white font-bold text-sm">Evolution</p><p class="text-white/60 text-xs">Confira os jogos mais populares</p><div class="grid grid-cols-5 gap-2 mt-2"><div class="aspect-[3/4] bg-white rounded"></div><div class="aspect-[3/4] bg-white rounded"></div><div class="aspect-[3/4] bg-white rounded"></div><div class="aspect-[3/4] bg-white rounded"></div><div class="aspect-[3/4] bg-white rounded"></div></div></div>
+                    <div><p class="text-white font-bold text-sm">PG-Soft</p><div class="grid grid-cols-5 gap-2 mt-2"><div class="aspect-[3/4] bg-white rounded"></div><div class="aspect-[3/4] bg-white rounded"></div><div class="aspect-[3/4] bg-white rounded"></div><div class="aspect-[3/4] bg-white rounded"></div><div class="aspect-[3/4] bg-white rounded"></div></div></div>
+                    <div><p class="text-white font-bold text-sm">Pragmatic Play</p><div class="grid grid-cols-5 gap-2 mt-2"><div class="aspect-[3/4] bg-white rounded"></div><div class="aspect-[3/4] bg-white rounded"></div><div class="aspect-[3/4] bg-white rounded"></div><div class="aspect-[3/4] bg-white rounded"></div><div class="aspect-[3/4] bg-white rounded"></div></div></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="p-4 bg-white space-y-4 overflow-auto max-h-[620px]">
+              <div><p class="font-bold text-sm">Banners</p><div class="mt-2 h-[90px] bg-[#f9fafb] border-2 border-dashed rounded-xl grid place-items-center text-[#9aa0a6] text-xs">☁️ Arraste</div><button class="mt-2 w-8 h-8 rounded-full bg-[#FF4A00] text-white grid place-items-center ml-auto">+</button></div>
+              <div><p class="font-bold text-sm">Banners promocionais</p><label class="mt-2 flex items-center gap-3 p-3 border rounded-xl cursor-pointer hover:border-[#FF4A00]/40"><input type="file" accept="image/png,image/jpeg" class="hidden" onchange="previewBanner(this)"><span class="w-10 h-10 bg-[#f3f4f6] rounded grid place-items-center">⬆️</span><span class="text-xs"><span class="text-[#FF4A00] font-bold">Clique ou arraste</span><br>PNG ou JPG - máx. 3 MB</span></label><img id="bannerPromoPreview" class="hidden mt-2 w-full rounded-xl border"></div>
+              <div><p class="font-bold text-sm">Textura de fundo (Principal)</p><div class="mt-2 w-[100px] h-[100px] bg-[#0f1923] rounded-xl border flex flex-col items-center justify-center gap-1"><span class="text-white text-xs">🖼️</span><span class="text-white text-[11px]">(128×128) *</span><label class="text-[11px] text-white/80 cursor-pointer underline">Alterar<input type="file" accept="image/*" class="hidden" onchange="previewTexture(this)"></label></div><img id="texturePreview" class="hidden mt-2 w-24 h-24 rounded-xl border object-cover"></div>
+              <div><p class="font-bold text-sm">Pré-definições</p><div class="grid grid-cols-4 gap-2 mt-2">
+                <label class="text-center"><input type="color" value="#0f1923" class="w-full h-10 rounded border"><span class="text-[11px]">Backgorund</span></label>
+                <label class="text-center"><input type="color" value="#1d2730" class="w-full h-10 rounded border"><span class="text-[11px]">Navbar</span></label>
+                <label class="text-center"><input type="color" value="#0f1923" class="w-full h-10 rounded border"><span class="text-[11px]">Footer</span></label>
+                <label class="text-center"><input type="color" value="#0f1923" class="w-full h-10 rounded border"><span class="text-[11px]">Bottom Nav</span></label>
+                <label class="text-center"><input type="color" value="#ffffff" class="w-full h-10 rounded border"><span class="text-[11px]">Texto</span></label>
+                <label class="text-center"><input type="color" value="#9aa0a6" class="w-full h-10 rounded border"><span class="text-[11px] text-[10px]">Texto (Secundário)</span></label>
+                <label class="text-center"><input type="color" value="#ffffff" class="w-full h-10 rounded border"><span class="text-[11px] text-[10px]">Texto (Botão)</span></label>
+                <label class="text-center"><input type="color" value="#8cb506" class="w-full h-10 rounded border bg-[#8cb506]"><span class="text-[11px] bg-[#8cb506] text-white px-2 rounded">Botão</span></label>
+              </div><div class="grid grid-cols-2 gap-2 mt-2"><span class="text-xs border rounded-full px-3 py-1 text-center">Ícones</span><span class="text-xs border rounded-full px-3 py-1 text-center">Entrada</span></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DOMINIO -->
+        <div id="tab-domains" class="tab-panel hidden p-4">
+          <div class="flex gap-2 mb-4"><input placeholder="Buscar domínios" class="flex-1 h-10 rounded-xl border px-4 text-sm"><button class="px-5 py-2 bg-[#FF4A00] text-white rounded-xl font-bold">+ Adicionar Domínio</button></div>
+          <div class="rounded-xl border overflow-hidden">
+            <table class="w-full text-sm"><thead><tr class="bg-[#f9fafb] text-xs text-[#6b7280]"><th class="text-left px-4 py-3">Domínio</th><th class="text-center px-4">Status</th><th class="text-center px-4">Tipo</th><th class="text-center px-4">Criado em</th><th class="text-right px-4">Ações</th></tr></thead><tbody><tr class="border-t"><td class="px-4 py-3 text-[#2563eb] font-medium" id="domainName">vavava-1792.profitsbet.app ↗</td><td class="text-center"><span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-bold">✓ Ativo</span></td><td class="text-center">Pré-visualização</td><td class="text-center">Há 3 Minutos</td><td></td></tr></tbody></table>
+          </div>
+          <div class="mt-4 p-4 border rounded-xl bg-[#fff7ed]"><p class="font-bold">Publicar Magic Link</p><div class="flex gap-2 mt-2"><input placeholder="Digite seu subdomínio" class="flex-1 h-10 rounded-xl border px-4 text-sm"><select class="h-10 rounded-xl border px-3 text-sm"><option>ofc.bet</option><option>ofcbr.com</option><option>ofc-bet.com</option><option>ofc-br.bet</option><option>ofcbr.bet</option></select></div><p class="text-xs bg-orange-100 text-orange-700 p-2 rounded mt-2">Nota: Você só poderá alterar seu MagicLink apenas uma vez! Escolha com atenção</p></div>
+        </div>
+
+        <!-- PIXEL -->
+        <div id="tab-pixel" class="tab-panel hidden p-6">
+          <h3 class="font-bold text-lg">Pixel</h3><p class="text-sm text-[#6b7280]">Configure suas integrações com outros serviços</p>
+          <div class="mt-6"><p class="font-bold">Adicionar novo pixel</p><div class="grid md:grid-cols-2 gap-4 mt-3"><div><label class="text-xs font-bold">Serviço de rastreamento</label><select id="pixelService" class="w-full h-10 rounded-xl border px-3 text-sm mt-1"><option>Facebook Pixel</option><option>Google Tag Manager</option><option>Kwai Pixel</option></select></div><div><label class="text-xs font-bold">ID de rastreamento</label><input placeholder="Ex: 123456789012345" class="w-full h-10 rounded-xl border px-3 text-sm mt-1"></div></div><button onclick="toast('Pixel adicionado (mock)')" class="mt-4 ml-auto block px-6 py-2 bg-[#FF4A00] text-white rounded-xl font-bold">Adicionar</button></div>
+          <div class="mt-8 border-t pt-6"><p class="font-bold">Códigos de rastreamento cadastrados</p><div class="mt-3 bg-[#f9fafb] rounded-xl p-6 text-center text-sm text-[#6b7280]">ⓘ Nenhum código cadastrado</div></div>
+        </div>
+
+        <!-- INTEGRACOES -->
+        <div id="tab-integrations" class="tab-panel hidden p-6">
+          <div class="bg-[#fffbeb] rounded-2xl p-5 border flex gap-4 items-start"><div class="w-10 h-10 rounded-xl bg-[#FF4A00] text-white grid place-items-center">↗️</div><div><p class="font-bold">Integrações</p><p class="text-sm text-[#6b7280]">Configure suas integrações com serviços externos</p></div></div>
+          <div class="mt-4 bg-white border rounded-xl p-5"><p class="font-bold">Nova Integração</p><div class="grid md:grid-cols-2 gap-4 mt-3"><div><label class="text-xs font-bold">Serviço de Integração</label><select class="w-full h-10 rounded-xl border px-3 text-sm mt-1"><option>Jivochat</option><option>Tawk.to</option><option>Intercom</option></select></div><div><label class="text-xs font-bold">ID de Integração</label><input placeholder="Ex: a1b2c3d4e5" class="w-full h-10 rounded-xl border px-3 text-sm mt-1"></div></div><div class="mt-4 bg-[#fff7ed] border border-orange-200 rounded-xl p-4"><p class="font-bold text-sm">ⓘ Como encontrar o ID</p><p class="text-xs text-[#6b7280]">Localize o ID no código de integração:</p><div class="mt-2 bg-[#0f172a] text-white p-3 rounded-xl text-xs font-mono">&lt;script src="//code.jivosite.com/widget/<span class="bg-[#FF4A00] px-2 rounded">a1b2c3d4e5</span>" async&gt;&lt;/script&gt;</div></div><button onclick="toast('Integração adicionada')" class="mt-4 ml-auto block px-6 py-2 bg-gradient-to-r from-[#FF4A00] to-[#FF8800] text-white rounded-xl font-bold">+ Adicionar Integração</button></div>
+        </div>
+
+        <!-- DEMO -->
+        <div id="tab-demo" class="tab-panel hidden p-6">
+          <div class="flex justify-between items-start"><div><h3 class="font-bold text-xl">Gerenciamento de Contas Demo</h3><p class="text-sm text-[#6b7280]">Gerencie contas demo para teste</p></div><div class="flex gap-2"><button class="px-4 py-2 border rounded-xl text-sm font-bold">+ Criar em Lote</button><button class="px-4 py-2 bg-[#FF4A00] text-white rounded-xl text-sm font-bold">+ Nova Conta Demo</button></div></div>
+          <div class="mt-4 border rounded-xl p-4"><p class="font-bold">Criação Rápida</p><button class="mt-2 px-4 py-2 bg-[#FF4A00] text-white rounded-xl text-sm font-bold">🎲 Perfil Completo</button></div>
+          <div class="grid md:grid-cols-3 gap-4 mt-4">
+            <div class="border-l-4 border-orange-400 bg-white rounded-xl p-4 shadow-sm"><p class="text-sm">Contas Ativas</p><p class="text-2xl font-extrabold text-[#FF4A00]">0</p><p class="text-xs text-[#9aa0a6]">+2 desde ontem</p></div>
+            <div class="border-l-4 border-red-400 bg-white rounded-xl p-4 shadow-sm"><p class="text-sm">Contas Expiradas</p><p class="text-2xl font-extrabold text-red-500">0</p><p class="text-xs text-[#9aa0a6]">Necessitam limpeza</p></div>
+            <div class="border-l-4 border-green-400 bg-white rounded-xl p-4 shadow-sm"><p class="text-sm flex justify-between">Saldo Total <span class="text-green-500">$</span></p><p class="text-2xl font-extrabold text-green-500">R$ 0</p><p class="text-xs text-[#9aa0a6]">Créditos demo disponíveis</p></div>
+          </div>
+          <div class="mt-4 bg-white rounded-xl border p-4"><div class="flex justify-between"><p class="font-bold">Contas Demo (0)</p><div class="flex gap-2 text-xs"><span class="border rounded-full px-3 py-1">Operações em lista</span> <span>‹ ›</span></div></div><table class="w-full text-xs mt-3"><thead><tr class="border-b text-[#9aa0a6]"><th class="text-left py-2"><input type="checkbox"> Usuário</th><th>Email</th><th>Senha</th><th>Saldo</th><th>Status</th><th>Criada em</th><th>Expira em</th><th>Último Login</th><th>Ações</th></tr></thead><tbody><tr><td colspan="9" class="text-center py-8 text-[#9aa0a6]">Nenhuma conta demo</td></tr></tbody></table></div>
+        </div>
+
+        <!-- PROMOCOES -->
+        <div id="tab-promotions" class="tab-panel hidden p-6">
+          <div class="bg-gradient-to-r from-[#FF4A00] to-[#FF8800] rounded-2xl p-6 text-white flex justify-between items-center"><div><p class="text-xs bg-white/20 inline px-3 py-1 rounded-full">✨ Rodadas grátis</p><h3 class="font-extrabold text-xl mt-2">Premie jogadores</h3><p class="text-sm text-white/90 mt-1">Monte campanhas com gatilho, regras e jogo premiado. Tudo entra automaticamente quando o jogador cumpre a condição.</p><div class="flex gap-2 mt-3"><span class="bg-black/20 px-3 py-1 rounded-full text-xs font-bold">0 campanhas</span><span class="bg-white text-[#FF4A00] px-3 py-1 rounded-full text-xs font-bold">0 ativas</span></div></div><button onclick="openPromoWizard()" class="bg-white text-[#FF4A00] font-bold px-5 py-2 rounded-xl whitespace-nowrap">+ Nova promoção</button></div>
+          <div id="promoEmpty" class="mt-4 border-2 border-dashed border-orange-200 rounded-2xl p-8 text-center bg-[#fff7ed]"><div class="w-12 h-12 bg-[#FF4A00] text-white rounded-xl grid place-items-center mx-auto">🎁</div><p class="font-bold mt-3">Nenhuma promoção ainda</p><p class="text-sm text-[#6b7280]">Crie a primeira campanha de free spins para acelerar a conversão no cadastro ou no primeiro depósito.</p><button onclick="openPromoWizard()" class="mt-4 px-6 py-2 bg-[#FF4A00] text-white rounded-xl font-bold">+ Criar primeira promoção</button></div>
+          <div id="promoList" class="hidden mt-4 grid gap-3"></div>
+          <!-- WIZARD -->
+          <div id="promoWizard" class="hidden fixed inset-0 bg-black/50 z-50 p-4 overflow-auto">
+            <div class="max-w-[980px] mx-auto bg-white rounded-2xl flex flex-col md:flex-row overflow-hidden min-h-[520px]">
+              <div class="flex-1 p-6">
+                <h3 class="font-bold text-lg">Nova promoção</h3><p class="text-xs text-[#9aa0a6]" id="wizardStepLabel">Passo 1 de 4: Identidade</p>
+                <div class="flex items-center gap-2 mt-4 text-xs">
+                  <span id="step1" class="w-7 h-7 rounded-full bg-[#FF4A00] text-white grid place-items-center font-bold">1</span><span class="flex-1 h-1 bg-[#FF4A00]"></span><span id="step2" class="w-7 h-7 rounded-full border grid place-items-center">2</span><span class="flex-1 h-1 bg-[#e5e7eb]"></span><span id="step3" class="w-7 h-7 rounded-full border grid place-items-center">3</span><span class="flex-1 h-1 bg-[#e5e7eb]"></span><span id="step4" class="w-7 h-7 rounded-full border grid place-items-center">4</span>
+                </div>
+                <div id="wizard1" class="wizard-step mt-6 space-y-4">
+                  <div><label class="text-xs font-bold">Nome da promoção</label><input id="promoNome" placeholder="Ex: Boas-vindas Fortune Tiger" class="w-full h-10 rounded-xl border px-3 text-sm mt-1"></div>
+                  <div><label class="text-xs font-bold">Descrição</label><textarea id="promoDesc" placeholder="Mensagem interna para organizar a campanha" class="w-full h-24 rounded-xl border p-3 text-sm mt-1"></textarea></div>
+                  <label class="flex justify-between items-center border rounded-xl p-3"><span class="text-sm"><b>Promoção ativa</b><br><span class="text-xs text-[#9aa0a6]">Pode ser pausada a qualquer momento</span></span><input type="checkbox" checked class="w-10 h-6 accent-[#FF4A00]"></label>
+                </div>
+                <div id="wizard2" class="wizard-step hidden mt-6 space-y-4">
+                  <div class="grid grid-cols-2 gap-3">
+                    <label class="border-2 border-[#FF4A00] rounded-xl p-4 cursor-pointer"><input type="radio" name="gatilho" value="cadastro" class="accent-[#FF4A00]"> <b class="text-sm">Ao se cadastrar</b><p class="text-xs text-[#9aa0a6]">O jogador recebe as rodadas logo após criar a conta.</p></label>
+                    <label class="border-2 border-transparent bg-[#fff7ed] rounded-xl p-4 cursor-pointer ring-2 ring-[#FF4A00]"><input type="radio" name="gatilho" value="deposito" checked class="accent-[#FF4A00]"> <b class="text-sm">No primeiro depósito</b><p class="text-xs text-[#9aa0a6]">As rodadas são liberadas quando o 1º depósito é aprovado.</p></label>
+                  </div>
+                  <label class="flex items-center gap-2 text-sm"><input type="checkbox" checked> Apenas no primeiro depósito aprovado</label>
+                  <div><label class="text-xs font-bold">Depósito mínimo (R$)</label><input id="promoDeposito" value="50" class="w-full h-10 rounded-xl border px-3 text-sm mt-1"></div>
+                  <div class="grid grid-cols-2 gap-3"><div><label class="text-xs">Válida a partir de</label><input type="datetime-local" class="w-full h-10 rounded-xl border px-3 text-sm mt-1"></div><div><label class="text-xs">Válida até</label><input type="datetime-local" class="w-full h-10 rounded-xl border px-3 text-sm mt-1"></div></div>
+                </div>
+                <div id="wizard3" class="wizard-step hidden mt-6 space-y-4">
+                  <div><label class="text-xs font-bold">Quantidade de rodadas</label><input id="promoQtd" value="50" class="w-full h-10 rounded-xl border px-3 text-sm mt-1"></div>
+                  <div><label class="text-xs font-bold">Jogo premiado</label><div class="grid grid-cols-3 gap-2 mt-2">
+                    <label class="border-2 border-transparent rounded-xl p-2 cursor-pointer has-[:checked]:border-[#FF4A00] has-[:checked]:bg-[#fff7ed]"><input type="radio" name="jogo" value="Fortune Tiger" class="hidden" checked><img src="../public/layouts/caktus.png" class="w-full aspect-square object-cover rounded-lg"><p class="text-xs font-bold mt-1">Fortune Tiger</p></label>
+                    <label class="border-2 border-transparent rounded-xl p-2 cursor-pointer has-[:checked]:border-[#FF4A00]"><input type="radio" name="jogo" value="Fortune Rabbit" class="hidden"><img src="../public/layouts/chinese - w1.png" class="w-full aspect-square object-cover rounded-lg"><p class="text-xs font-bold mt-1">Fortune Rabbit</p></label>
+                    <label class="border-2 border-transparent rounded-xl p-2 cursor-pointer has-[:checked]:border-[#FF4A00]"><input type="radio" name="jogo" value="Fortune Ox" class="hidden"><img src="../public/layouts/chinese - 777.png" class="w-full aspect-square object-cover rounded-lg"><p class="text-xs font-bold mt-1">Fortune Ox</p></label>
+                    <label class="border-2 border-transparent rounded-xl p-2 cursor-pointer has-[:checked]:border-[#FF4A00]"><input type="radio" name="jogo" value="Fortune Mouse" class="hidden"><img src="../public/layouts/chinese - mk.png" class="w-full aspect-square object-cover rounded-lg"><p class="text-xs font-bold mt-1">Fortune Mouse</p></label>
+                  </div></div>
+                </div>
+                <div id="wizard4" class="wizard-step hidden mt-6">
+                  <div class="border rounded-xl p-4 space-y-2 text-sm"><div class="flex justify-between"><span class="text-[#9aa0a6]">Nome</span><b id="revNome">teste</b></div><div class="flex justify-between"><span class="text-[#9aa0a6]">Gatilho</span><b id="revGatilho">No primeiro depósito</b></div><div class="flex justify-between"><span class="text-[#9aa0a6]">Prêmio</span><b id="revPremio">50 rodadas em Fortune Mouse</b></div><div class="flex justify-between"><span class="text-[#9aa0a6]">Depósito mínimo</span><b>R$ 50</b></div><div class="flex justify-between"><span class="text-[#9aa0a6]">Status</span><span class="bg-[#FF4A00] text-white px-3 py-1 rounded-full text-xs font-bold">Ativa</span></div></div>
+                </div>
+                <div class="flex justify-between mt-6"><button onclick="wizardPrev()" class="px-5 py-2 border rounded-xl text-sm font-bold">← Voltar</button><button onclick="wizardNext()" id="wizardNextBtn" class="px-6 py-2 bg-gradient-to-r from-[#FF4A00] to-[#FF8800] text-white rounded-xl font-bold">Continuar →</button></div>
+              </div>
+              <div class="w-[340px] bg-[#2a1810] p-4 text-white hidden md:block">
+                <p class="text-xs font-bold text-white/70">✨ PREVIEW AO VIVO</p>
+                <div class="mt-3 bg-white rounded-2xl overflow-hidden text-black">
+                  <div class="bg-gradient-to-r from-[#FF4A00] to-[#FF8800] p-3 text-white"><p class="text-xs">Campanha</p><p class="font-bold flex justify-between"><span id="prevNome">Nome da promoção</span><span class="bg-white/20 px-2 py-1 rounded-full text-xs">Ativa</span></p></div>
+                  <div class="p-3 space-y-3">
+                    <div class="bg-[#fff7ed] border border-orange-200 rounded-xl p-3"><p class="text-xs text-[#FF4A00]">QUANDO O JOGADOR RECEBE</p><p class="font-bold text-sm" id="prevGatilho">No primeiro depósito</p><p class="text-xs text-[#6b7280]">As rodadas são liberadas quando o 1º depósito é aprovado.</p></div>
+                    <div class="border rounded-xl p-3 flex gap-3 items-center"><span class="w-10 h-10 bg-[#fff7ed] rounded grid place-items-center">🎁</span><div><p class="text-xs text-[#9aa0a6]">PRÊMIO</p><p class="font-bold text-sm" id="prevPremio">50 rodadas grátis</p><p class="text-xs text-[#6b7280]" id="prevJogo">Selecione um jogo</p></div></div>
+                    <div class="grid grid-cols-2 gap-2 text-xs"><div class="bg-[#f9fafb] rounded p-2"><p class="text-[#9aa0a6]">Depósito mín.</p><p class="font-bold">R$ 50</p></div><div class="bg-[#f9fafb] rounded p-2"><p class="text-[#9aa0a6]">Janela</p><p class="font-bold">Sem prazo</p></div></div>
+                  </div>
+                </div>
+                <p class="text-xs text-white/60 mt-3">As regras entram no fluxo automático de cadastro/depósito. O jogador só usa as rodadas no jogo escolhido.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+<div id="toast" class="fixed bottom-4 right-4 z-50 flex flex-col gap-2"></div>
+<script>
+// dynamic title
+const params = new URLSearchParams(location.search);
+const id = params.get('id') || localStorage.getItem('lastPlatId') || '';
+let platName = 'Plataforma';
+if(id){
+  try{
+    const plats = JSON.parse(localStorage.getItem('platforms')||'[]');
+    const p = plats.find(x=>x.id===id);
+    if(p) platName = p.nome;
+  }catch(e){}
+  if(platName==='Plataforma' && id.length>6) platName = id.slice(0,12);
+}
+if(params.get('t')==='players' && !id) platName = 'vavava';
+document.getElementById('platTitle').textContent = platName;
+document.getElementById('domainName').textContent = platName.toLowerCase().replace(/[^a-z0-9]/g,'') + '-1792.profitsbet.app ↗';
+document.title = platName + ' | Profits';
+
+// tabs
+const tabBtns = document.querySelectorAll('[data-tab]');
+const panels = document.querySelectorAll('.tab-panel');
+function showTab(t){
+  tabBtns.forEach(b=>{ b.classList.remove('border-[#FF4A00]','text-black','font-bold'); b.classList.add('border-transparent','text-[#6b7280]'); });
+  document.querySelector(`[data-tab="${t}"]`)?.classList.add('border-[#FF4A00]','text-black','font-bold');
+  document.querySelector(`[data-tab="${t}"]`)?.classList.remove('border-transparent','text-[#6b7280]');
+  panels.forEach(p=> p.classList.add('hidden'));
+  document.getElementById('tab-'+t)?.classList.remove('hidden');
+  history.replaceState(null,'','?id='+id+'&t='+t);
+}
+tabBtns.forEach(b=> b.addEventListener('click',()=> showTab(b.dataset.tab)));
+const initial = params.get('t') || 'players';
+showTab(initial);
+
+// players mock
+function mockAddPlayer(){
+  const tb = document.getElementById('tbodyPlayers');
+  if(tb.innerHTML.includes('Nenhum jogador')) tb.innerHTML='';
+  const row = document.createElement('tr');
+  row.className='border-t';
+  row.innerHTML=`<td class="px-4 py-3">jogador${Math.floor(Math.random()*1000)}@teste.com</td><td class="text-center">R$ ${(Math.random()*500).toFixed(2)}</td><td class="text-center">R$ 10</td><td class="text-center">R$ ${Math.floor(Math.random()*200)}</td><td class="text-center">btag_${Math.random().toString(36).slice(2,6)}</td>`;
+  tb.appendChild(row);
+  updateCounts();
+}
+function clearPlayers(){ document.getElementById('tbodyPlayers').innerHTML='<tr><td colspan="5" class="text-center py-8 text-[#9aa0a6]">Nenhum jogador</td></tr>'; updateCounts(); }
+function updateCounts(){
+  const n = document.querySelectorAll('#tbodyPlayers tr').length;
+  const hasEmpty = document.getElementById('tbodyPlayers').innerHTML.includes('Nenhum jogador');
+  const c = hasEmpty?0:n;
+  document.querySelector('[data-tab="players"]').textContent = `👥 Jogadores (${c})`;
+}
+document.getElementById('searchPlayers')?.addEventListener('input', e=>{
+  const q=e.target.value.toLowerCase();
+  document.querySelectorAll('#tbodyPlayers tr').forEach(tr=> tr.style.display = tr.textContent.toLowerCase().includes(q)?'':'none');
+});
+function previewBanner(input){
+  if(input.files && input.files[0]){
+    const r=new FileReader();
+    r.onload=e=>{ const img=document.getElementById('bannerPromoPreview'); img.src=e.target.result; img.classList.remove('hidden'); toast('Banner carregado'); };
+    r.readAsDataURL(input.files[0]);
+  }
+}
+function previewTexture(input){
+  if(input.files && input.files[0]){
+    const r=new FileReader();
+    r.onload=e=>{ const img=document.getElementById('texturePreview'); img.src=e.target.result; img.classList.remove('hidden'); document.getElementById('previewFrame').style.backgroundImage=`url(${e.target.result})`; document.getElementById('previewFrame').style.backgroundSize='64px'; };
+    r.readAsDataURL(input.files[0]);
+  }
+}
+document.querySelectorAll('.dev-btn').forEach(b=> b.addEventListener('click',()=>{
+  document.querySelectorAll('.dev-btn').forEach(x=> x.className='dev-btn px-3 py-1.5 rounded-full text-white/70 text-xs');
+  b.className='dev-btn px-3 py-1.5 rounded-full bg-[#FF4A00] text-white text-xs font-bold';
+  const w = b.dataset.dev==='mobile'?'360px': b.dataset.dev==='tablet'?'768px': b.dataset.dev==='laptop'?'1024px':'100%';
+  document.getElementById('previewFrame').style.maxWidth=w;
+  document.getElementById('previewFrame').style.margin='0 auto';
+}));
+function toast(msg){ const c=document.getElementById('toast'); const el=document.createElement('div'); el.className='bg-black text-white px-4 py-2 rounded-xl text-sm shadow'; el.textContent=msg; c.appendChild(el); setTimeout(()=>el.remove(),2500); }
+document.getElementById('btnPublicar')?.addEventListener('click',()=> toast('Publicado! (mock) - Link: '+document.getElementById('domainName').textContent));
+
+// promo wizard
+let wizardStep=1;
+function openPromoWizard(){ document.getElementById('promoWizard').classList.remove('hidden'); wizardStep=1; renderWizard(); }
+function renderWizard(){
+  document.querySelectorAll('.wizard-step').forEach((el,i)=> el.classList.toggle('hidden', i!==(wizardStep-1)));
+  document.getElementById('wizardStepLabel').textContent = `Passo ${wizardStep} de 4: ${['Identidade','Gatilho','Prêmio','Revisão'][wizardStep-1]}`;
+  for(let i=1;i<=4;i++){
+    const el=document.getElementById('step'+i);
+    if(i<wizardStep){ el.className='w-7 h-7 rounded-full bg-[#FF4A00] text-white grid place-items-center font-bold'; el.innerHTML='✓'; }
+    else if(i===wizardStep){ el.className='w-7 h-7 rounded-full bg-[#FF4A00] text-white grid place-items-center font-bold'; el.textContent=i; }
+    else { el.className='w-7 h-7 rounded-full border grid place-items-center'; el.textContent=i; }
+  }
+  const nextBtn=document.getElementById('wizardNextBtn');
+  nextBtn.textContent = wizardStep===4?'Criar promoção':'Continuar →';
+  // preview sync
+  document.getElementById('prevNome').textContent = document.getElementById('promoNome').value || 'Nome da promoção';
+  const gatilho = document.querySelector('input[name="gatilho"]:checked')?.value==='cadastro'?'Ao se cadastrar':'No primeiro depósito';
+  document.getElementById('prevGatilho').textContent = gatilho;
+  const jogo = document.querySelector('input[name="jogo"]:checked')?.value || 'Selecione um jogo';
+  document.getElementById('prevJogo').textContent = jogo;
+  document.getElementById('prevPremio').textContent = (document.getElementById('promoQtd').value||50)+' rodadas grátis';
+  if(wizardStep===4){
+    document.getElementById('revNome').textContent = document.getElementById('promoNome').value || 'teste';
+    document.getElementById('revGatilho').textContent = gatilho;
+    document.getElementById('revPremio').textContent = (document.getElementById('promoQtd').value||50)+' rodadas em '+jogo;
+  }
+}
+function wizardNext(){
+  if(wizardStep<4){ wizardStep++; renderWizard(); }
+  else {
+    const nome=document.getElementById('promoNome').value.trim()||'teste';
+    const list=document.getElementById('promoList');
+    const empty=document.getElementById('promoEmpty');
+    empty.classList.add('hidden'); list.classList.remove('hidden');
+    const card=document.createElement('div');
+    card.className='bg-white border rounded-xl p-4 flex justify-between items-center';
+    card.innerHTML=`<div><p class="font-bold">${nome}</p><p class="text-xs text-[#6b7280]">No primeiro depósito • 50 rodadas em Fortune Mouse</p></div><span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-bold">Ativa</span>`;
+    list.appendChild(card);
+    document.getElementById('promoWizard').classList.add('hidden');
+    toast('Promoção criada');
+  }
+}
+function wizardPrev(){ if(wizardStep>1){ wizardStep--; renderWizard(); } else document.getElementById('promoWizard').classList.add('hidden'); }
+document.getElementById('promoNome')?.addEventListener('input', renderWizard);
+document.getElementById('promoQtd')?.addEventListener('input', renderWizard);
+document.querySelectorAll('input[name="gatilho"],input[name="jogo"]').forEach(el=> el.addEventListener('change', renderWizard));
+document.getElementById('promoWizard')?.addEventListener('click', e=>{ if(e.target===e.currentTarget) e.currentTarget.classList.add('hidden'); });
+</script>
+</body>
+</html>
