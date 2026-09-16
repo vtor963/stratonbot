@@ -182,17 +182,17 @@
               <!-- toolbar -->
               <div class="flex items-center justify-between px-3 py-2.5 border-b border-white/10 shrink-0 bg-[#1a1a1a]">
                 <div class="flex items-center gap-1">
-                  <button class="w-7 h-7 rounded bg-white/10 hover:bg-white/20 grid place-items-center text-white/80 transition" title="Zoom in"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M21 21l-4.35-4.35M11 8v6m-3-3h6M10 17a7 7 0 100-14 7 7 0 000 14z"/></svg></button>
-                  <button class="w-7 h-7 rounded bg-white/10 hover:bg-white/20 grid place-items-center text-white/80 transition" title="Zoom out"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M21 21l-4.35-4.35M10 17a7 7 0 100-14 7 7 0 000 14zM7 11h6"/></svg></button>
-                  <button class="w-7 h-7 rounded bg-white/10 hover:bg-white/20 grid place-items-center text-white/80 transition" title="Expand"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 20v-4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/></svg></button>
+                  <button id="btnZoomIn" class="w-7 h-7 rounded bg-white/10 hover:bg-white/20 grid place-items-center text-white/80 transition" title="Zoom in"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M21 21l-4.35-4.35M11 8v6m-3-3h6M10 17a7 7 0 100-14 7 7 0 000 14z"/></svg></button>
+                  <button id="btnZoomOut" class="w-7 h-7 rounded bg-white/10 hover:bg-white/20 grid place-items-center text-white/80 transition" title="Zoom out"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M21 21l-4.35-4.35M10 17a7 7 0 100-14 7 7 0 000 14zM7 11h6"/></svg></button>
+                  <button id="btnExpand" class="w-7 h-7 rounded bg-white/10 hover:bg-white/20 grid place-items-center text-white/80 transition" title="Expand"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 20v-4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/></svg></button>
                 </div>
                 <div class="flex gap-1 bg-black/40 rounded-full p-1">
-                  <button data-dev="mobile" class="dev-btn px-3 py-1.5 rounded-full bg-black text-white text-[11px] font-bold flex items-center gap-1"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="7" y="2" width="10" height="20" rx="2" stroke-width="1.6"/><path stroke-width="1.6" d="M12 18h.01"/></svg> Mobile</button>
+                  <button data-dev="mobile" class="dev-btn px-3 py-1.5 rounded-full text-white/60 text-[11px] font-medium flex items-center gap-1 hover:text-white"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="7" y="2" width="10" height="20" rx="2" stroke-width="1.6"/><path stroke-width="1.6" d="M12 18h.01"/></svg> Mobile</button>
                   <button data-dev="tablet" class="dev-btn px-3 py-1.5 rounded-full text-white/60 text-[11px] font-medium flex items-center gap-1 hover:text-white"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2" stroke-width="1.6"/><path stroke-width="1.6" d="M12 18h.01"/></svg> Tablet</button>
-                  <button data-dev="laptop" class="dev-btn px-3 py-1.5 rounded-full text-white/60 text-[11px] font-medium flex items-center gap-1 hover:text-white"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2" stroke-width="1.6"/><path stroke-width="1.6" d="M2 20h20"/></svg> Laptop</button>
+                  <button data-dev="laptop" class="dev-btn px-3 py-1.5 rounded-full bg-black text-white text-[11px] font-bold flex items-center gap-1"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2" stroke-width="1.6"/><path stroke-width="1.6" d="M2 20h20"/></svg> Laptop</button>
                   <button data-dev="desktop" class="dev-btn px-3 py-1.5 rounded-full text-white/60 text-[11px] font-medium flex items-center gap-1 hover:text-white"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2" stroke-width="1.6"/><path stroke-width="1.6" d="M8 21h8M12 17v4"/></svg> Desktop</button>
                 </div>
-                <span class="hidden lg:block text-white text-xs font-medium">Laptop</span>
+                <span id="deviceLabel" class="hidden lg:block text-white text-xs font-medium min-w-[50px] text-right">Laptop</span>
               </div>
               <!-- preview canvas -->
               <div class="flex-1 p-4 overflow-auto flex justify-center items-start">
@@ -581,27 +581,58 @@ document.querySelectorAll('input[type="color"]').forEach((inp)=>{
     }
   });
 });
-document.querySelectorAll('.dev-btn').forEach(b=> b.addEventListener('click',()=>{
-  document.querySelectorAll('.dev-btn').forEach(x=> x.className='dev-btn px-3 py-1.5 rounded-full text-white/70 text-xs');
-  b.className='dev-btn px-3 py-1.5 rounded-full bg-black text-white text-xs font-bold';
+let currentScale = 1;
+let previewPan={x:0,y:0}, previewDragging=false, dragStart={x:0,y:0};
+function applyPreviewTransform(){
   const frame=document.getElementById('previewFrame');
-  const w = b.dataset.dev==='mobile'?'360px': b.dataset.dev==='tablet'?'768px': b.dataset.dev==='laptop'?'1024px':'100%';
+  if(!frame) return;
+  frame.style.transform=`translate(${previewPan.x}px, ${previewPan.y}px) scale(${currentScale})`;
+  frame.style.transformOrigin='top center';
+}
+document.querySelectorAll('.dev-btn').forEach(b=> b.addEventListener('click',()=>{
+  document.querySelectorAll('.dev-btn').forEach(x=> x.className='dev-btn px-3 py-1.5 rounded-full text-white/60 text-[11px] font-medium flex items-center gap-1 hover:text-white');
+  b.className='dev-btn px-3 py-1.5 rounded-full bg-black text-white text-[11px] font-bold flex items-center gap-1';
+  const frame=document.getElementById('previewFrame');
+  const dev=b.dataset.dev;
+  const w = dev==='mobile'?'390px': dev==='tablet'?'768px': dev==='laptop'?'1024px':'100%';
   frame.style.maxWidth=w;
   frame.style.width=w==='100%'?'100%':w;
   frame.style.margin='0 auto';
-  frame.style.transform='translate(0,0)';
+  currentScale=1;
   previewPan={x:0,y:0};
+  applyPreviewTransform();
+  const label=document.getElementById('deviceLabel');
+  if(label) label.textContent=dev.charAt(0).toUpperCase()+dev.slice(1);
+  const sidebar=document.getElementById('previewSidebar');
+  if(sidebar){
+    if(dev==='mobile'){ sidebar.classList.add('hidden'); sidebar.classList.remove('sm:flex'); }
+    else { sidebar.classList.remove('hidden'); sidebar.classList.add('sm:flex'); }
+  }
   document.getElementById('previewOuter')?.scrollTo({top:0,behavior:'smooth'});
 }));
-// Arrastar o preview para direita superior (pan livre)
-let previewPan={x:0,y:0}, previewDragging=false, dragStart={x:0,y:0};
+document.getElementById('btnZoomIn')?.addEventListener('click',()=>{
+  currentScale=Math.min(1.6, Math.round((currentScale+0.1)*10)/10);
+  applyPreviewTransform();
+  toast('Zoom '+Math.round(currentScale*100)+'%');
+});
+document.getElementById('btnZoomOut')?.addEventListener('click',()=>{
+  currentScale=Math.max(0.5, Math.round((currentScale-0.1)*10)/10);
+  applyPreviewTransform();
+  toast('Zoom '+Math.round(currentScale*100)+'%');
+});
+document.getElementById('btnExpand')?.addEventListener('click',()=>{
+  const outer=document.getElementById('previewOuter');
+  if(!outer) return;
+  if(document.fullscreenElement) document.exitFullscreen();
+  else outer.requestFullscreen?.();
+});
+// Arrastar o preview (pan livre) - combina com zoom
 (function(){
   const outer=document.getElementById('previewOuter');
   const frame=document.getElementById('previewFrame');
   if(!outer||!frame) return;
   frame.style.cursor='grab';
   frame.addEventListener('pointerdown',e=>{
-    // não arrastar ao clicar em input/botão dentro do preview
     if(e.target.closest('input,button,select,textarea,a')) return;
     previewDragging=true;
     dragStart={x:e.clientX-previewPan.x, y:e.clientY-previewPan.y};
@@ -612,7 +643,7 @@ let previewPan={x:0,y:0}, previewDragging=false, dragStart={x:0,y:0};
     if(!previewDragging) return;
     previewPan.x=e.clientX-dragStart.x;
     previewPan.y=e.clientY-dragStart.y;
-    frame.style.transform=`translate(${previewPan.x}px,${previewPan.y}px)`;
+    applyPreviewTransform();
   });
   ['pointerup','pointercancel','pointerleave'].forEach(ev=> frame.addEventListener(ev,()=>{
     previewDragging=false;
@@ -620,7 +651,8 @@ let previewPan={x:0,y:0}, previewDragging=false, dragStart={x:0,y:0};
   }));
   frame.addEventListener('dblclick',()=>{
     previewPan={x:0,y:0};
-    frame.style.transform='translate(0,0)';
+    currentScale=1;
+    applyPreviewTransform();
   });
 })();
 function toast(msg){ const c=document.getElementById('toast'); const el=document.createElement('div'); el.className='bg-black text-white px-4 py-2 rounded-xl text-sm shadow'; el.textContent=msg; c.appendChild(el); setTimeout(()=>el.remove(),2500); }
