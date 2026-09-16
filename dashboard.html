@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Profits | Dashboard</title>
-<link rel="icon" href="https://framerusercontent.com/images/QriKlhvYbks7DzCxm0yJrWx3eY.png">
+<title>StratonPay Bets | Dashboard</title>
+<link rel="icon" href="./public/logo-straton.svg">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
 <script src="https://cdn.tailwindcss.com"></script>
 <script>tailwind.config={theme:{extend:{fontFamily:{sans:['Inter','DM Sans','sans-serif']}}}}</script>
@@ -20,8 +20,8 @@
   <!-- SIDEBAR -->
   <aside class="w-[220px] shrink-0 bg-white border-r border-[#f0f0f0] hidden lg:flex flex-col fixed h-screen left-0 top-0 z-30">
     <div class="h-[64px] flex items-center gap-2 px-5 border-b border-transparent">
-      <div class="w-8 h-8 rounded bg-[#FF4A00] flex items-center justify-center text-white font-black text-[16px] leading-none">P</div>
-      <span class="font-bold text-[18px] tracking-tight text-black">Profits</span>
+      <img src="./public/logo-straton.svg" class="w-8 h-8 rounded-lg object-cover" alt="StratonPay">
+      <span class="font-bold text-[16px] tracking-tight text-black">StratonPay Bets</span>
     </div>
     <nav class="flex-1 px-3 py-4 grid gap-1 content-start overflow-y-auto scroll-hide"><a data-nav="dashboard" class="nav-link sidebar-active ml-1.5 flex items-center px-3 py-2 text-[13px] font-medium transition-colors duration-300 transform hover:bg-orange-100 hover:text-[#FF4D00]"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 576 512" height="20px" width="20px" xmlns="http://www.w3.org/2000/svg"><path d="M575.8 255.5c0 18-15 32.1-32 32.1h-32l.7 160.2c0 2.7-.2 5.4-.5 8.1V472c0 22.1-17.9 40-40 40H456c-1.1 0-2.2 0-3.3-.1c-1.4 .1-2.8 .1-4.2 .1H416 392c-22.1 0-40-17.9-40-40V448 384c0-17.7-14.3-32-32-32H256c-17.7 0-32 14.3-32 32v64 24c0 22.1-17.9 40-40 40H160 128.1c-1.5 0-3-.1-4.5-.2c-1.2 .1-2.4 .2-3.6 .2H104c-22.1 0-40-17.9-40-40V360c0-.9 0-1.9 .1-2.8V287.6H32c-18 0-32-14-32-32.1c0-9 3-17 10-24L266.4 8c7-7 15-8 22-8s15 2 21 7L564.8 231.5c8 7 12 15 11 24z"></path></svg><span class="mx-3 text-sm">Dashboard</span></a><a data-nav="plataformas" class="nav-link ml-1.5 flex items-center px-3 py-2 text-[13px] font-medium transition-colors duration-300 transform hover:bg-orange-100 hover:text-[#FF4D00]"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 16 16" height="20px" width="20px" xmlns="http://www.w3.org/2000/svg"><path d="M0 1a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H1a1 1 0 0 1-1-1zm9 0a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1h-5a1 1 0 0 1-1-1zm0 9a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1h-5a1 1 0 0 1-1-1z"></path></svg><span class="mx-3 text-sm">Plataformas</span></a><a data-nav="financeiro" class="nav-link ml-1.5 flex items-center px-3 py-2 text-[13px] font-medium transition-colors duration-300 transform hover:bg-orange-100 hover:text-[#FF4D00]"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" height="20px" width="20px" xmlns="http://www.w3.org/2000/svg"><path d="M243.4 2.6l-224 96c-14 6-21.8 21-18.7 35.8S16.8 160 32 160v8c0 13.3 10.7 24 24 24H456c13.3 0 24-10.7 24-24v-8c15.2 0 28.3-10.7 31.3-25.6s-4.8-29.9-18.7-35.8l-224-96c-8-3.4-17.2-3.4-25.2 0zM128 224H64V420.3c-.6 .3-1.2 .7-1.8 1.1l-48 32c-11.7 7.8-17 22.4-12.9 35.9S17.9 512 32 512H480c14.1 0 26.5-9.2 30.6-22.7s-1.1-28.1-12.9-35.9l-48-32c-.6-.4-1.2-.7-1.8-1.1V224H384V416H344V224H280V416H232V224H168V416H128V224zM256 64a32 32 0 1 1 0 64 32 32 0 1 1 0-64z"></path></svg><span class="mx-3 text-sm">Financeiro</span></a><a data-nav="visaogeral" class="nav-link ml-1.5 flex items-center px-3 py-2 text-[13px] font-medium transition-colors duration-300 transform hover:bg-orange-100 hover:text-[#FF4D00]"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" height="20px" width="20px" xmlns="http://www.w3.org/2000/svg"><path d="M160 80c0-26.5 21.5-48 48-48h32c26.5 0 48 21.5 48 48V432c0 26.5-21.5 48-48 48H208c-26.5 0-48-21.5-48-48V80zM0 272c0-26.5 21.5-48 48-48H80c26.5 0 48 21.5 48 48V432c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V272zM368 96h32c26.5 0 48 21.5 48 48V432c0 26.5-21.5 48-48 48H368c-26.5 0-48-21.5-48-48V144c0-26.5 21.5-48 48-48z"></path></svg><span class="mx-3 text-sm">Visao Geral</span></a><a data-nav="saquejogadores" class="nav-link ml-1.5 flex items-center px-3 py-2 text-[13px] font-medium transition-colors duration-300 transform hover:bg-orange-100 hover:text-[#FF4D00]"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" height="20px" width="20px" xmlns="http://www.w3.org/2000/svg"><path d="M64 32C28.7 32 0 60.7 0 96V416c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V192c0-35.3-28.7-64-64-64H80c-8.8 0-16-7.2-16-16s7.2-16 16-16H448c17.7 0 32-14.3 32-32s-14.3-32-32-32H64zM416 272a32 32 0 1 1 0 64 32 32 0 1 1 0-64z"></path></svg><span class="mx-3 text-sm">Saque de Jogadores</span></a><a data-nav="transacoes" class="nav-link ml-1.5 flex items-center px-3 py-2 text-[13px] font-medium transition-colors duration-300 transform hover:bg-orange-100 hover:text-[#FF4D00]"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 640 512" height="20px" width="20px" xmlns="http://www.w3.org/2000/svg"><path d="M535 41c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l64 64c4.5 4.5 7 10.6 7 17s-2.5 12.5-7 17l-64 64c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9l23-23L384 112c-13.3 0-24-10.7-24-24s10.7-24 24-24l174.1 0L535 41zM105 377l-23 23L256 400c13.3 0 24 10.7 24 24s-10.7 24-24 24L81.9 448l23 23c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0L7 441c-4.5-4.5-7-10.6-7-17s2.5-12.5 7-17l64-64c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9zM96 64H337.9c-3.7 7.2-5.9 15.3-5.9 24c0 28.7 23.3 52 52 52l117.4 0c-4 17 .6 35.5 13.8 48.8c20.3 20.3 53.2 20.3 73.5 0L608 169.5V384c0 35.3-28.7 64-64 64H302.1c3.7-7.2 5.9-15.3 5.9-24c0-28.7-23.3-52-52-52l-117.4 0c4-17-.6-35.5-13.8-48.8c-20.3-20.3-53.2-20.3-73.5 0L32 342.5V128c0-35.3 28.7-64 64-64zm64 64H96v64c35.3 0 64-28.7 64-64zM544 320c-35.3 0-64 28.7-64 64h64V320zM320 352a96 96 0 1 0 0-192 96 96 0 1 0 0 192z"></path></svg><span class="mx-3 text-sm">Transacoes</span></a><a data-nav="indique" class="nav-link ml-1.5 flex items-center px-3 py-2 text-[13px] font-medium transition-colors duration-300 transform hover:bg-orange-100 hover:text-[#FF4D00]"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" height="20px" width="20px" xmlns="http://www.w3.org/2000/svg"><path d="M352 320c-22.608 0-43.387 7.819-59.79 20.895l-102.486-64.054a96.551 96.551 0 0 0 0-41.683l102.486-64.054C308.613 184.181 329.392 192 352 192c53.019 0 96-42.981 96-96S405.019 0 352 0s-96 42.981-96 96c0 7.158.79 14.13 2.276 20.841L155.79 180.895C139.387 167.819 118.608 160 96 160c-53.019 0-96 42.981-96 96s42.981 96 96 96c22.608 0 43.387-7.819 59.79-20.895l102.486 64.054A96.301 96.301 0 0 0 256 416c0 53.019 42.981 96 96 96s96-42.981 96-96-42.981-96-96-96z"></path></svg><span class="mx-3 text-sm">Indique e ganhe</span></a><a data-nav="perfil" class="nav-link ml-1.5 flex items-center px-3 py-2 text-[13px] font-medium transition-colors duration-300 transform hover:bg-orange-100 hover:text-[#FF4D00]"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" height="20px" width="20px" xmlns="http://www.w3.org/2000/svg"><path d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512H418.3c16.4 0 29.7-13.3 29.7-29.7C448 383.8 368.2 304 269.7 304H178.3z"></path></svg><span class="mx-3 text-sm">Perfil</span></a><a data-nav="baixarapp" class="nav-link ml-1.5 flex items-center px-3 py-2 text-[13px] font-medium transition-colors duration-300 transform hover:bg-orange-100 hover:text-[#FF4D00]"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" height="20px" width="20px" xmlns="http://www.w3.org/2000/svg"><path d="M288 32c0-17.7-14.3-32-32-32s-32 14.3-32 32V274.7l-73.4-73.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l128 128c12.5 12.5 32.8 12.5 45.3 0l128-128c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L288 274.7V32zM64 352c-35.3 0-64 28.7-64 64v32c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V416c0-35.3-28.7-64-64-64H346.5l-45.3 45.3c-25 25-65.5 25-90.5 0L165.5 352H64zm368 56a24 24 0 1 1 0 48 24 24 0 1 1 0-48z"></path></svg><span class="mx-3 text-sm">Baixar app</span></a></nav>
     <div class="p-3 border-t border-[#f0f0f0]">
@@ -38,7 +38,7 @@
 
   <!-- MOBILE TOP -->
   <header class="lg:hidden fixed top-0 inset-x-0 h-[56px] bg-white border-b border-[#f0f0f0] flex items-center justify-between px-4 z-30">
-    <div class="flex items-center gap-2"><div class="w-8 h-8 rounded bg-[#FF4A00] flex items-center justify-center text-white font-black">P</div><span class="font-bold">Profits</span></div>
+    <div class="flex items-center gap-2"><img src="./public/logo-straton.svg" class="w-8 h-8 rounded-lg object-cover" alt="StratonPay"><span class="font-bold">StratonPay Bets</span></div>
     <button id="mobileMenu" class="w-9 h-9 rounded-xl bg-[#f6f7f9] flex items-center justify-center">☰</button>
   </header>
   <div id="mobileNav" class="lg:hidden fixed inset-0 bg-black/40 z-40 hidden"><div class="w-[260px] bg-white h-full overflow-auto p-4"><div class="flex justify-between items-center mb-4"><span class="font-bold">Menu</span><button id="closeMobile" class="text-xl">×</button></div><div id="mobileLinks"></div></div></div>
@@ -55,20 +55,20 @@
               <div class="flex items-center gap-1 bg-[#fff1e8] border border-[#ffd9c2] rounded-full px-3 py-1.5">
                 <span class="w-2 h-2 bg-[#FF4A00] rounded-full"></span><span class="text-xs font-bold text-[#FF4A00]">R$ 0</span>
               </div>
-              <button class="w-7 h-7 rounded-full hover:bg-gray-50 flex items-center justify-center text-[#9aa0a6]">👁️</button>
-              <button class="w-7 h-7 rounded-full hover:bg-gray-50 flex items-center justify-center text-[#9aa0a6]">🌙</button>
-              <button class="w-7 h-7 rounded-full hover:bg-gray-50 flex items-center justify-center text-[#9aa0a6]">🔕</button>
-              <button class="w-7 h-7 rounded-full hover:bg-gray-50 flex items-center justify-center text-[#9aa0a6]">💬</button>
+              <button class="w-7 h-7 rounded-full hover:bg-gray-50 flex items-center justify-center text-[#9aa0a6]"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" d="M2.12 12a10.3 10.3 0 0119.76 0 10.3 10.3 0 01-19.76 0z"/></svg></button>
+              <button class="w-7 h-7 rounded-full hover:bg-gray-50 flex items-center justify-center text-[#9aa0a6]"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg></button>
+              <button class="w-7 h-7 rounded-full hover:bg-gray-50 flex items-center justify-center text-[#9aa0a6]"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" d="M15 17h5l-1.5-1.5a6 6 0 01-3.5 1.5z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" d="M9 17H4l1.5-1.5A6 6 0 009 14z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" d="M18 8a6 6 0 00-6-6 6 6 0 00-6 6c0 3.5 3 6 6 6s6-2.5 6-6z"/></svg></button>
+              <button class="w-7 h-7 rounded-full hover:bg-gray-50 flex items-center justify-center text-[#9aa0a6]"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" d="M21 11.5a7 7 0 01-7 7H9l-4 4v-11a7 7 0 017-7h2a7 7 0 017 7z"/></svg></button>
               <img src="https://i.pravatar.cc/100?img=8" class="w-7 h-7 rounded-full">
             </div>
-            <div class="hidden md:flex items-center gap-2 border border-[#e5e7eb] rounded-full px-3 py-1.5 text-xs font-medium text-[#9aa0a6]">Hoje <span class="ml-2 bg-[#f6f7f9] px-2 py-1 rounded-full">📅</span></div>
+            <div class="hidden md:flex items-center gap-2 border border-[#e5e7eb] rounded-full px-3 py-1.5 text-xs font-medium text-[#9aa0a6]">Hoje <span class="ml-2 bg-[#f6f7f9] px-2 py-1 rounded-full flex items-center justify-center"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" d="M8 7V3m8 4V3M3 11h18M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg></span></div>
           </div>
         </div>
       </div>
       <div class="max-w-[1200px] mx-auto px-6 lg:px-8 py-6">
         <div class="flex flex-wrap gap-8 items-start">
           <div class="flex-1 min-w-[280px]">
-            <p class="text-sm font-medium text-[#9aa0a6] flex items-center gap-1">Saldo Profits <span class="w-4 h-4 rounded-full bg-orange-100 text-[#FF4A00] grid place-items-center text-[10px]">🛡️</span></p>
+            <p class="text-sm font-medium text-[#9aa0a6] flex items-center gap-1">Saldo StratonPay <span class="w-4 h-4 rounded-full bg-orange-100 text-[#FF4A00] grid place-items-center"><svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span></p>
             <p class="text-[32px] font-extrabold text-black leading-none mt-1">R$ 0,00</p>
             <p class="text-sm font-medium text-[#6b7280] mt-1">comissão R$ 0,00</p>
             <div class="flex gap-2 mt-3">
@@ -109,7 +109,7 @@
 
         <!-- bottom banner -->
         <div class="mt-4 bg-white border border-[#e5e7eb] rounded-2xl p-3 flex flex-wrap items-center gap-3 shadow-sm">
-          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-[#FF4A00] to-[#FF8800] grid place-items-center text-white">👥</div>
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-[#FF4A00] to-[#FF8800] grid place-items-center text-white"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4" stroke-width="1.7"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" d="M23 21v-2a4 4 0 00-3-3.87"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" d="M16 3.13a4 4 0 010 7.75"/></svg></div>
           <div class="flex-1">
             <p class="text-sm font-extrabold text-black">Indique e Ganhe!</p>
             <p class="text-xs text-[#9aa0a6] max-w-[420px]">Ganhe até R$ 50,00 reais e mais 1% sobre o faturamento sobre as suas indicações durante 12 meses!</p>
@@ -163,7 +163,7 @@
             <div class="ml-[22px] border-l border-[#FF4A00]/30 pl-6">
               <div class="relative">
                 <select id="metodoPix" class="w-full h-10 rounded-lg border border-[#e5e7eb] bg-white px-3 pr-8 text-sm font-medium focus:outline-none focus:border-[#FF4A00]/40 appearance-none">
-                  <option>🔶 PIX &nbsp; Real brasileiro</option>
+                  <option>PIX &nbsp; Real brasileiro</option>
                   <option>BTC Bitcoin</option>
                 </select>
                 <span class="absolute right-3 top-3 text-xs">▼</span>
@@ -374,13 +374,13 @@
           <div class="flex items-center justify-between">
             <p class="text-xs font-bold text-black">Todas as transações</p>
             <div class="flex items-center gap-2">
-              <div class="flex items-center gap-2 bg-[#f3f4f6] rounded-lg px-3 py-1.5 text-xs text-[#6b7280]">📅 Hoje</div>
-              <button class="w-7 h-7 rounded-lg bg-[#FF4A00] text-white grid place-items-center">≡</button>
-              <button class="w-7 h-7 rounded-lg bg-[#e5e7eb] text-[#9aa0a6] grid place-items-center">📄</button>
+              <div class="flex items-center gap-2 bg-[#f3f4f6] rounded-lg px-3 py-1.5 text-xs text-[#6b7280]"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" d="M8 7V3m8 4V3M3 11h18M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg> Hoje</div>
+              <button class="w-7 h-7 rounded-lg bg-[#FF4A00] text-white grid place-items-center"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+              <button class="w-7 h-7 rounded-lg bg-[#e5e7eb] text-[#9aa0a6] grid place-items-center"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.5L17 8.5V19a2 2 0 01-2 2z"/></svg></button>
             </div>
           </div>
           <div class="py-12 text-center">
-            <div class="w-10 h-10 mx-auto border-2 border-[#9aa0a6] rounded grid place-items-center">📋</div>
+            <div class="w-10 h-10 mx-auto border-2 border-[#9aa0a6] rounded grid place-items-center text-[#9aa0a6]"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.5L17 8.5V19a2 2 0 01-2 2z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" d="M9 5h6"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" d="M9 9h6"/></svg></div>
             <p class="text-xs text-[#9aa0a6] mt-2">Nenhuma transação encontrada</p>
             <p class="text-[11px] text-[#9aa0a6]">Tente ajustar os filtros para ver mais resultados</p>
           </div>
@@ -408,13 +408,13 @@
             <button class="w-full mt-3 h-8 rounded-lg bg-[#FFC497] text-[#FF4A00] font-bold text-sm">Coletar</button>
           </div>
           <div class="bg-white rounded-2xl shadow-sm p-4">
-            <div class="w-10 h-10 rounded-xl bg-[#FF4A00] text-white grid place-items-center mx-auto">👥+</div>
+            <div class="w-10 h-10 rounded-xl bg-[#FF4A00] text-white grid place-items-center mx-auto"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4" stroke-width="1.7"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" d="M19 8a2 2 0 010 4"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" d="M22 11v-1a2 2 0 00-2-2"/></svg></div>
             <p class="text-center font-extrabold text-black">Indique e ganhe!</p>
             <p class="text-center text-[11px] text-[#9aa0a6]">Ganhe R$ 50,00 por cada amigo que você<br>indicar e mais 1% sobre o faturamento dele</p>
             <div class="flex gap-2 mt-3">
               <input id="indiqueLink" value="https://app.profitsbet.co/sign-up?prom..." readonly class="flex-1 h-8 rounded-lg border border-[#e5e7eb] px-3 text-[11px] bg-[#f9fafb] text-[#6b7280]">
-              <button id="btnCopyLink" class="h-8 px-3 rounded-lg bg-[#FF4A00] text-white text-xs font-bold flex items-center gap-1">⎙ Copiar link</button>
-              <button class="w-8 h-8 rounded-lg bg-[#f3f4f6] grid place-items-center">↗</button>
+              <button id="btnCopyLink" class="h-8 px-3 rounded-lg bg-[#FF4A00] text-white text-xs font-bold flex items-center gap-1"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" stroke-width="1.7"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v3"/></svg> Copiar link</button>
+              <button class="w-8 h-8 rounded-lg bg-[#f3f4f6] grid place-items-center text-[#9aa0a6]"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" d="M7 17L17 7M17 7H7m10 0v10"/></svg></button>
             </div>
             <div class="bg-[#fffbeb] border border-[#fde68a] rounded-lg p-2 mt-3 flex gap-2">
               <span class="w-4 h-4 rounded-full bg-yellow-400 text-white grid place-items-center text-[10px] shrink-0">!</span>
@@ -493,8 +493,8 @@
                       <p class="text-[11px] text-[#9aa0a6]">Zero taxa de adesão</p>
                       <p class="text-[20px] font-extrabold text-[#10b981]">5.49% <span class="text-[11px] font-normal text-[#9aa0a6]">+GGR (12%)</span></p>
                       <p class="text-[11px] text-[#9aa0a6]">Por transação aprovada</p>
-                      <p class="text-[11px] font-bold mt-1">✓ Recebimento Pix D+0 (imediato)</p>
-                      <p class="text-[11px] font-bold">✓ Saques liberados 24/7</p>
+                      <p class="text-[11px] font-bold mt-1 flex items-center gap-1"><svg class="w-3 h-3 text-[#10b981]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg> Recebimento Pix D+0 (imediato)</p>
+                      <p class="text-[11px] font-bold flex items-center gap-1"><svg class="w-3 h-3 text-[#10b981]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg> Saques liberados 24/7</p>
                     </div>
                   </div>
                 </div>
@@ -666,7 +666,7 @@ grid.innerHTML = modelos.map((m,i)=>`
   <div data-idx="${i}" class="plataforma-card cursor-pointer group w-full">
     <div class="h-[210px] rounded-2xl relative overflow-hidden border-2 border-transparent group-[.selected]:border-[#FF4A00] shadow-sm bg-[#f5f5f5] hover:shadow-[0_0_15px_rgba(255,77,0,0.4)] hover:scale-[1.02] transition-all duration-300 flex flex-col">
       <div class="absolute top-2 left-2 right-2 z-10 flex justify-between pointer-events-none">
-        <div class="flex gap-1">${m.badges.map(b=>`<span class="text-[11px] font-bold text-white px-2 py-1 rounded-full ${b==='NOVO'?'bg-red-500':'bg-orange-500'}">${b==='HYPE'?'🔥 HYPE':b}</span>`).join('')}</div>
+        <div class="flex gap-1">${m.badges.map(b=>`<span class="text-[11px] font-bold text-white px-2 py-1 rounded-full flex items-center gap-1 ${b==='NOVO'?'bg-red-500':'bg-[#FF4A00]'}">${b==='HYPE'?'<svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><path d="M13.5 5.5c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5c0 .44.18.83.46 1.12C9.5 8.5 7 11.1 7 14.5 7 17.5 9.5 20 12 20s5-2.5 5-5.5c0-3.4-2.5-6-3.96-7.88.28-.29.46-.68.46-1.12z"/><path d="M9 14.5c0-1.2.5-2.3 1.2-3.2.2.6.5 1.1.8 1.6-.3.5-.5 1-.5 1.6 0 1.1.9 2 2 2s2-.9 2-2c0-1.5-1-2.8-2-3.8.6-.4 1-1 1-1.7 0-.7-.4-1.3-.9-1.7.9 1.1 1.4 2.4 1.4 4.2 0 2.5-2 4.5-4.5 4.5S7 17 7 14.5c0-1.1.3-2 .8-2.9.3.6.7 1.2 1.2 1.9z"/></svg> HYPE':b}</span>`).join('')}</div>
       </div>
       <img src="${m.img}" alt="${m.n}" loading="lazy" class="w-full aspect-square object-cover object-top rounded-t-2xl ${m.locked?'opacity-80':''}">
       ${m.locked?'<div class="absolute inset-0 bg-black/55 rounded-2xl flex items-center justify-center"><svg class="w-10 h-10 text-white/80" fill="currentColor" viewBox="0 0 448 512"><path d="M144 144v48H304V144c0-44.2-35.8-80-80-80s-80 35.8-80 80zM80 192V144C80 64.5 144.5 0 224 0s144 64.5 144 144v48h16c35.3 0 64 28.7 64 64V448c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V256c0-35.3 28.7-64 64-64H80z"/></svg></div>':''}
