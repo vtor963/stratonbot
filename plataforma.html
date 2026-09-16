@@ -99,17 +99,9 @@
                     <div><p class="text-white font-bold text-sm">Evolution</p><p class="text-white/60 text-xs">Confira os jogos mais populares</p><div class="grid grid-cols-5 gap-2 mt-2"><div class="aspect-[3/4] bg-white rounded"></div><div class="aspect-[3/4] bg-white rounded"></div><div class="aspect-[3/4] bg-white rounded"></div><div class="aspect-[3/4] bg-white rounded"></div><div class="aspect-[3/4] bg-white rounded"></div></div></div>
                     <div><p class="text-white font-bold text-sm">PG-Soft</p><div class="grid grid-cols-5 gap-2 mt-2"><div class="aspect-[3/4] bg-white rounded"></div><div class="aspect-[3/4] bg-white rounded"></div><div class="aspect-[3/4] bg-white rounded"></div><div class="aspect-[3/4] bg-white rounded"></div><div class="aspect-[3/4] bg-white rounded"></div></div></div>
                     <div><p class="text-white font-bold text-sm">Pragmatic Play</p><div class="grid grid-cols-5 gap-2 mt-2"><div class="aspect-[3/4] bg-white rounded"></div><div class="aspect-[3/4] bg-white rounded"></div><div class="aspect-[3/4] bg-white rounded"></div><div class="aspect-[3/4] bg-white rounded"></div><div class="aspect-[3/4] bg-white rounded"></div></div></div>
-                    <div id="previewFooter" class="mt-4 h-10 bg-[#0b1220] rounded flex items-center justify-center text-white/60 text-xs border border-white/10">Footer — links e suporte</div>
-                  </div>
-                  <div id="previewBottomNav" class="h-12 bg-[#0b1220] border-t border-white/10 flex items-center justify-around px-4 mt-4 -mx-4 -mb-4">
-                    <div class="w-8 h-8 bg-[#8cb506] rounded-full grid place-items-center"><img src="./public/logo-orange-icon.svg" class="w-4 h-4"></div>
-                    <div class="w-8 h-8 bg-white/20 rounded-full"></div>
-                    <div class="w-8 h-8 bg-white/20 rounded-full"></div>
-                    <div class="w-8 h-8 bg-white/20 rounded-full"></div>
                   </div>
                 </div>
               </div>
-              <div id="previewFooterOuter" class="hidden"></div>
             </div>
             <div class="p-4 bg-white space-y-4 overflow-auto max-h-[620px]">
               <div><p class="font-bold text-sm">Banners</p><label id="bannerMainDrop" class="mt-2 h-[90px] bg-[#f9fafb] border-2 border-dashed rounded-xl grid place-items-center text-[#9aa0a6] text-xs cursor-pointer hover:border-[#FF4A00]/40 flex flex-col gap-1"><input type="file" accept="image/png,image/jpeg" class="hidden" id="bannerMainInput" onchange="previewBannerMain(this)"><img src="./public/logo-orange-icon.svg" class="w-6 h-6 opacity-50"><span>Arraste ou clique</span></label><img id="bannerMainPreview" class="hidden mt-2 w-full h-20 object-cover rounded-xl border"><button class="mt-2 w-8 h-8 rounded-full bg-[#FF4A00] text-white grid place-items-center ml-auto">+</button></div>
@@ -342,7 +334,7 @@ function previewTexture(input){
     }
   });
 });
-// Mudança em tempo real para cores (Pré-definições) - TODAS incluindo Footer e Botão nave
+// Mudança em tempo real - só funcionalidade, sem mudar layout da direita
 document.querySelectorAll('input[type="color"]').forEach((inp)=>{
   inp.addEventListener('input',()=>{
     const val=inp.value;
@@ -352,28 +344,25 @@ document.querySelectorAll('input[type="color"]').forEach((inp)=>{
     if(label.includes('Backgorund') || label.includes('Background')){
       frame.style.backgroundColor=val;
     } else if(label.includes('Navbar')){
-      document.getElementById('previewSidebar') && (document.getElementById('previewSidebar').style.backgroundColor=val);
-      document.getElementById('previewNavbar') && (document.getElementById('previewNavbar').style.backgroundColor=val);
+      const s=document.getElementById('previewSidebar'); if(s) s.style.backgroundColor=val;
+      const n=document.getElementById('previewNavbar'); if(n) n.style.backgroundColor=val;
     } else if(label.includes('Footer')){
-      const f=document.getElementById('previewFooter'); if(f) f.style.backgroundColor=val;
+      // Footer é a barra inferior do preview (mesmo sem elemento dedicado, muda a borda inferior do frame)
+      frame.style.borderBottomColor=val; frame.style.borderBottomWidth='4px';
     } else if(label.includes('Bottom Nav')){
-      const b=document.getElementById('previewBottomNav'); if(b) b.style.backgroundColor=val;
-    } else if(label.includes('Texto (Botão)')){
-      frame.querySelectorAll('.text-white').forEach(el=>{ if(el.closest('button') || el.textContent.includes('Entrar') || el.textContent.includes('Cadastrar')) el.style.color=val; });
-    } else if(label.includes('Texto (Secundário)')){
-      frame.querySelectorAll('.text-white\\/60').forEach(el=> el.style.color=val);
+      // Bottom Nav é o Home + botões de navegação
+      const h=document.getElementById('previewHomeBtn'); if(h) h.style.backgroundColor=val;
+      frame.querySelectorAll('.bg-\\[\\#8cb506\\]').forEach(el=> el.style.backgroundColor=val);
     } else if(label==='Texto'){
       frame.querySelectorAll('.text-white').forEach(el=> el.style.color=val);
+    } else if(label.includes('Texto (Secundário)')){
+      frame.querySelectorAll('.text-white\\/60').forEach(el=> el.style.color=val);
+    } else if(label.includes('Texto (Botão)')){
+      frame.querySelectorAll('.bg-white').forEach(el=>{ if(el.textContent.includes('Cadastrar')) el.style.color=val; });
     } else if(label.includes('Botão')){
-      // Botão nave + Entrar + Home
       document.getElementById('previewHomeBtn') && (document.getElementById('previewHomeBtn').style.backgroundColor=val);
       document.getElementById('previewEntrarBtn') && (document.getElementById('previewEntrarBtn').style.backgroundColor=val);
-      document.getElementById('previewBottomNav')?.querySelector('.bg-\\[\\#8cb506\\]') && (document.getElementById('previewBottomNav').querySelector('.bg-\\[\\#8cb506\\]').style.backgroundColor=val);
       frame.querySelectorAll('.bg-\\[\\#8cb506\\]').forEach(el=> el.style.backgroundColor=val);
-    } else if(label.includes('Ícones')){
-      frame.querySelectorAll('img').forEach(el=> el.style.filter=`hue-rotate(${parseInt(val.slice(1,3),16)%360}deg)`);
-    } else if(label.includes('Entrada')){
-      frame.querySelectorAll('input').forEach(el=> el.style.backgroundColor=val);
     }
   });
 });
