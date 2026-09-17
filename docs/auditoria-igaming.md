@@ -43,6 +43,10 @@ Sistema BR completo e funcional: Unity WebGL Subway (mapas Venice + London, pers
 - Obrigatório trocar: `conectarbanco.php` (vem com senha Hostinger de terceiros: `u523120494_exclusivo`), chaves SuitPay (`gateway`), webhook `/webhook/pix.php` p/ seu domínio.
 - Bugs: SQL injection em `deposito/consultarpagamento.php:31` (token cru no sprintf); restos de outro site (Google Ads `AW-11305271105`, iframes FruitsMoney); `chatwoot` com token `=======`.
 - Requer hospedagem PHP + MySQL (não roda na Vercel).
+- **PACOTE LIMPO ENTREGUE** (`Downloads/subwayv3-LIMPO.zip`, 192MB): split 15% removido,
+  `percas.php` neutralizado (sem dívida GGR), SQLi corrigida, credenciais viraram
+  placeholder, SQL sem linhas de teste e com login adm placeholder, iframes/chat/CDN
+  morto removidos. Ver `LEIA-ME-INSTALAR.txt` dentro do zip.
 
 ## Mapa final por categoria (nada misturado)
 
