@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aviator | StratonPay Bets</title>
+<link rel="icon" href="../../public/logo.png">
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+*{font-family:Inter,system-ui,sans-serif}
+body{background:#0f1923;color:#fff}
+.stage{background:radial-gradient(ellipse at 30% 100%, #3a0d1c 0%, #0f1923 60%);border:1px solid rgba(255,255,255,.08)}
+.btn-bet{background:#8cb506;color:#fff;box-shadow:0 8px 24px -8px #8cb506}
+.btn-cash{background:#f59e0b;color:#111}
+.hist-dot{font-variant-numeric:tabular-nums}
+input{color:#111}
+</style>
+</head>
+<body class="min-h-screen">
+<header class="h-14 bg-[#1d2730] border-b border-white/10 flex items-center justify-between px-4 sticky top-0 z-10">
+  <a href="../index.html" class="flex items-center gap-2">
+    <img src="../../public/logo.png" class="w-8 h-8 rounded-lg object-cover" alt="StratonPay">
+    <span class="font-extrabold">Aviator</span>
+  </a>
+  <div class="flex items-center gap-2">
+    <div class="bg-black/40 px-3 py-1.5 rounded-full border border-white/10 text-sm">Saldo <b id="saldo">R$ 100,00</b></div>
+    <a href="../index.html" class="px-3 py-1.5 bg-white text-black rounded-full text-xs font-bold">Jogos</a>
+  </div>
+</header>
+
+<main class="max-w-[960px] mx-auto p-3 grid lg:grid-cols-[1fr_300px] gap-3">
+  <section>
+    <div class="stage rounded-2xl overflow-hidden relative">
+      <canvas id="cv" class="w-full block" style="height:340px"></canvas>
+      <div class="absolute inset-0 grid place-items-center pointer-events-none">
+        <div class="text-center">
+          <p id="fase" class="text-xs font-bold tracking-widest text-white/60">AGUARDE A PRÓXIMA RODADA</p>
+          <p id="mult" class="text-5xl font-black tabular-nums">1.00x</p>
+        </div>
+      </div>
+    </div>
+    <div id="hist" class="flex gap-1.5 mt-2 overflow-x-auto no-scrollbar text-xs"></div>
+    <div class="bg-[#1d2730] rounded-2xl p-4 mt-2 border border-white/10">
+      <div class="flex gap-2">
+        <input id="valor" type="number" value="10" min="1" class="h-11 w-28 rounded-xl px-3 text-sm">
+        <button id="btnApostar" class="btn-bet flex-1 h-11 rounded-xl font-extrabold text-sm">APOSTAR</button>
+        <button id="btnCash" class="btn-cash flex-1 h-11 rounded-xl font-extrabold text-sm hidden">SACAR <span id="cashVal"></span></button>
+      </div>
+      <p id="msg" class="text-xs text-white/60 mt-2">Aposte durante a espera. Saque antes do avião sumir.</p>
+    </div>
+  </section>
+  <aside class="bg-[#1d2730] rounded-2xl p-4 border border-white/10 h-fit">
+    <p class="font-bold text-sm">Apostas ao vivo</p>
+    <div id="live" class="mt-2 space-y-1.5 text-xs"></div>
+  </aside>
+</main>
+
+<script type="module">
+const params = new URLSearchParams(location.search);
+const platformId = params.get('platform') || 'demo';
+const PKEY = 'player_' + platformId;
+const fmt = v => Number(v||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+let saldo = 100;
+try{
+  const p = JSON.parse(localStorage.getItem(PKEY)||'null');
+  if(p && typeof p.saldo === 'number') saldo = p.saldo;
+}catch{}
+function saveSaldo(){
+  try{
+    const p = JSON.parse(localStorage.getItem(PKEY)||'{}');
+    p.saldo = saldo;
+    localStorage.setItem(PKEY, JSON.stringify(p));
+  }catch{}
+  document.getElementById('saldo').textContent = fmt(saldo);
+}
+async function logBet(b){
+  try{
+    const { sbCreateBet } = await import('../../supabase.js');
+    await sbCreateBet({ platform_id: platformId, jogo:'aviator', ...b });
+  }catch{}
+}
+saveSaldo();
+
+// sons originais
+const sStart = new Audio('./assets/game-start.mp3');
+const sCrash = new Audio('./assets/plane-crash.mp3');
+const sCash = new Audio('./assets/cashout.mp3');
+const plane = new Image(); plane.src = './assets/sprite3.png';
+
+// crash point com margem da casa (~3%)
+function crashPoint(){
+  const r = Math.random();
+  const c = Math.max(1.00, 0.97 / (1 - r));
+  return Math.min(c, 50);
+}
+
+// canvas
+const cv = document.getElementById('cv'), ctx = cv.getContext('2d');
+function sizeCv(){ cv.width = cv.clientWidth; cv.height = 340; }
+sizeCv(); addEventListener('resize', sizeCv);
+let curve = [], crashed = false;
+function draw(mult){
+  const W = cv.width, H = cv.height;
+  ctx.clearRect(0,0,W,H);
+  // grade
+  ctx.strokeStyle = 'rgba(255,255,255,.07)'; ctx.lineWidth = 1;
+  for(let x=0;x<W;x+=40){ ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke(); }
+  for(let y=0;y<H;y+=40){ ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke(); }
+  if(curve.length > 1){
+    ctx.beginPath();
+    ctx.moveTo(curve[0][0], curve[0][1]);
+    for(const [x,y] of curve) ctx.lineTo(x,y);
+    ctx.strokeStyle = crashed ? '#ef4444' : '#F00B3E'; ctx.lineWidth = 4; ctx.stroke();
+    ctx.lineTo(curve[curve.length-1][0], H); ctx.lineTo(curve[0][0], H); ctx.closePath();
+    ctx.fillStyle = crashed ? 'rgba(239,68,68,.15)' : 'rgba(240,11,62,.18)'; ctx.fill();
+    // avião
+    const [px,py] = curve[curve.length-1];
+    if(plane.complete && plane.naturalWidth){
+      const pw = 120, ph = 28;
+      ctx.drawImage(plane, 0, 0, plane.naturalWidth/2, plane.naturalHeight, px-10, py-ph-6, pw, ph);
+    } else {
+      ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(px, py-8, 8, 0, 7); ctx.fill();
+    }
+  }
+}
+
+let fase = 'idle', mult = 1, crashAt = 2, aposta = 0, sacado = false, timer = null;
+const faseEl = document.getElementById('fase'), multEl = document.getElementById('mult');
+const btnApostar = document.getElementById('btnApostar'), btnCash = document.getElementById('btnCash');
+
+function setFase(f, txt){ fase = f; faseEl.textContent = txt; }
+function loop(){
+  // espera
+  setFase('wait', 'AGUARDE A PRÓXIMA RODADA');
+  multEl.textContent = '1.00x'; multEl.style.color = '#fff';
+  curve = []; crashed = false; draw(1);
+  btnApostar.classList.remove('hidden'); btnCash.classList.add('hidden');
+  btnApostar.textContent = aposta > 0 ? `APOSTADO ${fmt(aposta)} — AGUARDE` : 'APOSTAR';
+  btnApostar.disabled = aposta > 0;
+  setTimeout(()=>{
+    crashAt = crashPoint(); mult = 1; sacado = false;
+    setFase('fly', 'VOANDO — SAQUE ANTES DE CRASHAR');
+    try{ sStart.play(); }catch{}
+    const t0 = Date.now();
+    timer = setInterval(()=>{
+      const t = (Date.now() - t0) / 1000;
+      mult = Math.pow(1.06, t * 10) ; // ~+6%/100ms
+      mult = Math.round(mult * 100) / 100;
+      // curva
+      const W = cv.width, H = cv.height;
+      const px = Math.min(W - 30, 30 + t * 60);
+      const py = Math.max(30, H - 30 - t * 55);
+      curve.push([px,py]); if(curve.length > 200) curve.shift();
+      draw(mult);
+      multEl.textContent = mult.toFixed(2) + 'x';
+      if(aposta > 0 && !sacado){
+        btnApostar.classList.add('hidden'); btnCash.classList.remove('hidden');
+        document.getElementById('cashVal').textContent = fmt(aposta * mult);
+      }
+      if(mult >= crashAt){
+        clearInterval(timer);
+        crashed = true; draw(mult);
+        multEl.textContent = 'VOOU ' + mult.toFixed(2) + 'x'; multEl.style.color = '#ef4444';
+        setFase('crash', 'CRASHOU');
+        try{ sCrash.play(); }catch{}
+        pushHist(mult, true);
+        if(aposta > 0 && !sacado){
+          document.getElementById('msg').textContent = `Crashou em ${mult.toFixed(2)}x. Você perdeu ${fmt(aposta)}.`;
+          logBet({ valor: aposta, multiplicador: 0, retorno: 0, resultado: 'loss' });
+        }
+        aposta = 0;
+        setTimeout(loop, 4000);
+      }
+    }, 100);
+  }, 5000);
+}
+
+btnApostar.onclick = ()=>{
+  if(fase !== 'wait' || aposta > 0) return;
+  const v = Number(document.getElementById('valor').value||0);
+  if(!(v > 0)){ alert('Informe o valor'); return; }
+  if(v > saldo){ alert('Saldo insuficiente. Deposite no p.html'); return; }
+  saldo -= v; saveSaldo();
+  aposta = v;
+  btnApostar.textContent = `APOSTADO ${fmt(v)} — AGUARDE`;
+  btnApostar.disabled = true;
+  document.getElementById('msg').textContent = `Aposta de ${fmt(v)} confirmada. Boa sorte!`;
+};
+btnCash.onclick = async ()=>{
+  if(fase !== 'fly' || aposta === 0 || sacado) return;
+  sacado = true;
+  const ret = Math.round(aposta * mult * 100) / 100;
+  saldo += ret; saveSaldo();
+  try{ sCash.play(); }catch{}
+  document.getElementById('msg').textContent = `Sacado em ${mult.toFixed(2)}x: +${fmt(ret - aposta)}.`;
+  logBet({ valor: aposta, multiplicador: mult, retorno: ret, resultado: 'win' });
+  aposta = 0;
+  btnCash.classList.add('hidden'); btnApostar.classList.remove('hidden');
+  btnApostar.textContent = 'APOSTAR'; btnApostar.disabled = true;
+};
+
+const histEl = document.getElementById('hist');
+function pushHist(m, crash){
+  const d = document.createElement('span');
+  d.className = 'hist-dot px-2 py-1 rounded-full font-bold ' + (m < 2 ? 'bg-white/10 text-white/70' : m < 10 ? 'bg-green-500/20 text-green-400' : 'bg-yellow-500/20 text-yellow-300');
+  d.textContent = m.toFixed(2) + 'x';
+  histEl.prepend(d);
+  while(histEl.children.length > 20) histEl.lastChild.remove();
+}
+[2.4, 1.3, 5.7, 1.1, 12.3].forEach(m=>pushHist(m));
+
+const N = ['Lucas*','Ana*','Pedro*','Ju*','Rafa*','Thi*','Camila*','Diego*'];
+function pushLive(){
+  const v = Math.round((Math.random()*400+10)*100)/100;
+  const m = (1 + Math.random()*8).toFixed(2);
+  const w = Math.random() > 0.4;
+  const d = document.createElement('div');
+  d.className = 'flex justify-between bg-white/5 rounded-lg px-3 py-1.5';
+  d.innerHTML = `<span>${N[Math.floor(Math.random()*N.length)]}</span><b class="${w?'text-green-400':'text-red-400'}">${w?fmt(v*m)+' ('+m+'x)':'-'+fmt(v)}</b>`;
+  const live = document.getElementById('live');
+  live.prepend(d);
+  while(live.children.length > 8) live.lastChild.remove();
+}
+for(let i=0;i<5;i++) pushLive();
+setInterval(pushLive, 4000);
+loop();
+</script>
+</body>
+</html>

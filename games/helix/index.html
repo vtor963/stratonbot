@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Helix Jump | StratonPay Bets</title>
+<link rel="icon" href="../../public/logo.png">
+<script src="https://cdn.tailwindcss.com"></script>
+<style>*{font-family:Inter,system-ui,sans-serif}body{background:#0f1923;color:#fff}canvas{touch-action:none}input{color:#111}</style>
+</head>
+<body class="min-h-screen">
+<header class="h-14 bg-[#1d2730] border-b border-white/10 flex items-center justify-between px-4 sticky top-0 z-10">
+  <a href="../index.html" class="flex items-center gap-2">
+    <img src="../../public/logo.png" class="w-8 h-8 rounded-lg object-cover" alt="StratonPay">
+    <span class="font-extrabold">Helix Jump</span>
+  </a>
+  <div class="flex items-center gap-2">
+    <div class="bg-black/40 px-3 py-1.5 rounded-full border border-white/10 text-sm">Saldo <b id="saldo">R$ 100,00</b></div>
+    <a href="../index.html" class="px-3 py-1.5 bg-white text-black rounded-full text-xs font-bold">Jogos</a>
+  </div>
+</header>
+<main class="max-w-[520px] mx-auto p-4">
+  <div class="bg-[#1d2730] rounded-2xl p-4 border border-white/10">
+    <div class="flex gap-2">
+      <input id="valor" type="number" value="5" min="1" class="h-11 w-28 rounded-xl px-3 text-sm">
+      <button id="btnJogar" class="flex-1 h-11 rounded-xl font-extrabold text-sm text-white" style="background:#ec4899">PULAR (12 plataformas = 2x)</button>
+    </div>
+    <p class="text-xs text-white/60 mt-2">Toque nas laterais ou use A-D para girar a torre. Passe pelas brechas. Cair no vermelho = fim.</p>
+  </div>
+  <div class="bg-[#1d2730] rounded-2xl mt-3 border border-white/10 overflow-hidden">
+    <canvas id="cv" width="480" height="420" class="w-full block"></canvas>
+  </div>
+  <p id="msg" class="text-sm mt-2 text-center text-white/70"></p>
+</main>
+<script type="module">
+const params = new URLSearchParams(location.search);
+const platformId = params.get('platform') || 'demo';
+const PKEY = 'player_' + platformId;
+const fmt = v => Number(v||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+let saldo = 100;
+try{ const p = JSON.parse(localStorage.getItem(PKEY)||'null'); if(p && typeof p.saldo==='number') saldo = p.saldo; }catch{}
+function save(){ try{ const p = JSON.parse(localStorage.getItem(PKEY)||'{}'); p.saldo = saldo; localStorage.setItem(PKEY, JSON.stringify(p)); }catch{} document.getElementById('saldo').textContent = fmt(saldo); }
+async function logBet(b){ try{ const { sbCreateBet } = await import('../../supabase.js'); await sbCreateBet({ platform_id: platformId, jogo:'helix', ...b }); }catch{} }
+save();
+
+const cv = document.getElementById('cv'), ctx = cv.getContext('2d');
+const META = 12;
+let playing=false, aposta=0, rot=0, platY=0, passed=0, plats=[], ballY=120, vy=0, dead=false;
+
+function novaTorre(){
+  plats = []; rot = 0; passed = 0; ballY = 120; vy = 0; dead = false; platY = 0;
+  for(let i=0;i<META+4;i++){
+    const gap = Math.random()*Math.PI*2;
+    const bad = Math.random() < 0.3 ? Math.random()*Math.PI*2 : -1;
+    plats.push({ y: 160 + i*70, gap, bad });
+  }
+}
+document.addEventListener('keydown', e=>{
+  if(e.key==='a'||e.key==='ArrowLeft') rot -= 0.25;
+  if(e.key==='d'||e.key==='ArrowRight') rot += 0.25;
+});
+let lx = null;
+cv.addEventListener('pointerdown', e=> lx = e.clientX);
+cv.addEventListener('pointermove', e=>{ if(lx!==null){ rot += (e.clientX-lx)*0.02; lx = e.clientX; } });
+addEventListener('pointerup', ()=> lx = null);
+
+function angNorm(a){ while(a<0)a+=Math.PI*2; while(a>=Math.PI*2)a-=Math.PI*2; return a; }
+function end(win){
+  playing = false;
+  document.getElementById('btnJogar').disabled = false;
+  if(win){
+    const ret = aposta*2; saldo += ret; save();
+    document.getElementById('msg').innerHTML = `<b class="text-green-400">Torre vencida! +${fmt(ret-aposta)}.</b>`;
+    logBet({ valor: aposta, multiplicador: 2, retorno: ret, resultado:'win' });
+  } else {
+    document.getElementById('msg').innerHTML = `Bateu no vermelho na plataforma ${passed+1}.`;
+    logBet({ valor: aposta, multiplicador: 0, retorno: 0, resultado:'loss' });
+  }
+  aposta = 0;
+}
+function frame(){
+  ctx.fillStyle = '#141d29'; ctx.fillRect(0,0,480,420);
+  const cx = 240;
+  // torre
+  ctx.fillStyle = '#334155'; ctx.fillRect(cx-14, 0, 28, 420);
+  if(playing){
+    vy += 0.6; ballY += vy;
+    platY += 1.2; // mundo desce
+    // checa plataforma na altura da bola
+    for(const p of plats){
+      const sy = p.y - platY;
+      if(!p.done && ballY + 12 >= sy && ballY + 12 <= sy + 26){
+        // ângulo da bola (sempre embaixo = PI/2 em coord de tela?) -> usa posição fixa: brecha precisa estar embaixo
+        const ballAng = Math.PI/2;
+        const g = angNorm(p.gap + rot), b = p.bad < 0 ? -1 : angNorm(p.bad + rot);
+        const inGap = Math.abs(angNorm(ballAng - g)) < 0.45;
+        const inBad = b >= 0 && Math.abs(angNorm(ballAng - b)) < 0.35;
+        if(inBad){ dead = true; end(false); break; }
+        if(inGap){ p.done = true; passed++; vy = -11; if(passed >= META && playing){ end(true); break; } }
+        else { vy = -11; }
+      }
+    }
+    if(ballY > 430 && playing){ dead = true; end(false); }
+  }
+  // desenha plataformas
+  for(const p of plats){
+    const sy = p.y - platY;
+    if(sy < -30 || sy > 450) continue;
+    for(let a=0; a<Math.PI*2; a+=0.06){
+      const g = angNorm(p.gap + rot);
+      if(Math.abs(angNorm(a - g)) < 0.45) continue;
+      const b = p.bad < 0 ? -1 : angNorm(p.bad + rot);
+      ctx.fillStyle = (b >= 0 && Math.abs(angNorm(a - b)) < 0.35) ? '#ef4444' : '#8b5cf6';
+      const r1 = 30, r2 = 110;
+      ctx.beginPath();
+      ctx.arc(cx, sy, r2, a, a+0.06); ctx.arc(cx, sy, r1, a+0.06, a, true);
+      ctx.closePath(); ctx.fill();
+    }
+  }
+  // bola
+  if(!dead || !playing){
+    ctx.fillStyle = '#ec4899';
+    ctx.beginPath(); ctx.arc(cx, Math.min(ballY, 410), 12, 0, 7); ctx.fill();
+    ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(cx-4, Math.min(ballY,410)-4, 3, 0, 7); ctx.fill();
+  }
+  ctx.fillStyle = '#fff'; ctx.font = 'bold 18px Inter'; ctx.textAlign = 'left';
+  ctx.fillText(passed + ' / ' + META, 12, 28);
+  if(!playing && passed === 0 && aposta === 0){
+    ctx.fillStyle = 'rgba(255,255,255,.5)'; ctx.font = 'bold 15px Inter'; ctx.textAlign = 'center';
+    ctx.fillText('Aposte e clique PULAR', 240, 210);
+  }
+  requestAnimationFrame(frame);
+}
+document.getElementById('btnJogar').onclick = ()=>{
+  if(playing) return;
+  const v = Number(document.getElementById('valor').value||0);
+  if(!(v>0)){ alert('Informe o valor'); return; }
+  if(v > saldo){ alert('Saldo insuficiente. Deposite no p.html'); return; }
+  saldo -= v; save(); aposta = v; novaTorre(); playing = true;
+  document.getElementById('btnJogar').disabled = true;
+  document.getElementById('msg').textContent = 'Passe 12 plataformas!';
+};
+frame();
+</script>
+</body>
+</html>

@@ -52,7 +52,7 @@ input,select{ color:#111; }
       <p class="muted text-[11px] font-bold mt-4 tracking-widest">JACKPOT ACUMULADO</p>
       <p id="jackpot" class="jackpot text-3xl sm:text-5xl font-black text-yellow-300">R$ 0,00</p>
       <div class="flex flex-wrap gap-2 mt-5 justify-center">
-        <button id="btnCadastrar" class="btn-primary cta-pulse font-extrabold px-8 py-3 rounded-full text-sm">🎮 JOGAR AGORA</button>
+        <button id="btnCadastrar" class="btn-primary cta-pulse font-extrabold px-8 py-3 rounded-full text-sm">JOGAR AGORA</button>
         <button id="btnDepositar" class="font-bold px-6 py-3 rounded-full text-sm bg-white/10">Depositar PIX</button>
       </div>
       <p id="depLimits" class="muted text-xs mt-3"></p>
@@ -61,15 +61,15 @@ input,select{ color:#111; }
 
   <!-- CONFIANÇA -->
   <section class="grid grid-cols-3 gap-2 mt-3 text-center">
-    <div class="card rounded-xl p-3"><p class="text-xl">⚡</p><p class="text-[11px] font-bold mt-1">PIX instantâneo</p></div>
-    <div class="card rounded-xl p-3"><p class="text-xl">💸</p><p class="text-[11px] font-bold mt-1">Saque 24/7</p></div>
-    <div class="card rounded-xl p-3"><p class="text-xl">🛡️</p><p class="text-[11px] font-bold mt-1">Suporte no chat</p></div>
+    <div class="card rounded-xl p-3"><svg class="w-6 h-6 mx-auto" fill="none" stroke="#facc15" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg><p class="text-[11px] font-bold mt-1">PIX instantâneo</p></div>
+    <div class="card rounded-xl p-3"><svg class="w-6 h-6 mx-auto" fill="none" stroke="#4ade80" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2 7h20v10H2zM2 10h20M6 15h4"/></svg><p class="text-[11px] font-bold mt-1">Saque 24/7</p></div>
+    <div class="card rounded-xl p-3"><svg class="w-6 h-6 mx-auto" fill="none" stroke="#60a5fa" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><p class="text-[11px] font-bold mt-1">Suporte no chat</p></div>
   </section>
 
   <!-- JOGOS POPULARES -->
   <section class="mt-6">
     <div class="flex items-end justify-between">
-      <div><h2 class="font-extrabold text-lg">🔥 Populares</h2><p class="muted text-xs">RTP <span id="rtpInfo">médio</span> • Toque pra jogar demo com seu saldo</p></div>
+      <div><h2 class="font-extrabold text-lg">Populares</h2><p class="muted text-xs">RTP <span id="rtpInfo">médio</span> • Toque pra jogar com seu saldo</p></div>
       <button id="btnSacar" class="text-xs font-bold underline">Sacar</button>
     </div>
     <div id="gamesGrid" class="grid grid-cols-3 sm:grid-cols-5 gap-2.5 mt-3"></div>
@@ -100,10 +100,10 @@ input,select{ color:#111; }
 <!-- BOTTOM NAV mobile -->
 <nav class="sm:hidden fixed bottom-0 inset-x-0 z-20 border-t border-white/10" style="background:var(--nav)">
   <div class="grid grid-cols-4 text-center text-[10px] font-bold py-2">
-    <button class="py-1" onclick="document.getElementById('ofertaTitulo').scrollIntoView({behavior:'smooth'})">🏠<br>Início</button>
-    <button class="py-1" onclick="document.getElementById('gamesGrid').scrollIntoView({behavior:'smooth'})">🎰<br>Jogos</button>
-    <button class="py-1" id="btnNavDeposit">💰<br>Depositar</button>
-    <button class="py-1" id="btnNavConta">👤<br>Conta</button>
+    <button class="py-1" onclick="document.getElementById('ofertaTitulo').scrollIntoView({behavior:'smooth'})">Início</button>
+    <button class="py-1" onclick="document.getElementById('gamesGrid').scrollIntoView({behavior:'smooth'})">Jogos</button>
+    <button class="py-1" id="btnNavDeposit">Depositar</button>
+    <button class="py-1" id="btnNavConta">Conta</button>
   </div>
 </nav>
 
@@ -144,49 +144,48 @@ input,select{ color:#111; }
 <script type="module">
 import { sbLoadPublicPlatform, getPlayer, sbUpsertPlayer, sbCreateTransaction, sbCreateBet } from './supabase.js';
 
-/* Presets por layout — inspirado na blockbast-2182.profitsbet.app.
+/* Presets por layout e por CATEGORIA — nada misturado:
+   retrô (block blast/subway/helix) | raspadinha | slots provider | cassino (double/mines/crash/aviator).
    O dono só troca nome/img no painel; o resto adapta sozinho. */
+const SVG_DOUBLE = '<svg width="34" height="34" viewBox="0 0 34 34"><circle cx="17" cy="17" r="14" fill="#ef4444"/><path d="M17 3a14 14 0 010 28z" fill="#111"/><circle cx="17" cy="17" r="4" fill="#fff"/></svg>';
+const SVG_MINES = '<svg width="34" height="34" viewBox="0 0 34 34"><circle cx="16" cy="19" r="11" fill="#1f2937"/><rect x="22" y="4" width="3" height="8" rx="1.5" fill="#f59e0b" transform="rotate(30 22 4)"/><circle cx="12" cy="15" r="3" fill="rgba(255,255,255,.35)"/></svg>';
+const SVG_CRASH = '<svg width="34" height="34" viewBox="0 0 34 34"><path d="M4 26L16 6l4 8 10-2-6 12-8-2-4 6-8-2z" fill="#818cf8"/><path d="M4 28h26" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>';
 const LAYOUTS = [
-  { match:['block blast','blockblast'], accent:'#8cb506', hero1:'#1d5223', hero2:'#0f1923',
+  { match:['block blast','blockblast'], cat:'retro', accent:'#8cb506', hero1:'#1d5223', hero2:'#0f1923',
     bonus:'BÔNUS DE 100% NO 1º DEPÓSITO', headline:'QUEBRE BLOCOS. GANHE DE VERDADE', sub:'O Block Blast mais jogado do Brasil. Deposite via PIX e comece com bônus em dobro.',
     jackpot: 640701.51, games:[
-      ['🧱','Block Blast','Retro • 96,5%','linear-gradient(135deg,#3b82f6,#22c55e)'],
-      ['🔴','Double','2x / 14x','linear-gradient(135deg,#fc4a1a,#f7b733)'],
-      ['💣','Mines','97% RTP','linear-gradient(135deg,#11998e,#38ef7d)'],
-      ['✈️','Crash','Cashout','linear-gradient(135deg,#667eea,#764ba2)'],
-      ['🍭','Sweet Bonanza','Pragmatic','linear-gradient(135deg,#56ab2f,#a8e063)']]},
-  { match:['raspadinha','raspa','copa'], accent:'#f59e0b', hero1:'#7c2d12', hero2:'#0f1923',
+      { n:'Block Blast', s:'Retro • 96,5%', img:'./public/layouts/block-blast.jpg', href:'./games/block-blast/' },
+      { n:'Next Birds', s:'Retro • voo', img:'./public/layouts/onaplay1.png', href:'./games/nextbirds/' },
+      { n:'Subway Run', s:'Retro • desvie', img:'./public/layouts/retros.png', href:'./games/subway/' },
+      { n:'Helix Jump', s:'Retro • torre', img:'./public/layouts/helix.png', href:'./games/helix/' }]},
+  { match:['raspadinha','raspa','copa'], cat:'raspadinha', accent:'#f59e0b', hero1:'#7c2d12', hero2:'#0f1923',
     bonus:'RASPOU, GANHOU — PRÊMIOS ATÉ R$100 MIL', headline:'RASPADINHA DA COPA', sub:'Raspe e ganhe na hora. Prêmios caem direto no saldo, saque via PIX.',
     jackpot: 38767790.25, games:[
-      ['🎫','Raspadinha Copa','Até R$100 mil','linear-gradient(135deg,#f59e0b,#ef4444)'],
-      ['🐯','Fortune Tiger','PG Soft • 96,8%','linear-gradient(135deg,#f97316,#eab308)'],
-      ['🔴','Double','2x / 14x','linear-gradient(135deg,#fc4a1a,#f7b733)'],
-      ['💣','Mines','97% RTP','linear-gradient(135deg,#11998e,#38ef7d)'],
-      ['✈️','Crash','Cashout','linear-gradient(135deg,#667eea,#764ba2)']]},
-  { match:['777','chines','mk','cm777','w1','fpmmm','caktus','venon','onaplay'], accent:'#eab308', hero1:'#713f12', hero2:'#0f1923',
+      { n:'Raspadinha Copa', s:'Até R$100 mil', img:'./public/layouts/raspadinha-copa.png', href:'./games/raspadinha/?skin=copa' },
+      { n:'Raspadinha Chinesa', s:'Sorte oriental', img:'./public/layouts/raspadinha - chinese.png', href:'./games/raspadinha/?skin=chinesa' },
+      { n:'Raspadinha Padrão', s:'Clássica', img:'./public/layouts/raspadinha - padrao.png', href:'./games/raspadinha/?skin=padrao' }]},
+  { match:['777','chines','mk','cm777','w1','fpmmm','caktus','venon','onaplay'], cat:'slots', accent:'#eab308', hero1:'#713f12', hero2:'#0f1923',
     bonus:'PRIMEIRO DEPÓSITO COM BÔNUS ATÉ R$3.777', headline:'JACKPOT MILIONÁRIO', sub:'Slots chineses, Fortune Tiger, Dragon e mais. Gire e concorra ao acumulado.',
     jackpot: 59780152.94, games:[
-      ['🐯','Fortune Tiger','PG Soft • 96,8%','linear-gradient(135deg,#f97316,#eab308)'],
-      ['🐉','Fortune Dragon','PG Soft','linear-gradient(135deg,#dc2626,#f59e0b)'],
-      ['🐂','Fortune Ox','PG Soft','linear-gradient(135deg,#b45309,#fbbf24)'],
-      ['🔴','Double','2x / 14x','linear-gradient(135deg,#fc4a1a,#f7b733)'],
-      ['✈️','Crash','Cashout','linear-gradient(135deg,#667eea,#764ba2)']]},
-  { match:['subway','retro','helix'], accent:'#22c55e', hero1:'#14532d', hero2:'#0f1923',
+      { n:'Fortune Tiger', s:'PG Soft • 96,8%', img:'./public/layouts/chinese - 777.png', off:true },
+      { n:'Fortune Dragon', s:'PG Soft', img:'./public/layouts/chinese - mk.png', off:true },
+      { n:'Fortune Ox', s:'PG Soft', img:'./public/layouts/chinese - cm777.png', off:true },
+      { n:'Caishen Wins', s:'PG Soft', img:'./public/layouts/chinese - w1.png', off:true },
+      { n:'Ganesha Gold', s:'PG Soft', img:'./public/layouts/chinese - default.png', off:true }]},
+  { match:['subway','retro','helix'], cat:'retro', accent:'#22c55e', hero1:'#14532d', hero2:'#0f1923',
     bonus:'BÔNUS RETRÔ — DOBRE SEU PRIMEIRO PIX', headline:'JOGOS RETRÔ QUE PAGAM', sub:'Subway, Helix e clássicos com ranking diário e saque instantâneo.',
     jackpot: 1250340.00, games:[
-      ['🛹','Subway Run','Retro','linear-gradient(135deg,#22c55e,#3b82f6)'],
-      ['🌀','Helix Jump','Retro','linear-gradient(135deg,#ec4899,#8b5cf6)'],
-      ['🔴','Double','2x / 14x','linear-gradient(135deg,#fc4a1a,#f7b733)'],
-      ['💣','Mines','97% RTP','linear-gradient(135deg,#11998e,#38ef7d)'],
-      ['✈️','Crash','Cashout','linear-gradient(135deg,#667eea,#764ba2)']]},
-  { match:['blaze'], accent:'#ef4444', hero1:'#7f1d1d', hero2:'#0f1923',
-    bonus:'BÔNUS BLAZE — 100% ATÉ R$1.000', headline:'DOUBLE • MINES • CRASH', sub:'Os originais mais rápidos do Brasil. Resultado na hora, saque 24/7.',
+      { n:'Subway Run', s:'Retro • desvie', img:'./public/layouts/retros.png', href:'./games/subway/' },
+      { n:'Helix Jump', s:'Retro • torre', img:'./public/layouts/helix.png', href:'./games/helix/' },
+      { n:'Next Birds', s:'Retro • voo', img:'./public/layouts/onaplay1.png', href:'./games/nextbirds/' },
+      { n:'Block Blast', s:'Retro • 96,5%', img:'./public/layouts/block-blast.jpg', href:'./games/block-blast/' }]},
+  { match:['blaze'], cat:'cassino', accent:'#ef4444', hero1:'#7f1d1d', hero2:'#0f1923',
+    bonus:'BÔNUS BLAZE — 100% ATÉ R$1.000', headline:'DOUBLE • MINES • CRASH • AVIATOR', sub:'Os originais mais rápidos do Brasil. Resultado na hora, saque 24/7.',
     jackpot: 2210450.75, games:[
-      ['🔴','Double','2x / 14x','linear-gradient(135deg,#fc4a1a,#f7b733)'],
-      ['💣','Mines','97% RTP','linear-gradient(135deg,#11998e,#38ef7d)'],
-      ['✈️','Crash','Cashout','linear-gradient(135deg,#667eea,#764ba2)'],
-      ['🎡','Roleta','Brasileira','linear-gradient(135deg,#ff9966,#ff5e62)'],
-      ['♠️','Blackjack','Ao vivo','linear-gradient(135deg,#0f0c29,#302b63)']]},
+      { n:'Double', s:'2x / Branco 14x', bg:'linear-gradient(135deg,#fc4a1a,#f7b733)', svg:SVG_DOUBLE, demo:'double' },
+      { n:'Mines', s:'97% RTP', bg:'linear-gradient(135deg,#11998e,#38ef7d)', svg:SVG_MINES, demo:'mines' },
+      { n:'Crash', s:'Cashout', bg:'linear-gradient(135deg,#667eea,#764ba2)', svg:SVG_CRASH, demo:'crash' },
+      { n:'Aviator', s:'Voe e saque', img:'./games/aviator/assets/aviator-img.png', href:'./games/aviator/' }]},
 ];
 const FALLBACK = LAYOUTS[0];
 function presetFor(layout){ const l=(layout||'').toLowerCase(); return LAYOUTS.find(p=>p.match.some(m=>l.includes(m))) || FALLBACK; }
@@ -234,17 +233,22 @@ function applyTheme(){
   $('suporteInfo').textContent = PLAT.suporte || PLAT.whatsapp || PLAT.telegram || 'painel do dono';
   const gw = PLAT.gateway||{};
   $('pixInfo').textContent = gw.provider && gw.provider!=='manual' ? `Gateway: ${gw.provider}` : 'Aprovação imediata (dono configura gateway no painel)';
-  // jackpot + grade de jogos do preset
+  // jackpot + grade de jogos da CATEGORIA (sem mistura)
   JACKPOT = PRESET.jackpot;
   $('jackpot').textContent = fmt(JACKPOT);
-  $('gamesGrid').innerHTML = PRESET.games.map((g,i)=>{
-    const demo = ['Double','Mines','Crash'].find(d=>g[1].toLowerCase().includes(d.toLowerCase()));
-    return `<button data-demo="${demo||''}" class="game-card card rounded-2xl p-2.5 text-left">
-      <div class="h-20 rounded-xl grid place-items-center text-3xl" style="background:${g[3]}">${g[0]}</div>
-      <p class="font-bold text-xs mt-1.5">${g[1]}</p><p class="muted text-[10px]">${g[2]}</p>
-    </button>`;
+  $('gamesGrid').innerHTML = PRESET.games.map(g=>{
+    const art = g.img
+      ? `<img src="${g.img}" class="w-full h-20 object-cover rounded-xl" loading="lazy" alt="${g.n}">`
+      : `<div class="h-20 rounded-xl grid place-items-center" style="background:${g.bg}">${g.svg||''}</div>`;
+    const body = `${art}<p class="font-bold text-xs mt-1.5">${g.n}</p><p class="muted text-[10px]">${g.s}</p>`;
+    if(g.off) return `<div class="game-card card rounded-2xl p-2.5 opacity-60">${body}<p class="text-[10px] font-bold text-yellow-300 mt-1">Em breve</p></div>`;
+    if(g.href){
+      const sep = g.href.includes('?') ? '&' : '?';
+      return `<a href="${g.href}${sep}platform=${encodeURIComponent(PLAT.id)}" class="game-card card rounded-2xl p-2.5 text-left block">${body}</a>`;
+    }
+    return `<button data-demo="${g.demo}" class="game-card card rounded-2xl p-2.5 text-left">${body}</button>`;
   }).join('');
-  document.querySelectorAll('#gamesGrid [data-demo]').forEach(b=> b.onclick = ()=>{ if(b.dataset.demo) openGame(b.dataset.demo.toLowerCase()); });
+  document.querySelectorAll('#gamesGrid [data-demo]').forEach(b=> b.onclick = ()=>openGame(b.dataset.demo));
 }
 setInterval(()=>{ if(!PLAT) return; JACKPOT += Math.random()*120; const el=$('jackpot'); if(el) el.textContent = fmt(JACKPOT); }, 2500);
 
@@ -257,7 +261,7 @@ function pushLive(){
   const w = Math.random()>0.45;
   const div = document.createElement('div');
   div.className = 'feed-item flex justify-between bg-white/5 rounded-lg px-3 py-1.5';
-  div.innerHTML = `<span>${NOMES[Math.floor(Math.random()*NOMES.length)]} • ${g[1]}</span><b class="${w?'text-green-400':'text-red-400'}">${w?'+':''}${fmt(w?v*1.8:-v)}</b>`;
+  div.innerHTML = `<span>${NOMES[Math.floor(Math.random()*NOMES.length)]} • ${g.n}</span><b class="${w?'text-green-400':'text-red-400'}">${w?'+':''}${fmt(w?v*1.8:-v)}</b>`;
   const feed = $('liveFeed');
   feed.prepend(div);
   while(feed.children.length>6) feed.lastChild.remove();
@@ -328,7 +332,7 @@ function openGame(kind){
       PLAYER.saldo = Number(PLAYER.saldo||0) - v + ret;
       await persistPlayer();
       await sbCreateBet({ platform_id: PLAT.id, player_id: PLAYER.id||null, jogo:'double', valor:v, multiplicador: win?mult:0, retorno:ret, resultado: win?'win':'loss' });
-      $('gOut').innerHTML = win? `🎉 Saiu <b>${pick}</b>! +${fmt(ret-v)}` : `😞 Não saiu ${pick}. -${fmt(v)}`;
+      $('gOut').innerHTML = win? `Saiu <b>${pick}</b>! +${fmt(ret-v)}` : `Não saiu ${pick}. -${fmt(v)}`;
     };
   }
   if(kind==='mines'){
@@ -343,7 +347,7 @@ function openGame(kind){
       PLAYER.saldo = Number(PLAYER.saldo||0) - v + ret;
       await persistPlayer();
       await sbCreateBet({ platform_id: PLAT.id, player_id: PLAYER.id||null, jogo:'mines', valor:v, multiplicador: win?2:0, retorno:ret, resultado: win?'win':'loss' });
-      $('gOut').innerHTML = win? `💎 Achou! +${fmt(ret-v)}` : `💣 Bomba. -${fmt(v)}`;
+      $('gOut').innerHTML = win? `Acertou! +${fmt(ret-v)}` : `Mina! Perdeu ${fmt(v)}`;
     };
   }
   if(kind==='crash'){

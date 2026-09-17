@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Raspadinha | StratonPay Bets</title>
+<link rel="icon" href="../../public/logo.png">
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+*{font-family:Inter,system-ui,sans-serif}
+body{background:#0f1923;color:#fff}
+.cell{position:relative;border-radius:12px;overflow:hidden;background:#1d2730;border:1px solid rgba(255,255,255,.1);aspect-ratio:1/1}
+.cell canvas{position:absolute;inset:0;width:100%;height:100%;cursor:pointer;touch-action:none}
+.prize{position:absolute;inset:0;display:grid;place-items:center;font-weight:900;font-size:22px}
+input{color:#111}
+</style>
+</head>
+<body class="min-h-screen">
+<header class="h-14 bg-[#1d2730] border-b border-white/10 flex items-center justify-between px-4 sticky top-0 z-10">
+  <a href="../index.html" class="flex items-center gap-2">
+    <img src="../../public/logo.png" class="w-8 h-8 rounded-lg object-cover" alt="StratonPay">
+    <span class="font-extrabold" id="title">Raspadinha</span>
+  </a>
+  <div class="flex items-center gap-2">
+    <div class="bg-black/40 px-3 py-1.5 rounded-full border border-white/10 text-sm">Saldo <b id="saldo">R$ 100,00</b></div>
+    <a href="../index.html" class="px-3 py-1.5 bg-white text-black rounded-full text-xs font-bold">Jogos</a>
+  </div>
+</header>
+
+<main class="max-w-[520px] mx-auto p-4">
+  <img id="skinArt" class="w-full h-36 object-cover rounded-2xl border border-white/10" alt="raspadinha">
+  <p class="text-white/60 text-xs mt-2 text-center">Raspe 9 casas. 3 símbolos iguais = prêmio.</p>
+  <div class="bg-[#1d2730] rounded-2xl p-4 mt-3 border border-white/10">
+    <div class="flex gap-2">
+      <input id="valor" type="number" value="5" min="1" class="h-11 w-28 rounded-xl px-3 text-sm">
+      <button id="btnNova" class="flex-1 h-11 rounded-xl font-extrabold text-sm text-white" style="background:#f59e0b">NOVA CARTELA</button>
+    </div>
+    <div id="grid" class="grid grid-cols-3 gap-2 mt-3"></div>
+    <p id="msg" class="text-sm mt-3 text-center text-white/70"></p>
+  </div>
+  <div class="bg-[#1d2730] rounded-2xl p-4 mt-3 border border-white/10 text-xs">
+    <p class="font-bold mb-2">Prêmios (x aposta)</p>
+    <div id="paytable" class="grid grid-cols-3 gap-1 text-center"></div>
+  </div>
+</main>
+
+<script type="module">
+const params = new URLSearchParams(location.search);
+const skin = (params.get('skin')||'copa').toLowerCase();
+const platformId = params.get('platform') || 'demo';
+const PKEY = 'player_' + platformId;
+const fmt = v => Number(v||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+
+const SKINS = {
+  copa:     { title:'Raspadinha da Copa', art:'../../public/layouts/raspadinha-copa.png', syms:['★','7','R$','◆','●','▲'], mult:{'★':50,'7':20,'R$':10,'◆':5,'●':2,'▲':1} },
+  chinesa:  { title:'Raspadinha Chinesa', art:'../../public/layouts/raspadinha - chinese.png', syms:['7','★','◆','R$','●','▲'], mult:{'7':50,'★':20,'◆':10,'R$':5,'●':2,'▲':1} },
+  padrao:   { title:'Raspadinha Padrão', art:'../../public/layouts/raspadinha - padrao.png', syms:['R$','7','★','◆','●','▲'], mult:{'R$':50,'7':20,'★':10,'◆':5,'●':2,'▲':1} }
+};
+const S = SKINS[skin] || SKINS.copa;
+document.title = S.title + ' | StratonPay Bets';
+document.getElementById('title').textContent = S.title;
+document.getElementById('skinArt').src = S.art;
+document.getElementById('paytable').innerHTML = Object.entries(S.mult).map(([s,m])=>`<div class="bg-white/5 rounded-lg py-1.5"><b>${s}</b> <span class="text-white/60">${m}x</span></div>`).join('');
+
+let saldo = 100;
+try{ const p = JSON.parse(localStorage.getItem(PKEY)||'null'); if(p && typeof p.saldo==='number') saldo = p.saldo; }catch{}
+function save(){ try{ const p = JSON.parse(localStorage.getItem(PKEY)||'{}'); p.saldo = saldo; localStorage.setItem(PKEY, JSON.stringify(p)); }catch{} document.getElementById('saldo').textContent = fmt(saldo); }
+async function logBet(b){ try{ const { sbCreateBet } = await import('../../supabase.js'); await sbCreateBet({ platform_id: platformId, jogo:'raspadinha-'+skin, ...b }); }catch{} }
+save();
+
+const grid = document.getElementById('grid'), msg = document.getElementById('msg');
+let aposta = 0, revealed = 0, cells = [], done = false;
+
+// monta cartela com margem da casa: 88% das cartelas sem prêmio, resto ponderado
+function sortear(){
+  const r = Math.random();
+  if(r < 0.88) return null;
+  const pool = [['▲',40],['●',25],['◆',15],['R$',10],['7',6],['★',4]];
+  let acc = 0, x = Math.random()*100, win = '▲';
+  for(const [s,w] of pool){ acc += w; if(x <= acc){ win = S.syms.includes(s)?s:'▲'; break; } }
+  return win;
+}
+function novaCartela(){
+  const v = Number(document.getElementById('valor').value||0);
+  if(!(v>0)){ alert('Informe o valor'); return; }
+  if(v > saldo){ alert('Saldo insuficiente. Deposite no p.html'); return; }
+  saldo -= v; save();
+  aposta = v; revealed = 0; done = false; cells = [];
+  msg.textContent = 'Raspe as casas com o dedo ou mouse.';
+  const win = sortear();
+  // 9 símbolos: se tem prêmio, garante 3 iguais; senão, mistura sem trinca
+  let syms = [];
+  if(win){
+    syms = [win,win,win];
+    const rest = S.syms.filter(s=>s!==win);
+    while(syms.length < 9){ const s = rest[Math.floor(Math.random()*rest.length)]; if(syms.filter(x=>x===s).length < 2) syms.push(s); }
+  } else {
+    while(syms.length < 9){ const s = S.syms[Math.floor(Math.random()*S.syms.length)]; if(syms.filter(x=>x===s).length < 2) syms.push(s); }
+  }
+  syms.sort(()=>Math.random()-.5);
+  grid.innerHTML = '';
+  syms.forEach(s=>{
+    const d = document.createElement('div');
+    d.className = 'cell';
+    d.innerHTML = `<div class="prize">${s}</div>`;
+    const cv = document.createElement('canvas');
+    d.appendChild(cv);
+    grid.appendChild(d);
+    const ctx = cv.getContext('2d');
+    function paint(){
+      cv.width = d.clientWidth; cv.height = d.clientHeight;
+      const g = ctx.createLinearGradient(0,0,cv.width,cv.height);
+      g.addColorStop(0,'#b45309'); g.addColorStop(1,'#92400e');
+      ctx.fillStyle = g; ctx.fillRect(0,0,cv.width,cv.height);
+      ctx.fillStyle = 'rgba(255,255,255,.25)';
+      ctx.font = 'bold 11px Inter,sans-serif'; ctx.textAlign = 'center';
+      ctx.fillText('RASPE', cv.width/2, cv.height/2 + 4);
+    }
+    paint();
+    let down = false;
+    const cell = { cv, ctx, s, open:false, pct:0 };
+    cells.push(cell);
+    function scratch(e){
+      if(done || cell.open) return;
+      const r = cv.getBoundingClientRect();
+      const cx = (e.touches?e.touches[0].clientX:e.clientX) - r.left;
+      const cy = (e.touches?e.touches[0].clientY:e.clientY) - r.top;
+      ctx.globalCompositeOperation = 'destination-out';
+      ctx.beginPath(); ctx.arc(cx, cy, 16, 0, 7); ctx.fill();
+      // % raspada
+      const dpx = ctx.getImageData(0,0,cv.width,cv.height).data;
+      let clear = 0;
+      for(let i=3;i<dpx.length;i+=16){ if(dpx[i]===0) clear++; }
+      if(clear / (dpx.length/16) > 0.45 && !cell.open){
+        cell.open = true; revealed++;
+        ctx.clearRect(0,0,cv.width,cv.height);
+        if(revealed === 9) finalizar();
+      }
+    }
+    cv.addEventListener('pointerdown', e=>{ down = true; scratch(e); });
+    cv.addEventListener('pointermove', e=>{ if(down) scratch(e); });
+    addEventListener('pointerup', ()=> down = false);
+  });
+}
+function finalizar(){
+  done = true;
+  const count = {};
+  cells.forEach(c=> count[c.s] = (count[c.s]||0)+1);
+  const winSym = Object.keys(count).find(s=>count[s]>=3);
+  if(winSym){
+    const m = S.mult[winSym]||1;
+    const ret = aposta * m;
+    saldo += ret; save();
+    msg.innerHTML = `<b class="text-green-400">3x ${winSym}! Você ganhou ${fmt(ret)} (${m}x).</b>`;
+    logBet({ valor: aposta, multiplicador: m, retorno: ret, resultado:'win' });
+  } else {
+    msg.innerHTML = `Sem trinca desta vez. Tente de novo!`;
+    logBet({ valor: aposta, multiplicador: 0, retorno: 0, resultado:'loss' });
+  }
+}
+document.getElementById('btnNova').onclick = novaCartela;
+</script>
+</body>
+</html>

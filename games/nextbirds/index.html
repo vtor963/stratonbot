@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Next Birds | StratonPay Bets</title>
+<link rel="icon" href="../../public/logo.png">
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+html,body{margin:0;padding:0;background:#0f1923;height:100%;overflow:hidden;font-family:Inter,system-ui,sans-serif}
+#c3wrap{position:fixed;inset:0}
+#c3wrap canvas{display:block;margin:0 auto}
+#topbar{position:fixed;top:0;left:0;right:0;z-index:10;display:flex;align-items:center;gap:8px;padding:8px 12px;background:rgba(15,25,35,.85);backdrop-filter:blur(6px)}
+</style>
+</head>
+<body>
+<div id="topbar">
+  <a href="../index.html" style="color:#fff;font-weight:800;font-size:13px;text-decoration:none">← Jogos</a>
+  <span style="color:#fff;font-weight:800;font-size:13px">Next Birds</span>
+  <span id="netstat" style="margin-left:auto;color:#9aa0a6;font-size:11px">modo offline</span>
+</div>
+<div id="c3wrap"></div>
+<script>
+// Sandbox: o jogo original fala com api.* do site antigo (fora do ar).
+// Interceptamos e devolvemos respostas neutras para rodar 100% offline.
+(function(){
+  const API = /api\.|nextbirds\.pro|\/info$|\/user$|\/transfer|\/withdraw|\/pix|\/status|\/gains|\/rollover|\/tracking|\/chat|\/jackpot|\/bonus/;
+  const fake = { ok:true, status:'ok', balance:100, token:'local', user:{name:'Jogador'}, data:{}, list:[] };
+  const JR = (o)=>new Response(JSON.stringify(o),{status:200,headers:{'Content-Type':'application/json'}});
+  const _fetch = window.fetch.bind(window);
+  window.fetch = (url, opts)=>{
+    try{ if(API.test(String(url))){ return Promise.resolve(JR(fake)); } }catch(e){}
+    return _fetch(url, opts).catch(()=>JR(fake));
+  };
+  const _XO = window.XMLHttpRequest;
+  window.XMLHttpRequest = function(){
+    const x = new _XO(); const _open = x.open;
+    x.open = function(m,u){ this._u = String(u); return _open.apply(this,arguments); };
+    const _send = x.send;
+    x.send = function(){
+      if(API.test(this._u||'')){
+        Object.defineProperty(x,'status',{value:200}); Object.defineProperty(x,'readyState',{value:4});
+        Object.defineProperty(x,'responseText',{value:JSON.stringify(fake)});
+        setTimeout(()=>{ x.onreadystatechange && x.onreadystatechange(); x.onload && x.onload(); },10);
+        return;
+      }
+      return _send.apply(this,arguments);
+    };
+    return x;
+  };
+  try{
+    const WS = window.WebSocket;
+    window.WebSocket = function(){ return { send(){}, close(){}, addEventListener(){}, removeEventListener(){}, readyState:1, CONNECTING:0, OPEN:1 }; };
+  }catch(e){}
+  try{ localStorage.setItem('token','local'); localStorage.setItem('language','pt-BR'); }catch(e){}
+  document.getElementById('netstat').textContent = 'modo offline (sem apostas)';
+})();
+</script>
+<script src="scripts/supportcheck.js"></script>
+<script src="scripts/offlineclient.js" type="module"></script>
+<script src="scripts/main.js" type="module"></script>
+<script type="module">
+const resp = await fetch('data.json');
+const projectData = await resp.json();
+const runtime = new self.RuntimeInterface({
+  useWorker: false,
+  engineScripts: ['scripts/c3runtime.js'],
+  projectScripts: [
+    'scripts/project/crypto.js',
+    'scripts/project/difficulties.js',
+    'scripts/project/stars.js',
+    'scripts/project/utils.js'
+  ],
+  mainProjectScript: 'scripts/project/scriptsInEvents.js',
+  scriptFolder: 'scripts/',
+  exportType: 'html5',
+  projectData
+});
+</script>
+</body>
+</html>

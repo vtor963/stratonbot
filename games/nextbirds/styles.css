@@ -1,0 +1,25 @@
+@font-face {
+	font-family: "Bloomer";
+	src: local("Bloomer"), url("/fonts/Bloomer-Regular.woff2");
+}
+
+#betInput {
+	border: 1vmin solid #000;
+	border-radius: 20vmin;
+	outline: none;
+	padding: 0 10px;
+	-moz-appearance: textfield;
+	font-family: 'Bloomer', sans-serif;
+	color: #000;
+	height: 200px;
+	background: #fff;
+	font-size: 8vmin;
+	text-align: center;
+	line-height: 0;
+}
+
+#betInput::-webkit-outer-spin-button,
+#betInput::-webkit-inner-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+}

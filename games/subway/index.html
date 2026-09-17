@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Subway Run | StratonPay Bets</title>
+<link rel="icon" href="../../public/logo.png">
+<script src="https://cdn.tailwindcss.com"></script>
+<style>*{font-family:Inter,system-ui,sans-serif}body{background:#0f1923;color:#fff}canvas{touch-action:none}input{color:#111}</style>
+</head>
+<body class="min-h-screen">
+<header class="h-14 bg-[#1d2730] border-b border-white/10 flex items-center justify-between px-4 sticky top-0 z-10">
+  <a href="../index.html" class="flex items-center gap-2">
+    <img src="../../public/logo.png" class="w-8 h-8 rounded-lg object-cover" alt="StratonPay">
+    <span class="font-extrabold">Subway Run</span>
+  </a>
+  <div class="flex items-center gap-2">
+    <div class="bg-black/40 px-3 py-1.5 rounded-full border border-white/10 text-sm">Saldo <b id="saldo">R$ 100,00</b></div>
+    <a href="../index.html" class="px-3 py-1.5 bg-white text-black rounded-full text-xs font-bold">Jogos</a>
+  </div>
+</header>
+<main class="max-w-[520px] mx-auto p-4">
+  <div class="bg-[#1d2730] rounded-2xl p-4 border border-white/10">
+    <div class="flex gap-2">
+      <input id="valor" type="number" value="5" min="1" class="h-11 w-28 rounded-xl px-3 text-sm">
+      <button id="btnJogar" class="flex-1 h-11 rounded-xl font-extrabold text-sm text-white" style="background:#22c55e">CORRER (meta 500 pts = 2x)</button>
+    </div>
+    <p class="text-xs text-white/60 mt-2">Setas / A-D para trocar de trilho. Desvie por 500 pontos e dobre a aposta.</p>
+  </div>
+  <div class="bg-[#1d2730] rounded-2xl mt-3 border border-white/10 overflow-hidden">
+    <canvas id="cv" width="480" height="420" class="w-full block"></canvas>
+  </div>
+  <p id="msg" class="text-sm mt-2 text-center text-white/70"></p>
+</main>
+<script type="module">
+const params = new URLSearchParams(location.search);
+const platformId = params.get('platform') || 'demo';
+const PKEY = 'player_' + platformId;
+const fmt = v => Number(v||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+let saldo = 100;
+try{ const p = JSON.parse(localStorage.getItem(PKEY)||'null'); if(p && typeof p.saldo==='number') saldo = p.saldo; }catch{}
+function save(){ try{ const p = JSON.parse(localStorage.getItem(PKEY)||'{}'); p.saldo = saldo; localStorage.setItem(PKEY, JSON.stringify(p)); }catch{} document.getElementById('saldo').textContent = fmt(saldo); }
+async function logBet(b){ try{ const { sbCreateBet } = await import('../../supabase.js'); await sbCreateBet({ platform_id: platformId, jogo:'subway', ...b }); }catch{} }
+save();
+
+const cv = document.getElementById('cv'), ctx = cv.getContext('2d');
+const LANES = [90, 240, 390];
+let lane = 1, obs = [], score = 0, playing = false, aposta = 0, speed = 4, t0 = 0;
+const META = 500;
+
+function reset(){ lane = 1; obs = []; score = 0; speed = 4; }
+function spawn(){
+  const l = Math.floor(Math.random()*3);
+  if(obs.length && obs[obs.length-1].y < 80) return;
+  obs.push({ lane:l, y:-40 });
+}
+document.addEventListener('keydown', e=>{
+  if(e.key === 'ArrowLeft' || e.key==='a') lane = Math.max(0, lane-1);
+  if(e.key === 'ArrowRight' || e.key==='d') lane = Math.min(2, lane+1);
+});
+let tx = null;
+cv.addEventListener('pointerdown', e=> tx = e.clientX);
+cv.addEventListener('pointerup', e=>{
+  if(tx === null) return;
+  const dx = e.clientX - tx;
+  if(dx > 24) lane = Math.min(2, lane+1);
+  else if(dx < -24) lane = Math.max(0, lane-1);
+  tx = null;
+});
+function end(win){
+  playing = false;
+  document.getElementById('btnJogar').disabled = false;
+  if(win){
+    const ret = aposta * 2;
+    saldo += ret; save();
+    document.getElementById('msg').innerHTML = `<b class="text-green-400">Meta batida! +${fmt(ret - aposta)}.</b>`;
+    logBet({ valor: aposta, multiplicador: 2, retorno: ret, resultado:'win' });
+  } else {
+    document.getElementById('msg').innerHTML = `Bateu com ${score} pts. Faltaram ${META - score}.`;
+    logBet({ valor: aposta, multiplicador: 0, retorno: 0, resultado:'loss' });
+  }
+  aposta = 0;
+}
+function frame(){
+  ctx.fillStyle = '#141d29'; ctx.fillRect(0,0,480,420);
+  // trilhos
+  ctx.strokeStyle = 'rgba(255,255,255,.12)'; ctx.lineWidth = 3;
+  [165, 315].forEach(x=>{ ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,420); ctx.stroke(); });
+  // dormentes
+  ctx.fillStyle = 'rgba(255,255,255,.06)';
+  const off = (Date.now()/20) % 40;
+  for(let y=-40+off; y<420; y+=40) ctx.fillRect(40, y, 400, 6);
+  if(playing){
+    if(Math.random() < 0.03) spawn();
+    speed = 4 + score/250;
+    for(const o of obs) o.y += speed;
+    obs = obs.filter(o=>o.y < 460);
+    score += 1;
+    // colisão
+    for(const o of obs){
+      if(o.lane === lane && o.y > 300 && o.y < 360){ end(false); break; }
+    }
+    if(score >= META && playing) end(true);
+  } else if(!playing && score === 0){
+    ctx.fillStyle = 'rgba(255,255,255,.5)'; ctx.font = 'bold 15px Inter,sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('Aposte e clique CORRER', 240, 210);
+  }
+  // obstáculos
+  for(const o of obs){
+    ctx.fillStyle = '#ef4444';
+    ctx.fillRect(LANES[o.lane]-28, o.y, 56, 34);
+    ctx.fillStyle = '#991b1b';
+    ctx.fillRect(LANES[o.lane]-28, o.y+26, 56, 8);
+  }
+  // jogador
+  const px = LANES[lane];
+  ctx.fillStyle = '#22c55e';
+  ctx.beginPath(); ctx.arc(px, 330, 20, 0, 7); ctx.fill();
+  ctx.fillStyle = '#fff'; ctx.font = 'bold 16px Inter'; ctx.textAlign = 'center';
+  ctx.fillText('S', px, 336);
+  // HUD
+  ctx.fillStyle = '#fff'; ctx.font = 'bold 18px Inter'; ctx.textAlign = 'left';
+  ctx.fillText(score + ' / ' + META, 12, 28);
+  requestAnimationFrame(frame);
+}
+document.getElementById('btnJogar').onclick = ()=>{
+  if(playing) return;
+  const v = Number(document.getElementById('valor').value||0);
+  if(!(v>0)){ alert('Informe o valor'); return; }
+  if(v > saldo){ alert('Saldo insuficiente. Deposite no p.html'); return; }
+  saldo -= v; save(); aposta = v; reset(); playing = true;
+  document.getElementById('btnJogar').disabled = true;
+  document.getElementById('msg').textContent = 'Desvie até 500 pontos!';
+};
+frame();
+</script>
+</body>
+</html>
