@@ -32,6 +32,18 @@ Extraídos e varridos (backdoor, eval, exfiltração, minerador, nulled) fora de
 | 1WIN PRO TEMA DIFERENTE | Pasta vazia |
 | `app1k/games/*` (18 scrapes) | **Apagados neste ciclo** (commit `cd7f7e4`); eram cascas Next.js sem assets |
 
+## SubwayV3 (`subway surf completo`, 17/09) — VEREDITO: standalone com ressalvas
+
+Sistema BR completo e funcional: Unity WebGL Subway (mapas Venice + London, personagens, áudio) + PHP (login/cadastro/depósito/saque/painel/adm/afiliados/presell/pixels) + dump SQL (tabelas `appconfig`, `gateway`, `confirmar_deposito`, `saques`, `apostas`, `ggr`...) + 2 vídeos tutorial. Scan limpo (só falsos positivos de libs). Gateway = **SuitPay** (`ws.suitpay.app`, `ci:`/`cs:` do banco, tabela `gateway`); saque = fila manual (`aguardando`, dono paga por fora).
+
+**ATENÇÃO — coleira de receita do autor (declarada no docx: "SCRIPT FREE TEM 15% DE GGR"):**
+- `auth/percas.php`: cada derrota do jogador alimenta a tabela `ggr` (`ggr_total = total_percas*0.08`) com status `IRREGULAR/REGULAR` = eles sabem quem não repassa.
+- `deposito/index.php`: split SuitPay (`split_user`/`split_percent` da tabela `gateway`) = o corte pode sair automático em cada depósito.
+- Para usar sem repasse: neutralizar `percas.php` + zerar split (decisão sua; se for pagar, mantém).
+- Obrigatório trocar: `conectarbanco.php` (vem com senha Hostinger de terceiros: `u523120494_exclusivo`), chaves SuitPay (`gateway`), webhook `/webhook/pix.php` p/ seu domínio.
+- Bugs: SQL injection em `deposito/consultarpagamento.php:31` (token cru no sprintf); restos de outro site (Google Ads `AW-11305271105`, iframes FruitsMoney); `chatwoot` com token `=======`.
+- Requer hospedagem PHP + MySQL (não roda na Vercel).
+
 ## Mapa final por categoria (nada misturado)
 
 - **Retrô/Arcade**: Block Blast (pronto) + `nextbirds.pro` (integrar) + Subway/Helix (reescrever)
