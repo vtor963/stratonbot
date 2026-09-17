@@ -47,6 +47,9 @@ Sistema BR completo e funcional: Unity WebGL Subway (mapas Venice + London, pers
   `percas.php` neutralizado (sem dívida GGR), SQLi corrigida, credenciais viraram
   placeholder, SQL sem linhas de teste e com login adm placeholder, iframes/chat/CDN
   morto removidos. Ver `LEIA-ME-INSTALAR.txt` dentro do zip.
+- **v2 (white-label + senhas)**: marca SuitPay removida do visível (só endpoint técnico),
+  secret do gateway mascarado no adm + `bd.php` com prepared, `/adm` com
+  `admin@stratonpay.bet` + hash bcrypt (senha nunca em texto), CPF de teste removido do SQL.
 
 ## Mapa final por categoria (nada misturado)
 
