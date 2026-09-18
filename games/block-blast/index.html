@@ -9,48 +9,58 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
 *{font-family:Inter,sans-serif}
-#board{display:grid;grid-template-columns:repeat(8,1fr);gap:6px}
-.cell{aspect-ratio:1/1;border-radius:8px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.06)}
-.cell.filled{box-shadow:inset 0 -3px 0 rgba(0,0,0,.35)}
-.c0{background:#e5e5e5}.c1{background:#a3a3a3}.c2{background:#525252}.c3{background:#fafafa}.c4{background:#737373}
-.cell.clear{outline:2px solid #fff;opacity:.4}
-#board.playing{opacity:.55;pointer-events:none}
+body{background:#0b0e1a;color:#fff}
+#board{display:grid;grid-template-columns:repeat(8,1fr);gap:5px;touch-action:none}
+.cell{aspect-ratio:1/1;border-radius:22%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.05);transition:background .1s}
+.b{border-radius:22%;box-shadow:inset 2px 2px 0 rgba(255,255,255,.45), inset -3px -3px 0 rgba(0,0,0,.35), 0 3px 6px rgba(0,0,0,.4)}
+.c0{background:linear-gradient(135deg,#f87171,#dc2626)}
+.c1{background:linear-gradient(135deg,#fb923c,#ea580c)}
+.c2{background:linear-gradient(135deg,#facc15,#ca8a04)}
+.c3{background:linear-gradient(135deg,#4ade80,#16a34a)}
+.c4{background:linear-gradient(135deg,#38bdf8,#0284c7)}
+.c5{background:linear-gradient(135deg,#a78bfa,#7c3aed)}
+.c6{background:linear-gradient(135deg,#f472b6,#db2777)}
+.cell.gold{background:linear-gradient(135deg,#fef08a,#eab308)!important;box-shadow:0 0 14px 4px rgba(250,204,21,.8), inset 2px 2px 0 rgba(255,255,255,.6)!important;animation:goldpulse .45s ease}
+@keyframes goldpulse{0%{transform:scale(1)}40%{transform:scale(1.12)}100%{transform:scale(1)}}
+.cell.hint-ok{background:rgba(74,222,128,.45)!important;border-color:#4ade80}
+.cell.hint-bad{background:rgba(248,113,113,.35)!important}
+.tray-piece{touch-action:none;cursor:grab;user-select:none;-webkit-user-select:none}
+.tray-piece:active{cursor:grabbing}
+.pcell{border-radius:22%;box-shadow:inset 2px 2px 0 rgba(255,255,255,.45), inset -3px -3px 0 rgba(0,0,0,.35)}
+#ghost{position:fixed;z-index:50;pointer-events:none;opacity:.92;display:none;filter:drop-shadow(0 10px 14px rgba(0,0,0,.5))}
+input[type=number]{background:rgba(255,255,255,.08)!important;color:#fff!important;border:1px solid rgba(255,255,255,.18)!important;color-scheme:dark}
+@keyframes pop{0%{transform:scale(.6);opacity:0}60%{transform:scale(1.08)}100%{transform:scale(1);opacity:1}}
+.pop{animation:pop .25s ease}
+@keyframes floatup{0%{transform:translateY(0);opacity:1}100%{transform:translateY(-46px);opacity:0}}
+.floatscore{animation:floatup 1s ease forwards}
 </style>
 </head>
-<body class="bg-black min-h-screen text-white flex flex-col">
-<header class="h-14 bg-zinc-950 border-b border-white/10 flex items-center justify-between px-4 sticky top-0 z-10">
-  <a href="../../dashboard.html" class="flex items-center gap-2">
+<body class="min-h-screen flex flex-col">
+<header class="h-14 bg-[#12162a] border-b border-white/10 flex items-center justify-between px-4 sticky top-0 z-10">
+  <a href="#" onclick="if(history.length>1){history.back()}else{location.href='../../p.html?demo=6666'}return false;" class="flex items-center gap-2">
     <img src="../../public/logo.png" class="w-8 h-8 rounded-lg object-cover" alt="StratonPay Bets">
-    <span class="font-extrabold">StratonPay Bets</span>
+    <span class="font-extrabold">Block Blast</span>
   </a>
   <div class="flex items-center gap-2">
-    <div class="bg-zinc-900 px-3 py-1.5 rounded-full flex items-center gap-2 border border-white/10">
+    <div class="bg-white/5 px-3 py-1.5 rounded-full flex items-center gap-2 border border-white/10">
       <span class="text-xs text-zinc-400">Saldo</span><span id="saldo" class="text-sm font-extrabold">R$ 100,00</span>
     </div>
-    <a href="../../dashboard.html" class="px-3 py-1.5 bg-white text-black rounded-full text-xs font-bold">Voltar</a>
   </div>
 </header>
 
-<div id="authBar" class="hidden bg-zinc-900 border-b border-white/10 px-4 py-2 text-xs text-center">
-  <span class="text-zinc-400">Você não está logado.</span>
-  <a href="../../index.html" class="font-bold underline ml-1">Entrar</a>
-  <span class="text-zinc-600 mx-1">|</span>
-  <a href="../../sign-up.html" class="font-bold underline">Criar conta</a>
-</div>
-
 <main class="flex-1 max-w-[960px] mx-auto w-full p-3 sm:p-4 grid lg:grid-cols-[320px_1fr] gap-4">
-  <section class="bg-zinc-950 rounded-2xl p-4 border border-white/10 h-fit">
-    <div class="bg-white text-black rounded-xl p-3 text-center">
-      <p class="text-xs font-bold text-zinc-500">BLOCK BLAST</p>
-      <p class="text-lg font-black">StratonPay Edition</p>
-      <p class="text-[11px] text-zinc-500">Complete linhas para ganhar • RTP 96,5%</p>
+  <section class="bg-[#12162a] rounded-2xl p-4 border border-white/10 h-fit">
+    <div class="rounded-xl p-3 text-center" style="background:linear-gradient(135deg,#8cb506,#3f6212)">
+      <p class="text-xs font-bold text-lime-100">BLOCK BLAST</p>
+      <p class="text-lg font-black">Encaixe e limpe linhas</p>
+      <p class="text-[11px] text-lime-100/80">Pontos: <b id="score">0</b> | Linhas: <b id="lines">0</b></p>
     </div>
     <div class="mt-4">
-      <label class="text-xs font-bold text-zinc-400">Valor da aposta</label>
-      <div class="mt-1 flex items-center gap-2 bg-zinc-900 rounded-xl p-1 border border-white/10">
-        <button id="betMinus" class="w-8 h-8 rounded-lg bg-white/10 hover:bg-white/20 grid place-items-center font-bold" aria-label="Diminuir aposta">−</button>
+      <label class="text-xs font-bold text-zinc-400">Entrada da partida</label>
+      <div class="mt-1 flex items-center gap-2 bg-white/5 rounded-xl p-1 border border-white/10">
+        <button id="betMinus" class="w-8 h-8 rounded-lg bg-white/10 hover:bg-white/20 grid place-items-center font-bold">-</button>
         <span id="betVal" class="flex-1 text-center font-extrabold">R$ 2,00</span>
-        <button id="betPlus" class="w-8 h-8 rounded-lg bg-white/10 hover:bg-white/20 grid place-items-center font-bold" aria-label="Aumentar aposta">+</button>
+        <button id="betPlus" class="w-8 h-8 rounded-lg bg-white/10 hover:bg-white/20 grid place-items-center font-bold">+</button>
       </div>
       <div class="grid grid-cols-4 gap-1 mt-2">
         <button data-bet="1" class="betQuick py-1.5 bg-white/5 hover:bg-white/10 rounded-lg text-xs font-bold">1</button>
@@ -59,143 +69,310 @@
         <button data-bet="10" class="betQuick py-1.5 bg-white/5 hover:bg-white/10 rounded-lg text-xs font-bold">10</button>
       </div>
     </div>
-    <button id="btnGirar" class="w-full mt-4 py-3 bg-white text-black rounded-xl font-black hover:bg-zinc-200 active:scale-[0.98] transition disabled:opacity-50">GIRAR</button>
+    <button id="btnPlay" class="w-full mt-4 py-3 rounded-xl font-black text-black transition disabled:opacity-50" style="background:linear-gradient(135deg,#a3e635,#65a30d)">JOGAR</button>
+    <button id="btnStop" class="w-full mt-2 py-2 rounded-xl font-bold text-xs bg-white/10 hover:bg-white/20 hidden">Encerrar e receber</button>
     <p id="msg" class="text-xs text-center text-zinc-400 h-4 mt-2"></p>
-    <div class="bg-zinc-900 rounded-xl p-3 border border-white/5 mt-2">
-      <p class="text-xs font-bold">Últimas rodadas</p>
+    <div class="bg-black/30 rounded-xl p-3 border border-white/5 mt-2">
+      <p class="text-xs font-bold">Prêmios por linhas</p>
+      <div class="text-[11px] text-zinc-400 mt-1 space-y-0.5">
+        <p>4 a 7 linhas: 0.4x</p><p>8 a 12 linhas: 1x</p><p>13 a 19 linhas: 2x</p><p>20 ou mais: 5x</p>
+      </div>
+    </div>
+    <div class="bg-black/30 rounded-xl p-3 border border-white/5 mt-2">
+      <p class="text-xs font-bold">Últimas partidas</p>
       <div id="historico" class="mt-2 space-y-1 text-xs text-zinc-400 max-h-28 overflow-auto">
-        <p class="text-zinc-600">Nenhuma rodada ainda.</p>
+        <p class="text-zinc-600">Nenhuma partida ainda.</p>
       </div>
     </div>
   </section>
 
-  <section class="bg-zinc-950 rounded-2xl overflow-hidden border border-white/10 flex flex-col">
-    <div class="h-11 bg-zinc-900 flex items-center justify-between px-3 border-b border-white/5">
+  <section class="bg-[#12162a] rounded-2xl overflow-hidden border border-white/10 flex flex-col">
+    <div class="h-11 bg-black/30 flex items-center justify-between px-3 border-b border-white/5">
       <span class="font-bold text-sm">Block Blast</span>
-      <span id="roundInfo" class="text-[11px] text-zinc-400">Rodada #0</span>
+      <span id="roundInfo" class="text-[11px] text-zinc-400">Toque numa peça e arraste</span>
     </div>
-    <div class="flex-1 p-3 bg-black flex flex-col items-center">
-      <div id="board" class="w-full max-w-[440px] bg-zinc-950 p-2 rounded-xl border border-white/10"></div>
-      <p class="text-[11px] text-zinc-500 mt-2">Linha ou coluna cheia limpa e paga. Multiplica por linhas simultâneas.</p>
+    <div class="flex-1 p-3 bg-black flex flex-col items-center relative">
+      <div id="board" class="w-full max-w-[440px] bg-[#12162a] p-2 rounded-xl border border-white/10"></div>
+      <div id="tray" class="w-full max-w-[440px] grid grid-cols-3 gap-2 mt-3"></div>
+      <div id="floatLayer" class="absolute inset-0 pointer-events-none overflow-hidden"></div>
+      <p class="text-[11px] text-zinc-500 mt-2">Complete linhas ou colunas para limpar. Sem encaixe possível, a partida termina.</p>
     </div>
   </section>
 </main>
+<div id="ghost"></div>
 
-<script>
-(function(){
-  var BETS=[1,2,5,10,20,50];
-  var bet=2, saldo=100, round=0, history=[];
-  var boardEl=document.getElementById('board');
-  var saldoEl=document.getElementById('saldo');
-  var betEl=document.getElementById('betVal');
-  var msgEl=document.getElementById('msg');
-  var histEl=document.getElementById('historico');
-  var roundEl=document.getElementById('roundInfo');
-  var btn=document.getElementById('btnGirar');
-  var grid=[];
+<script type="module">
+const params = new URLSearchParams(location.search);
+const platformId = params.get('platform') || 'demo';
+const PKEY = 'player_' + platformId;
+const fmt = v => Number(v||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+const fmtN = v => 'R$ ' + Number(v||0).toFixed(2);
 
-  function ownerKey(){
-    try{
-      var u=JSON.parse(localStorage.getItem('profits_user')||'{}');
-      return 'straton_saldo_'+((u.email||'anon').toLowerCase());
-    }catch(e){ return 'straton_saldo_anon'; }
+let saldo = 100;
+try{ const p = JSON.parse(localStorage.getItem(PKEY)||'null'); if(p && typeof p.saldo === 'number') saldo = p.saldo; }catch(e){}
+function saveSaldo(){
+  try{ const p = JSON.parse(localStorage.getItem(PKEY)||'{}'); p.saldo = saldo; localStorage.setItem(PKEY, JSON.stringify(p)); }catch(e){}
+  document.getElementById('saldo').textContent = fmt(saldo);
+}
+async function logBet(b){
+  try{
+    const m = await import('../../supabase.js');
+    await m.sbCreateBet({ platform_id: platformId, jogo:'block-blast', ...b });
+    let pl = {};
+    try{ pl = JSON.parse(localStorage.getItem(PKEY)||'{}'); }catch(e){}
+    await m.sbUpsertPlayer(platformId, pl);
+  }catch(e){}
+}
+saveSaldo();
+
+const BETS = [1,2,5,10,20,50];
+let bet = 2;
+const SHAPES = [
+  {c:[[0,0]], col:0},{c:[[0,0],[0,1]], col:1},{c:[[0,0],[1,0]], col:2},
+  {c:[[0,0],[0,1],[0,2]], col:3},{c:[[0,0],[1,0],[2,0]], col:4},
+  {c:[[0,0],[0,1],[1,0],[1,1]], col:5},{c:[[0,0],[0,1],[0,2],[1,0],[1,1],[1,2]], col:6},
+  {c:[[0,0],[1,0],[2,0],[2,1]], col:1},{c:[[0,0],[0,1],[0,2],[0,3]], col:2},
+  {c:[[0,0],[1,0],[2,0],[3,0]], col:3},{c:[[0,0],[0,1],[0,2],[0,3],[0,4]], col:4},
+  {c:[[0,0],[0,1],[0,2],[1,2],[2,2]], col:5},{c:[[0,0],[1,0],[1,1],[1,2]], col:6},
+  {c:[[0,1],[1,0],[1,1],[1,2]], col:0},{c:[[0,0],[0,1],[1,1],[2,1]], col:2},
+  {c:[[0,0],[0,1],[0,2],[1,0],[2,0]], col:4},{c:[[0,0],[1,0],[2,0],[2,1],[2,2]], col:5},
+  {c:[[0,0],[0,1],[0,2],[0,3],[0,4],[1,0],[1,1],[1,2]], col:6},
+  {c:[[0,0],[0,1],[1,0]], col:0}
+];
+let grid = [], tray = [null,null,null], playing = false, clearing = false, score = 0, lines = 0, entry = 0;
+const boardEl = document.getElementById('board');
+const trayEl = document.getElementById('tray');
+const ghost = document.getElementById('ghost');
+const msgEl = document.getElementById('msg');
+const scoreEl = document.getElementById('score');
+const linesEl = document.getElementById('lines');
+const btnPlay = document.getElementById('btnPlay');
+const btnStop = document.getElementById('btnStop');
+const histEl = document.getElementById('historico');
+const roundEl = document.getElementById('roundInfo');
+let history = [];
+
+function beep(f, d){
+  try{
+    const ctx = beep.ctx || (beep.ctx = new (window.AudioContext||window.webkitAudioContext)());
+    const o = ctx.createOscillator(), g = ctx.createGain();
+    o.connect(g); g.connect(ctx.destination); o.frequency.value = f; o.type = 'sine';
+    g.gain.setValueAtTime(.1, ctx.currentTime); g.gain.exponentialRampToValueAtTime(.001, ctx.currentTime + d);
+    o.start(); o.stop(ctx.currentTime + d);
+  }catch(e){}
+}
+function paint(){
+  document.getElementById('betVal').textContent = fmtN(bet);
+  scoreEl.textContent = score; linesEl.textContent = lines;
+}
+function render(){
+  let html = '';
+  for(let i=0;i<64;i++){
+    html += grid[i] >= 0 ? `<div class="cell b c${grid[i]%7}" data-i="${i}"></div>` : `<div class="cell" data-i="${i}"></div>`;
   }
-  function fmt(v){ return 'R$ '+v.toFixed(2).replace('.',','); }
-  function paint(){
-    saldoEl.textContent=fmt(saldo);
-    betEl.textContent=fmt(bet);
-    roundEl.textContent='Rodada #'+round;
-  }
-  function emptyGrid(){ grid=[]; for(var i=0;i<64;i++) grid.push(-1); }
-  function render(clearIdx){
-    clearIdx=clearIdx||[];
-    var html='';
-    for(var i=0;i<64;i++){
-      var cls='cell';
-      if(grid[i]>=0) cls+=' filled c'+(grid[i]%5);
-      if(clearIdx.indexOf(i)>=0) cls+=' clear';
-      html+='<div class="'+cls+'"></div>';
+  boardEl.innerHTML = html;
+}
+function shapeSize(s){
+  let r = 0, c = 0;
+  s.c.forEach(([a,b])=>{ r = Math.max(r,a); c = Math.max(c,b); });
+  return [r+1, c+1];
+}
+function renderTray(){
+  trayEl.innerHTML = '';
+  tray.forEach((s, k)=>{
+    const d = document.createElement('div');
+    d.className = 'bg-black/30 rounded-xl border border-white/10 p-2 flex items-center justify-center min-h-[86px]';
+    if(!s){ trayEl.appendChild(d); return; }
+    const [R,C] = shapeSize(s);
+    const g = document.createElement('div');
+    g.className = 'tray-piece pop';
+    g.style.display = 'grid';
+    g.style.gridTemplateColumns = `repeat(${C}, 20px)`;
+    g.style.gap = '2px';
+    for(let r=0;r<R;r++) for(let c=0;c<C;c++){
+      const on = s.c.some(([a,b])=>a===r&&b===c);
+      const cell = document.createElement('div');
+      cell.style.width = '20px'; cell.style.height = '20px';
+      cell.className = on ? `pcell c${s.col%7}` : '';
+      if(!on) cell.style.visibility = 'hidden';
+      g.appendChild(cell);
     }
-    boardEl.innerHTML=html;
-  }
-  function fillRandom(){
-    for(var i=0;i<64;i++){
-      if(Math.random()<0.72) grid[i]=Math.floor(Math.random()*5);
-      else grid[i]=-1;
-    }
-  }
-  function fullLines(){
-    var rows=[],cols=[],i,r,c,full;
-    for(r=0;r<8;r++){ full=true; for(c=0;c<8;c++){ if(grid[r*8+c]<0){full=false;break;} } if(full) rows.push(r); }
-    for(c=0;c<8;c++){ full=true; for(r=0;r<8;r++){ if(grid[r*8+c]<0){full=false;break;} } if(full) cols.push(c); }
-    return {rows:rows,cols:cols};
-  }
-  function renderHistory(){
-    if(!history.length){ histEl.innerHTML='<p class="text-zinc-600">Nenhuma rodada ainda.</p>'; return; }
-    histEl.innerHTML=history.map(function(h){
-      var right=h.ganho>0?'+'+fmt(h.ganho):'-'+fmt(h.bet);
-      var cls=h.ganho>0?'text-green-400':'text-zinc-500';
-      return '<div class="flex justify-between border-b border-white/5 py-1"><span>'+h.hora+' • '+fmt(h.bet)+'</span><span class="'+cls+'">'+right+'</span></div>';
-    }).join('');
-  }
-  function save(){ try{ localStorage.setItem(ownerKey(),String(saldo)); }catch(e){} }
-  function load(){
-    try{
-      var u=JSON.parse(localStorage.getItem('profits_user')||'{}');
-      if(!u.email){ document.getElementById('authBar').classList.remove('hidden'); }
-    }catch(e){}
-    try{
-      var s=parseFloat(localStorage.getItem(ownerKey()));
-      if(!isNaN(s)) saldo=s;
-    }catch(e){}
-  }
-  function setBet(v){ bet=v; paint(); }
-  document.getElementById('betMinus').addEventListener('click',function(){
-    var i=BETS.indexOf(bet); setBet(BETS[Math.max(0,i-1)]);
+    g.addEventListener('pointerdown', e=>startDrag(e, k));
+    d.appendChild(g);
+    trayEl.appendChild(d);
   });
-  document.getElementById('betPlus').addEventListener('click',function(){
-    var i=BETS.indexOf(bet); setBet(BETS[Math.min(BETS.length-1,i+1)]);
-  });
-  Array.prototype.forEach.call(document.querySelectorAll('.betQuick'),function(b){
-    b.addEventListener('click',function(){ setBet(parseFloat(b.getAttribute('data-bet'))); });
-  });
-
-  btn.addEventListener('click',function(){
-    if(btn.disabled) return;
-    if(saldo<bet){ msgEl.textContent='Saldo insuficiente. Faça depósito.'; return; }
-    btn.disabled=true; btn.textContent='GIRANDO...'; boardEl.classList.add('playing');
-    saldo-=bet; round++; msgEl.textContent='';
-    setTimeout(function(){
-      fillRandom();
-      var lines=fullLines();
-      var idx=[];
-      lines.rows.forEach(function(r){ for(var c=0;c<8;c++) idx.push(r*8+c); });
-      lines.cols.forEach(function(c){ for(var r=0;r<8;r++) idx.push(r*8+c); });
-      var nLines=lines.rows.length+lines.cols.length;
-      render(idx);
-      var ganho=0;
-      if(nLines>0){
-        ganho=bet*(1+nLines*1.5);
-        ganho=Math.round(ganho*100)/100;
-        saldo=Math.round((saldo+ganho)*100)/100;
-        msgEl.textContent='GANHOU '+fmt(ganho)+' ('+nLines+' linhas)';
-        msgEl.className='text-xs text-center text-green-400 h-4 mt-2 font-bold';
-        idx.forEach(function(i){ grid[i]=-1; });
-        setTimeout(function(){ render([]); },650);
-      } else {
-        msgEl.textContent='Sem linha completa. Tente de novo.';
-        msgEl.className='text-xs text-center text-zinc-400 h-4 mt-2';
-      }
-      history.unshift({bet:bet,ganho:ganho,hora:new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})});
-      if(history.length>8) history.pop();
-      renderHistory(); paint(); save();
-      boardEl.classList.remove('playing');
-      btn.disabled=false; btn.textContent='GIRAR';
-    },650);
-  });
-
-  load(); emptyGrid(); fillRandom(); render([]); renderHistory(); paint();
-})();
+}
+function fitsAt(s, base){
+  const br = Math.floor(base/8), bc = base%8;
+  for(const [dr,dc] of s.c){
+    const r = br+dr, c = bc+dc;
+    if(r>7 || c>7 || grid[r*8+c] >= 0) return false;
+  }
+  return true;
+}
+function anyFit(s){
+  for(let i=0;i<64;i++) if(fitsAt(s,i)) return true;
+  return false;
+}
+function cellFromPoint(x, y){
+  const r = boardEl.getBoundingClientRect();
+  const cw = r.width/8;
+  const c = Math.floor((x-r.left)/cw), rr = Math.floor((y-r.top)/cw);
+  if(c<0||c>7||rr<0||rr>7) return -1;
+  return rr*8+c;
+}
+let dragK = -1;
+function startDrag(e, k){
+  if(!playing || clearing || !tray[k]) return;
+  e.preventDefault();
+  dragK = k;
+  const s = tray[k];
+  const [R,C] = shapeSize(s);
+  ghost.innerHTML = '';
+  ghost.style.display = 'grid';
+  ghost.style.gridTemplateColumns = `repeat(${C}, 26px)`;
+  ghost.style.gap = '2px';
+  for(let r=0;r<R;r++) for(let c=0;c<C;c++){
+    const on = s.c.some(([a,b])=>a===r&&b===c);
+    const cell = document.createElement('div');
+    cell.style.width = '26px'; cell.style.height = '26px';
+    cell.className = on ? `pcell c${s.col%7}` : '';
+    if(!on) cell.style.visibility = 'hidden';
+    ghost.appendChild(cell);
+  }
+  moveGhost(e);
+  window.addEventListener('pointermove', moveGhost);
+  window.addEventListener('pointerup', endDrag, {once:true});
+}
+function moveGhost(e){
+  if(dragK < 0) return;
+  ghost.style.left = (e.clientX - ghost.offsetWidth/2) + 'px';
+  ghost.style.top = (e.clientY - 30) + 'px';
+  boardEl.querySelectorAll('.cell').forEach(c=>c.classList.remove('hint-ok','hint-bad'));
+  const base = cellFromPoint(e.clientX, e.clientY - 14);
+  if(base < 0 || !tray[dragK]) return;
+  const ok = fitsAt(tray[dragK], base);
+  const br = Math.floor(base/8), bc = base%8;
+  for(const [dr,dc] of tray[dragK].c){
+    const r = br+dr, c = bc+dc;
+    if(r>7||c>7) continue;
+    boardEl.children[r*8+c].classList.add(ok ? 'hint-ok' : 'hint-bad');
+  }
+}
+function endDrag(e){
+  window.removeEventListener('pointermove', moveGhost);
+  ghost.style.display = 'none';
+  boardEl.querySelectorAll('.cell').forEach(c=>c.classList.remove('hint-ok','hint-bad'));
+  if(dragK < 0) return;
+  const k = dragK; dragK = -1;
+  const s = tray[k];
+  if(!s) return;
+  const base = cellFromPoint(e.clientX, e.clientY - 14);
+  if(base < 0 || !fitsAt(s, base)){ renderTray(); return; }
+  const br = Math.floor(base/8), bc = base%8;
+  for(const [dr,dc] of s.c) grid[(br+dr)*8+(bc+dc)] = s.col;
+  tray[k] = null;
+  score += s.c.length * 10;
+  beep(330, .08);
+  render(); renderTray(); paint();
+  const n = checkLines();
+  if(tray.every(t=>!t)){ dealTray(); renderTray(); }
+  if(!n && isOver()) setTimeout(()=>finish(), 700);
+}
+function checkLines(){
+  const rows = [], cols = [];
+  for(let r=0;r<8;r++){ let f = true; for(let c=0;c<8;c++) if(grid[r*8+c]<0){ f = false; break; } if(f) rows.push(r); }
+  for(let c=0;c<8;c++){ let f = true; for(let r=0;r<8;r++) if(grid[r*8+c]<0){ f = false; break; } if(f) cols.push(c); }
+  const n = rows.length + cols.length;
+  if(!n) return 0;
+  clearing = true;
+  const idx = [];
+  rows.forEach(r=>{ for(let c=0;c<8;c++) idx.push(r*8+c); });
+  cols.forEach(c=>{ for(let r=0;r<8;r++) idx.push(r*8+c); });
+  idx.forEach(i=>boardEl.children[i] && boardEl.children[i].classList.add('gold'));
+  beep(660, .12); setTimeout(()=>beep(880, .15), 130);
+  floatScore('+' + (n*100));
+  lines += n;
+  score += n * 100;
+  setTimeout(()=>{
+    idx.forEach(i=>{ grid[i] = -1; });
+    render(); paint();
+    clearing = false;
+    if(isOver()) setTimeout(()=>finish(), 200);
+  }, 480);
+  return n;
+}
+function floatScore(txt){
+  const layer = document.getElementById('floatLayer');
+  const d = document.createElement('div');
+  d.className = 'floatscore absolute left-1/2 top-1/3 font-black text-2xl text-yellow-300';
+  d.style.textShadow = '0 2px 12px rgba(0,0,0,.7)';
+  d.textContent = txt;
+  layer.appendChild(d);
+  setTimeout(()=>d.remove(), 1000);
+}
+function dealTray(){
+  for(let k=0;k<3;k++) tray[k] = SHAPES[Math.floor(Math.random()*SHAPES.length)];
+}
+function isOver(){
+  return tray.some(t=>t) && !tray.some(t=>t && anyFit(t));
+}
+function prizeMult(){
+  if(lines >= 20) return 5;
+  if(lines >= 13) return 2;
+  if(lines >= 8) return 1;
+  if(lines >= 4) return 0.4;
+  return 0;
+}
+async function finish(){
+  if(!playing) return;
+  playing = false; clearing = false;
+  const m = prizeMult();
+  const ret = Math.round(entry*m*100)/100;
+  if(ret > 0){ saldo = Math.round((saldo+ret)*100)/100; saveSaldo(); beep(990, .2); }
+  else beep(160, .3);
+  msgEl.textContent = ret > 0 ? 'Fim de jogo. Premio ' + fmtN(ret) + '.' : 'Fim de jogo. Sem premio.';
+  await logBet({ valor: entry, multiplicador: m, retorno: ret, resultado: ret > 0 ? 'win' : 'loss' });
+  history.unshift({bet: entry, ganho: ret, hora: new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})});
+  if(history.length > 8) history.pop();
+  renderHistory(); paint();
+  btnPlay.disabled = false; btnPlay.textContent = 'JOGAR'; btnStop.classList.add('hidden');
+}
+function renderHistory(){
+  if(!history.length){ histEl.innerHTML = '<p class="text-zinc-600">Nenhuma partida ainda.</p>'; return; }
+  histEl.innerHTML = history.map(h=>{
+    const right = h.ganho > 0 ? '+' + fmtN(h.ganho) : '-' + fmtN(h.bet);
+    const cls = h.ganho > 0 ? 'text-green-400' : 'text-zinc-500';
+    return '<div class="flex justify-between border-b border-white/5 py-1"><span>' + h.hora + ' ' + fmtN(h.bet) + '</span><span class="' + cls + '">' + right + '</span></div>';
+  }).join('');
+}
+document.getElementById('betMinus').addEventListener('click',()=>{
+  const i = BETS.indexOf(bet);
+  bet = BETS[Math.max(0,i-1)]; paint();
+});
+document.getElementById('betPlus').addEventListener('click',()=>{
+  const i = BETS.indexOf(bet);
+  bet = BETS[Math.min(BETS.length-1,i+1)]; paint();
+});
+document.querySelectorAll('.betQuick').forEach(b=> b.addEventListener('click',()=>{ bet = parseFloat(b.dataset.bet); paint(); }));
+btnPlay.addEventListener('click', ()=>{
+  if(playing) return;
+  if(!(bet > 0) || bet > saldo){ msgEl.textContent = 'Saldo insuficiente. Deposite para continuar.'; return; }
+  saldo = Math.round((saldo-bet)*100)/100; saveSaldo();
+  entry = bet; score = 0; lines = 0; playing = true;
+  grid = Array(64).fill(-1);
+  dealTray();
+  render(); renderTray(); paint();
+  msgEl.textContent = 'Arraste as pecas para o tabuleiro.';
+  btnPlay.disabled = true; btnPlay.textContent = 'JOGANDO...';
+  btnStop.classList.remove('hidden');
+  roundEl.textContent = 'Valendo ' + fmtN(entry);
+  beep(440, .1);
+});
+btnStop.addEventListener('click', ()=>finish());
+grid = Array(64).fill(-1);
+dealTray();
+render(); renderTray(); renderHistory(); paint();
 </script>
 </body>
 </html>
