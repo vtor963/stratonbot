@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="viewport" content="height=device-height, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui, viewport-fit=cover" />
+<link rel="icon" href="../../public/logo.png">
+<title>Subway Pay | StratonPay Bets</title>
+<style>
+  body, html { margin:0; height:100%; background:#0b316b; overflow:hidden; font-family:Inter,system-ui,sans-serif; }
+  #message { text-align:center; font-size:8px; font-family:Verdana,sans-serif; color:#fff; position:fixed; width:100%; z-index:9999; }
+  button#sair { position:absolute; display:none; top:135px; left:calc(50% - 130px); padding:.85rem 2.8rem; line-height:32px; font-size:18px; text-align:center; font-weight:700; color:#fff; background-color:#1fbffe; box-shadow:-3px 3px 0 0 #1f2024; border:4px solid #1f2024; border-radius:8px; z-index:100000; cursor:pointer; }
+  #topbar { position:fixed; top:0; left:0; right:0; z-index:100001; display:flex; align-items:center; gap:8px; padding:8px 12px; background:rgba(10,20,40,.85); color:#fff; font-size:13px; }
+  #topbar button { cursor:pointer; }
+  #menu { position:fixed; inset:0; z-index:100002; display:flex; align-items:center; justify-content:center; background:rgba(5,10,25,.92); padding:20px; }
+  #menuCard { width:100%; max-width:360px; background:#101b3d; border:1px solid rgba(255,255,255,.12); border-radius:20px; padding:22px; text-align:center; color:#fff; }
+  #menuCard h1 { margin:0 0 4px; font-size:22px; }
+  #menuCard p { margin:0 0 14px; font-size:12px; color:#9aa0a6; }
+  .bets { display:flex; gap:8px; justify-content:center; margin-bottom:12px; }
+  .bets button { flex:1; height:44px; border-radius:12px; border:2px solid rgba(255,255,255,.15); background:rgba(255,255,255,.06); color:#fff; font-weight:900; font-size:15px; cursor:pointer; }
+  .bets button.on { border-color:#8cb506; background:rgba(140,181,6,.25); }
+  #btnStart { width:100%; height:52px; border-radius:14px; border:0; background:linear-gradient(135deg,#8cb506,#65a30d); color:#fff; font-weight:900; font-size:16px; cursor:pointer; }
+  #menuMsg { min-height:18px; font-size:12px; color:#ffb4b4; margin-top:8px; }
+  #hud { display:none; align-items:center; gap:8px; margin-left:auto; }
+  #hud span { background:rgba(255,255,255,.1); border-radius:999px; padding:4px 12px; font-weight:800; }
+</style>
+</head>
+<body>
+<div id="topbar">
+  <button id="btnBack" style="background:none;border:0;color:#fff;font-weight:800;font-size:13px">Voltar</button>
+  <span style="font-weight:800">Subway Pay</span>
+  <div id="hud"><span id="saldo">R$ 100,00</span></div>
+</div>
+<div id="menu">
+  <div id="menuCard">
+    <h1>Subway Pay</h1>
+    <p>Sobreviva na corrida. Quanto mais tempo, maior o prêmio.</p>
+    <div class="bets">
+      <button data-bet="1">R$ 1</button>
+      <button data-bet="2" class="on">R$ 2</button>
+      <button data-bet="5">R$ 5</button>
+    </div>
+    <button id="btnStart">JOGAR</button>
+    <p id="menuMsg"></p>
+    <p style="font-size:11px;color:#9aa0a6;margin:10px 0 0">Até 20s perde. 20 a 45s paga 0.5x. 45 a 90s paga 1x. 90 a 180s paga 2x. Acima paga 3x.</p>
+  </div>
+</div>
+<button id="sair">ENCERRAR APOSTA</button>
+<script>
+  window.NOSW = true;
+  window.GAME_CONFIG = { leaderboard: 'mockup', bundlesPath: './bundles' };
+</script>
+<div id="message"></div>
+<script>
+/* Carteira StratonPay + ponte de eventos do jogo */
+const params = new URLSearchParams(location.search);
+const platformId = params.get('platform') || 'demo';
+const PKEY = 'player_' + platformId;
+const fmt = v => Number(v || 0).toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
+let saldo = 100;
+try {
+  const p = JSON.parse(localStorage.getItem(PKEY) || 'null');
+  if (p && typeof p.saldo === 'number') saldo = p.saldo;
+} catch (e) {}
+function saveSaldo() {
+  try {
+    const p = JSON.parse(localStorage.getItem(PKEY) || '{}');
+    p.saldo = saldo;
+    localStorage.setItem(PKEY, JSON.stringify(p));
+  } catch (e) {}
+  document.getElementById('saldo').textContent = fmt(saldo);
+}
+async function logBet(b) {
+  try {
+    const m = await import('../../supabase.js');
+    await m.sbCreateBet({ platform_id: platformId, jogo: 'subway-pay', ...b });
+    let pl = {};
+    try { pl = JSON.parse(localStorage.getItem(PKEY) || '{}'); } catch (e) {}
+    await m.sbUpsertPlayer(platformId, pl);
+  } catch (e) {}
+}
+saveSaldo();
+document.getElementById('btnBack').addEventListener('click', () => {
+  if (history.length > 1) history.back();
+  else location.href = '../../p.html?demo=6666';
+});
+
+let bet = 2, playing = false, settled = true, t0 = 0;
+document.querySelectorAll('.bets button').forEach(b => b.addEventListener('click', () => {
+  document.querySelectorAll('.bets button').forEach(x => x.classList.remove('on'));
+  b.classList.add('on');
+  bet = Number(b.dataset.bet);
+}));
+function prizeFor(sec) {
+  if (sec < 20) return 0;
+  if (sec < 45) return 0.5;
+  if (sec < 90) return 1;
+  if (sec < 180) return 2;
+  return 3;
+}
+async function settle(manual) {
+  if (!playing || settled) return;
+  settled = true;
+  playing = false;
+  const sec = (Date.now() - t0) / 1000;
+  const mult = prizeFor(sec);
+  const ret = Math.round(bet * mult * 100) / 100;
+  if (ret > 0) {
+    saldo = Math.round((saldo + ret) * 100) / 100;
+    saveSaldo();
+  }
+  document.getElementById('sair').style.display = 'none';
+  await logBet({ valor: bet, multiplicador: mult, retorno: ret, resultado: ret > 0 ? 'win' : 'loss' });
+  const mm = document.getElementById('menuMsg');
+  const menu = document.getElementById('menu');
+  menu.style.display = 'flex';
+  document.getElementById('menuCard').querySelector('h1').textContent = ret > 0 ? 'Prêmio ' + fmt(ret) : 'Sem prêmio';
+  mm.textContent = ret > 0 ? 'Sobreviveste ' + Math.floor(sec) + 's com ' + mult + 'x.' : 'Sobreviveste ' + Math.floor(sec) + 's. Tenta de novo.';
+  document.getElementById('btnStart').textContent = 'JOGAR DE NOVO';
+}
+document.getElementById('sair').addEventListener('click', () => settle(true));
+
+/* Shim do SDK: captura início e fim da corrida para liquidar */
+(function () {
+  const noop = () => {};
+  const okP = () => Promise.resolve();
+  window.PokiSDK = {
+    init: okP, gameLoadingStart: noop, gameLoadingFinished: noop,
+    setDebug: noop, customEvent: noop, displayAd: okP, rewardAd: okP,
+    gameplayStart: function () { if (playing && settled) { settled = false; t0 = Date.now(); } },
+    gameplayStop: function () { settle(false); }
+  };
+})();
+
+function bootGame() {
+  const s1 = document.createElement('script');
+  s1.src = 'js/loading.js';
+  s1.onload = () => {
+    const s2 = document.createElement('script');
+    s2.src = 'js/boot.js';
+    document.head.appendChild(s2);
+  };
+  document.head.appendChild(s1);
+}
+let booted = false;
+document.getElementById('btnStart').addEventListener('click', () => {
+  if (playing) return;
+  if (!(bet > 0) || bet > saldo) {
+    document.getElementById('menuMsg').textContent = 'Saldo insuficiente. Deposite para continuar.';
+    return;
+  }
+  saldo = Math.round((saldo - bet) * 100) / 100;
+  saveSaldo();
+  document.getElementById('menu').style.display = 'none';
+  document.getElementById('hud').style.display = 'flex';
+  document.getElementById('sair').style.display = 'block';
+  playing = true;
+  settled = true;
+  t0 = Date.now();
+  if (!booted) { booted = true; bootGame(); }
+});
+</script>
+</body>
+</html>
