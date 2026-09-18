@@ -113,6 +113,10 @@ export async function sbLoadPublicPlatform(slugOrDomain){
       const r2 = await supabase.from('platforms').select('*').eq('dominio', s).limit(1).maybeSingle();
       data = r2.data;
     }
+    if(!data){
+      const r3 = await supabase.from('platforms').select('*').eq('id', s).limit(1).maybeSingle();
+      data = r3.data;
+    }
     if(data) return mapPlatform(data);
   }catch(e){}
   // fallback: procura no localStorage de qualquer conta (demo local)
