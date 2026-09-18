@@ -18,6 +18,8 @@ body{background:#0b5bd3;color:#fff}
 .tile.open-gem{background:#0e9f6e}
 .tile.open-mine{background:#dc2626}
 .tile svg{width:26px;height:26px}
+.top-pill button:disabled{opacity:.4}
+input[type=number]{background:rgba(255,255,255,.08)!important;color:#fff!important;border:1px solid rgba(255,255,255,.18)!important;color-scheme:dark}
 .btn-green{background:#65a30d;color:#fff;box-shadow:0 6px 0 #3f6212, 0 10px 24px -8px rgba(0,0,0,.5)}
 .btn-green:active{transform:translateY(3px);box-shadow:0 3px 0 #3f6212}
 .btn-blue{background:#1d4ed8;color:#dbeafe}
@@ -29,22 +31,23 @@ input,select{color:#111}
 </head>
 <body class="min-h-screen">
 <header class="h-14 bg-[#0a2f7a] border-b border-white/10 flex items-center justify-between px-4 sticky top-0 z-10">
-  <a href="../index.html" class="flex items-center gap-2">
+  <a href="#" onclick="if(history.length>1){history.back()}else{location.href='../../p.html?demo=6666'}return false;" class="flex items-center gap-2">
     <img src="../../public/logo.png" class="w-8 h-8 rounded-lg object-cover" alt="StratonPay">
     <span class="font-extrabold">Mines</span>
   </a>
   <div class="flex items-center gap-2">
     <div class="bg-black/30 px-3 py-1.5 rounded-full border border-white/10 text-sm">Saldo <b id="saldo">R$ 100,00</b></div>
-    <a href="../index.html" class="px-3 py-1.5 bg-white text-black rounded-full text-xs font-bold">Jogos</a>
   </div>
 </header>
 
 <main class="max-w-[480px] mx-auto p-3 pb-10">
   <div class="flex items-center justify-between gap-2 mt-1">
-    <label class="top-pill flex items-center gap-1 rounded-full px-3 py-1.5 text-sm font-bold">
-      <span class="text-white/70 font-semibold">Minas:</span>
-      <select id="minas" class="bg-transparent text-white font-extrabold outline-none cursor-pointer"></select>
-    </label>
+    <div class="top-pill flex items-center gap-1.5 rounded-full px-2 py-1 text-sm font-bold">
+      <button id="minasMinus" class="w-8 h-8 rounded-full bg-white/15 text-white font-black text-lg leading-none">-</button>
+      <span class="text-white/70 font-semibold text-xs">Minas:</span>
+      <span id="minasVal" class="min-w-[38px] text-center bg-white text-black font-black rounded-full px-2 py-1">3</span>
+      <button id="minasPlus" class="w-8 h-8 rounded-full bg-white/15 text-white font-black text-lg leading-none">+</button>
+    </div>
     <div class="next-pill rounded-full px-4 py-1.5 text-sm font-extrabold">Proximo: <span id="prox">1.10x</span></div>
   </div>
 
@@ -119,8 +122,8 @@ async function logBet(b){
 }
 saveSaldo();
 
-const SVG_GEM = '<svg viewBox="0 0 24 24" fill="#fff"><path d="M12 2l4 5 5 3-9 12L3 10l5-3z"/><path d="M12 2l-4 5 4 15 4-15z" fill="#a7f3d0" opacity=".9"/></svg>';
-const SVG_MINE = '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="7" fill="#111"/><circle cx="10" cy="10" r="2" fill="rgba(255,255,255,.5)"/><g stroke="#fbbf24" stroke-width="2" stroke-linecap="round"><path d="M12 1v4M12 19v4M1 12h4M19 12h4M4 4l3 3M17 17l3 3M20 4l-3 3M7 17l-3 3"/></g></svg>';
+const SVG_GEM = '<svg viewBox="0 0 24 24"><path d="M12 1.5L19 8l-7 14.5L5 8z" fill="#34d399"/><path d="M12 1.5L16 8l-4 14.5L8 8z" fill="#a7f3d0"/><path d="M5 8h14" stroke="#065f46" stroke-width="1"/></svg>';
+const SVG_MINE = '<svg viewBox="0 0 24 24"><path d="M14.5 1.5c1.5 1 2.4 2.4 2.7 4.2" stroke="#b45309" stroke-width="1.6" fill="none" stroke-linecap="round"/><circle cx="14.6" cy="3.4" r="1.4" fill="#fbbf24"/><circle cx="14.6" cy="3.4" r="2.4" fill="#fbbf24" opacity=".35"/><circle cx="12" cy="14" r="7.5" fill="#18181b"/><circle cx="12" cy="14" r="7.5" fill="none" stroke="#3f3f46" stroke-width="1.2"/><ellipse cx="9.4" cy="11.4" rx="2.2" ry="1.6" fill="#fff" opacity=".55" transform="rotate(-25 9.4 11.4)"/><rect x="10.8" y="5" width="2.4" height="3" rx="1" fill="#52525b"/></svg>';
 
 function comb(n,k){
   if(k<0||k>n) return 0;
@@ -135,13 +138,8 @@ function multFor(minas, hits){
   return Math.min(fair * 0.97, 50);
 }
 
-const minasSel = document.getElementById('minas');
-for(let i=1;i<=20;i++){
-  const o = document.createElement('option');
-  o.value = i; o.textContent = i;
-  if(i===3) o.selected = true;
-  minasSel.appendChild(o);
-}
+const minasVal = document.getElementById('minasVal');
+function renderMinas(){ minasVal.textContent = minas; renderProx(); }
 
 let bet = 3.00, minas = 3, minesSet = new Set(), revealed = 0, active = false, autoTimer = null;
 const grid = document.getElementById('grid');
@@ -168,7 +166,8 @@ function renderMain(){
   }
 }
 function lockSetup(locked){
-  minasSel.disabled = locked;
+  document.getElementById('minasMinus').disabled = locked;
+  document.getElementById('minasPlus').disabled = locked;
   document.getElementById('btnMinus').disabled = locked;
   document.getElementById('btnPlus').disabled = locked;
   document.getElementById('btnHalf').disabled = locked;
@@ -224,7 +223,6 @@ function beep(freq, dur){
 
 async function startRound(){
   if(active) return;
-  minas = Number(minasSel.value||3);
   if(!(bet>0)){ msgEl.textContent = 'Informe um valor valido.'; return; }
   if(bet > saldo){ msgEl.textContent = 'Saldo insuficiente. Deposite para continuar.'; return; }
   saldo = Math.round((saldo - bet)*100)/100; saveSaldo();
@@ -243,7 +241,7 @@ async function cashout(auto){
   logBet({ valor: bet, multiplicador: m, retorno: ret, resultado: revealed>0 ? 'win' : 'loss' });
   pushHist(true, '+' + fmt(ret-bet).replace('R$','').trim());
   active = false; lockSetup(false);
-  [...grid.children].forEach(b=> b.disabled = true);
+  revealAll();
   renderProx(); renderMain();
   beep(880, .15);
   maybeAuto();
@@ -309,9 +307,10 @@ document.getElementById('btnPlus').onclick = ()=>{ if(active) return; bet = Math
 document.getElementById('btnHalf').onclick = ()=>{ if(active) return; bet = Math.max(1, Math.round((bet/2)*100)/100); renderBet(); };
 document.getElementById('btnDouble').onclick = ()=>{ if(active) return; bet = Math.min(500, Math.round((bet*2)*100)/100); renderBet(); };
 document.getElementById('btnMax').onclick = ()=>{ if(active) return; bet = Math.min(500, Math.max(1, Math.floor(saldo))); renderBet(); };
-minasSel.onchange = ()=>{ if(active) return; minas = Number(minasSel.value); renderProx(); };
+document.getElementById('minasMinus').onclick = ()=>{ if(active) return; minas = Math.max(1, minas-1); renderMinas(); };
+document.getElementById('minasPlus').onclick = ()=>{ if(active) return; minas = Math.min(20, minas+1); renderMinas(); };
 
-buildGrid(); renderBet(); renderProx(); renderMain();
+buildGrid(); renderBet(); renderMinas(); renderMain();
 </script>
 </body>
 </html>

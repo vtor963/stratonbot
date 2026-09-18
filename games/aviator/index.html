@@ -14,17 +14,17 @@ body{background:#0f1923;color:#fff}
 .btn-cash{background:#f59e0b;color:#111}
 .hist-dot{font-variant-numeric:tabular-nums}
 input{color:#111}
+input[type=number]{background:rgba(255,255,255,.08)!important;color:#fff!important;border:1px solid rgba(255,255,255,.18)!important;color-scheme:dark}
 </style>
 </head>
 <body class="min-h-screen">
 <header class="h-14 bg-[#1d2730] border-b border-white/10 flex items-center justify-between px-4 sticky top-0 z-10">
-  <a href="../index.html" class="flex items-center gap-2">
+  <a href="#" onclick="if(history.length>1){history.back()}else{location.href='../../p.html?demo=6666'}return false;" class="flex items-center gap-2">
     <img src="../../public/logo.png" class="w-8 h-8 rounded-lg object-cover" alt="StratonPay">
     <span class="font-extrabold">Aviator</span>
   </a>
   <div class="flex items-center gap-2">
     <div class="bg-black/40 px-3 py-1.5 rounded-full border border-white/10 text-sm">Saldo <b id="saldo">R$ 100,00</b></div>
-    <a href="../index.html" class="px-3 py-1.5 bg-white text-black rounded-full text-xs font-bold">Jogos</a>
   </div>
 </header>
 

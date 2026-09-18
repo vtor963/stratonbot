@@ -22,6 +22,25 @@ input,select{ color:#111; }
 .feed-item{ animation:slide-in .4s ease; }
 .game-card{ transition:transform .15s ease; } .game-card:hover{ transform:translateY(-3px) scale(1.02); }
 .no-scrollbar::-webkit-scrollbar{ display:none; }
+/* PROFITS SKIN */
+.pf-tab{ white-space:nowrap; padding:.6rem .9rem; font-size:12px; font-weight:700; color:var(--muted); border-bottom:2px solid transparent; }
+.pf-tab.on{ color:#8cb506; border-color:#8cb506; }
+.pf-sidebtn{ display:flex; flex-direction:column; align-items:center; gap:4px; background:#8cb506; color:#fff; border-radius:12px; padding:12px 6px; font-size:11px; font-weight:800; }
+.pf-sidebtn.dark{ background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.08); }
+.pf-card{ position:relative; }
+.pf-art{ position:relative; border-radius:12px; overflow:hidden; border:1px solid rgba(255,255,255,.1); aspect-ratio:3/4; background:#1d2730; }
+.pf-art img{ width:100%; height:100%; object-fit:cover; display:block; }
+.pf-best{ position:absolute; top:6px; left:6px; background:#ef4444; color:#fff; font-size:10px; font-weight:900; padding:2px 8px; border-radius:9999px; }
+.pf-star{ position:absolute; top:4px; right:4px; width:26px; height:26px; border-radius:9999px; background:rgba(0,0,0,.45); display:grid; place-items:center; }
+.pf-star.on svg{ fill:#facc15; stroke:#facc15; }
+.pf-play{ position:absolute; inset:0; display:grid; place-items:center; background:rgba(0,0,0,.45); color:#fff; font-weight:900; font-size:13px; letter-spacing:.1em; opacity:0; transition:opacity .15s ease; }
+.pf-card:hover .pf-play{ opacity:1; }
+.pf-name{ font-size:12px; font-weight:700; margin-top:6px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.pf-sub{ font-size:10px; color:var(--muted); }
+.pf-sectitle{ font-size:16px; font-weight:900; }
+.pf-count{ font-size:11px; color:var(--muted); }
+.pf-floatbtn{ width:52px; height:52px; border-radius:9999px; display:grid; place-items:center; box-shadow:0 8px 24px rgba(0,0,0,.45); }
+#pfDrawer{ transition:opacity .2s ease; }
 </style>
 </head>
 <body class="min-h-screen pb-24 sm:pb-10">
@@ -30,6 +49,7 @@ input,select{ color:#111; }
 <header class="sticky top-0 z-20" style="background:var(--nav)">
   <div class="max-w-[1100px] mx-auto px-4 h-[56px] flex items-center justify-between">
     <div class="flex items-center gap-2">
+      <button id="btnPfMenu" class="hidden w-9 h-9 rounded-xl bg-white/10 items-center justify-center font-black">|||</button>
       <img id="brandLogo" src="./public/logo.png" class="w-8 h-8 rounded-lg object-cover" alt="logo">
       <span id="brandName" class="font-extrabold">Carregando...</span>
     </div>
@@ -41,7 +61,7 @@ input,select{ color:#111; }
   </div>
 </header>
 
-<main class="max-w-[1100px] mx-auto px-4">
+<main id="stdMain" class="max-w-[1100px] mx-auto px-4">
   <!-- HERO / OFERTA -->
   <section class="hero mt-4 rounded-2xl overflow-hidden border border-white/10">
     <img id="ofertaBanner" class="w-full h-44 object-cover hidden" alt="banner">
@@ -77,7 +97,7 @@ input,select{ color:#111; }
   </section>
 
   <!-- AO VIVO -->
-  <section class="mt-6 card rounded-2xl p-4">
+  <section id="secLive" class="mt-6 card rounded-2xl p-4">
     <div class="flex items-center gap-2"><span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span><h3 class="font-extrabold text-sm">Apostas ao vivo</h3></div>
     <div id="liveFeed" class="mt-2 space-y-1.5 text-xs"></div>
   </section>
@@ -90,15 +110,52 @@ input,select{ color:#111; }
   </section>
 
   <!-- EXTRATO -->
-  <section class="mt-4 card rounded-2xl p-4">
+  <section id="secExt" class="mt-4 card rounded-2xl p-4">
     <h3 class="font-bold text-sm">Seu extrato</h3>
     <div id="extrato" class="text-xs mt-2 space-y-1 muted"><p>Nenhuma movimentação ainda.</p></div>
   </section>
   <p class="muted text-[11px] mt-4 text-center">Suporte: <span id="suporteInfo">loja</span> . <span id="layoutInfo">padrao</span> . Jogue com responsabilidade +18</p>
 </main>
 
+<!-- PROFITS SHELL -->
+<div id="pfShell" class="hidden max-w-[1280px] mx-auto px-3 lg:px-4">
+  <div id="pfTabs" class="flex gap-1 overflow-x-auto no-scrollbar mt-1 border-b border-white/10"></div>
+  <div class="mt-3 rounded-2xl overflow-hidden border border-white/10" style="background:linear-gradient(135deg,#3f6212,#8cb506)">
+    <div class="p-4 flex flex-wrap items-center gap-3">
+      <div class="flex-1 min-w-[200px]">
+        <p class="text-[11px] font-extrabold tracking-widest text-lime-100">JACKPOT ACUMULADO</p>
+        <p id="pfJackpot" class="text-3xl font-black text-white tabular-nums">R$ 0,00</p>
+      </div>
+      <div class="flex flex-wrap gap-2">
+        <button id="pfPromo" class="px-4 py-2 rounded-xl bg-blue-500 text-white text-xs font-extrabold">Promoção</button>
+        <button id="pfAgent" class="px-4 py-2 rounded-xl bg-red-500 text-white text-xs font-extrabold">Agente</button>
+        <button id="pfVip" class="px-4 py-2 rounded-xl bg-purple-500 text-white text-xs font-extrabold">VIP</button>
+        <button id="pfSup" class="px-4 py-2 rounded-xl bg-amber-500 text-white text-xs font-extrabold">Suporte</button>
+      </div>
+    </div>
+  </div>
+  <div class="flex gap-4 mt-4 items-start">
+    <aside id="pfSide" class="hidden lg:grid w-[150px] shrink-0 gap-2"></aside>
+    <div id="pfSections" class="flex-1 min-w-0"></div>
+  </div>
+  <div id="pfLiveSlot" class="mt-6"></div>
+  <div id="pfExtSlot" class="mt-4"></div>
+  <p class="muted text-[11px] mt-4 mb-6 text-center">Jogue com responsabilidade +18</p>
+</div>
+<div id="pfFloats" class="hidden fixed right-3 bottom-24 z-20 flex-col gap-2">
+  <button id="pfWheel" class="pf-floatbtn font-black text-white text-xs" style="background:linear-gradient(135deg,#a855f7,#6b21a8)" title="Roleta">GIRO</button>
+  <button id="pfTele" class="pf-floatbtn bg-[#229ED9] text-white" title="Telegram"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75l-2.2-1.45c-.95-.63-.33-.98.21-1.55l1.42-1.32c.14-.13.25-.24.02-.47l-3.48-2.65c-.37-.28-.75-.43-1.08-.43-.48 0-1.07.28-1.07.28l-3.32 1.1c-.36.12-.64.18-.64.39 0 .2.26.32.58.47l1.96.66c.46.15.96.21 1.42.06l5.02-2.02c.46-.19.9-.06.52.28z"/></svg></button>
+</div>
+<div id="pfDrawerWrap" class="hidden fixed inset-0 z-40">
+  <div id="pfDrawerBg" class="absolute inset-0 bg-black/60"></div>
+  <div class="absolute left-0 top-0 bottom-0 w-[240px] p-4 overflow-auto" style="background:var(--nav)">
+    <div class="flex items-center justify-between mb-3"><span class="font-extrabold">Menu</span><button id="pfDrawerX" class="w-8 h-8 rounded-full bg-white/10 font-black">X</button></div>
+    <div id="pfDrawerMenu" class="grid gap-2"></div>
+  </div>
+</div>
+
 <!-- BOTTOM NAV mobile -->
-<nav class="sm:hidden fixed bottom-0 inset-x-0 z-20 border-t border-white/10" style="background:var(--nav)">
+<nav id="stdBottomNav" class="sm:hidden fixed bottom-0 inset-x-0 z-20 border-t border-white/10" style="background:var(--nav)">
   <div class="grid grid-cols-4 text-center text-[10px] font-bold py-2">
     <button class="py-1" onclick="document.getElementById('ofertaTitulo').scrollIntoView({behavior:'smooth'})">Início</button>
     <button class="py-1" onclick="document.getElementById('gamesGrid').scrollIntoView({behavior:'smooth'})">Jogos</button>
@@ -158,6 +215,69 @@ const LAYOUTS = [
       { n:'Next Birds', s:'Retro • voo', img:'./public/layouts/onaplay1.png', href:'./games/nextbirds/' },
       { n:'Subway Run', s:'Retro • desvie', img:'./public/layouts/retros.png', href:'./games/subway/' },
       { n:'Helix Jump', s:'Retro • torre', img:'./public/layouts/helix.png', href:'./games/helix/' }]},
+  { match:['raspadinha copa'], cat:'raspadinha', accent:'#16a34a', hero1:'#14532d', hero2:'#0f1923',
+    bonus:'COPA: PREMIOS ATE R$100 MIL', headline:'RASPADINHA DA COPA', sub:'Raspe e ganhe na hora. Premios caem direto no saldo.',
+    jackpot: 100430.55, games:[
+      { n:'Raspadinha Copa', s:'Ate R$100 mil', img:'./public/layouts/raspadinha-copa.png', href:'./games/raspadinha/?skin=copa' },
+      { n:'Raspadinha Chinesa', s:'Sorte oriental', img:'./public/layouts/raspadinha - chinese.png', href:'./games/raspadinha/?skin=chinesa' },
+      { n:'Raspadinha Padrao', s:'Classica', img:'./public/layouts/raspadinha - padrao.png', href:'./games/raspadinha/?skin=padrao' },
+      { n:'Mines', s:'Original', img:'./public/layouts/blaze.png', href:'./games/mines/' }]},
+  { match:['raspadinha chinesa'], cat:'raspadinha', accent:'#dc2626', hero1:'#7c2d12', hero2:'#0f1923',
+    bonus:'CHINESA: SORTE ORIENTAL', headline:'RASPE E GANHE ATE 50X', sub:'Cartelas da sorte com premios na hora.',
+    jackpot: 88210.75, games:[
+      { n:'Raspadinha Chinesa', s:'Sorte oriental', img:'./public/layouts/raspadinha - chinese.png', href:'./games/raspadinha/?skin=chinesa' },
+      { n:'Raspadinha Copa', s:'Ate R$100 mil', img:'./public/layouts/raspadinha-copa.png', href:'./games/raspadinha/?skin=copa' },
+      { n:'Raspadinha Padrao', s:'Classica', img:'./public/layouts/raspadinha - padrao.png', href:'./games/raspadinha/?skin=padrao' },
+      { n:'Caixa Misteriosa', s:'Ate 10x', img:'./public/layouts/lootbox.png', href:'./games/caixa/' }]},
+  { match:['raspadinha padrao'], cat:'raspadinha', accent:'#2563eb', hero1:'#1e3a8a', hero2:'#0f1923',
+    bonus:'PADRAO: RASPOU GANHOU', headline:'A CLASSICA QUE PAGA', sub:'Simples, rapida e com premios diretos.',
+    jackpot: 45230.20, games:[
+      { n:'Raspadinha Padrao', s:'Classica', img:'./public/layouts/raspadinha - padrao.png', href:'./games/raspadinha/?skin=padrao' },
+      { n:'Raspadinha Copa', s:'Ate R$100 mil', img:'./public/layouts/raspadinha-copa.png', href:'./games/raspadinha/?skin=copa' },
+      { n:'Raspadinha Chinesa', s:'Sorte oriental', img:'./public/layouts/raspadinha - chinese.png', href:'./games/raspadinha/?skin=chinesa' },
+      { n:'Double', s:'Branco 14x', img:'./public/layouts/blaze.png', href:'./games/double/' }]},
+  { match:['dragon'], cat:'slots', accent:'#b91c1c', hero1:'#450a0a', hero2:'#0f1923',
+    bonus:'DRAGAO: BONUS ATE R$5.000', headline:'SLOTS DO DRAGAO', sub:'Fortune e classicos orientais com premios altos.',
+    jackpot: 8210455.60, games:[
+      { n:'Fortune Dragon', s:'Slots', img:'./public/layouts/chinese - mk.png', provider:true },
+      { n:'Raspadinha Chinesa', s:'Sorte oriental', img:'./public/layouts/raspadinha - chinese.png', href:'./games/raspadinha/?skin=chinesa' },
+      { n:'Mines', s:'Original', img:'./public/layouts/blaze.png', href:'./games/mines/' },
+      { n:'Caixa Misteriosa', s:'Ate 10x', img:'./public/layouts/lootbox.png', href:'./games/caixa/' }]},
+  { match:['mines spribe'], cat:'mines', accent:'#1d4ed8', hero1:'#0a3fa0', hero2:'#0f1923',
+    bonus:'MINES: ATE 50X POR RODADA', headline:'ACHE GEMAS. DESVIE DAS MINAS', sub:'Escolha as minas, revele gemas e faca cashout na hora.',
+    jackpot: 980450.30, games:[
+      { n:'Mines', s:'97% RTP', img:'./public/layouts/blaze.png', href:'./games/mines/' },
+      { n:'Double', s:'Branco 14x', img:'./public/layouts/blaze.png', href:'./games/double/' },
+      { n:'Aviator', s:'Voe e saque', img:'./games/aviator/assets/aviator-img.png', href:'./games/aviator/' },
+      { n:'Caixa Misteriosa', s:'Ate 10x', img:'./public/layouts/lootbox.png', href:'./games/caixa/' }]},
+  { match:['aviator voo'], cat:'aviator', accent:'#F00B3E', hero1:'#3a0d1c', hero2:'#0f1923',
+    bonus:'AVIATOR: SAQUE ATE 50X', headline:'VOE ALTO. SAQUE ANTES DE CRASHAR', sub:'Aposte na espera e saque antes do aviao sumir.',
+    jackpot: 3120450.90, games:[
+      { n:'Aviator', s:'Ate 50x', img:'./games/aviator/assets/aviator-img.png', href:'./games/aviator/' },
+      { n:'Mines', s:'97% RTP', img:'./public/layouts/blaze.png', href:'./games/mines/' },
+      { n:'Double', s:'Branco 14x', img:'./public/layouts/blaze.png', href:'./games/double/' },
+      { n:'Raspadinha Copa', s:'Ate R$100 mil', img:'./public/layouts/raspadinha-copa.png', href:'./games/raspadinha/?skin=copa' }]},
+  { match:['subway'], cat:'retro', accent:'#06b6d4', hero1:'#164e63', hero2:'#0f1923',
+    bonus:'SUBWAY: DOBRE SEU PIX', headline:'CORRA. DESVIE. LUCRE 2X', sub:'Chegue a 500 pontos e dobre a aposta.',
+    jackpot: 640220.45, games:[
+      { n:'Subway Run', s:'Retro, desvie', img:'./public/layouts/retros.png', href:'./games/subway/' },
+      { n:'Helix Jump', s:'Retro, torre', img:'./public/layouts/helix.png', href:'./games/helix/' },
+      { n:'Next Birds', s:'Retro, voo', img:'./public/layouts/onaplay1.png', href:'./games/nextbirds/' },
+      { n:'Block Blast', s:'Retro, 96.5%', img:'./public/layouts/block-blast.jpg', href:'./games/block-blast/' }]},
+  { match:['helix'], cat:'retro', accent:'#ec4899', hero1:'#831843', hero2:'#0f1923',
+    bonus:'HELIX: TORRE PREMIADA 2X', headline:'DESCA A TORRE E GANHE', sub:'Passe 12 plataformas e dobre a aposta.',
+    jackpot: 410880.30, games:[
+      { n:'Helix Jump', s:'Retro, torre', img:'./public/layouts/helix.png', href:'./games/helix/' },
+      { n:'Subway Run', s:'Retro, desvie', img:'./public/layouts/retros.png', href:'./games/subway/' },
+      { n:'Block Blast', s:'Retro, 96.5%', img:'./public/layouts/block-blast.jpg', href:'./games/block-blast/' },
+      { n:'Next Birds', s:'Retro, voo', img:'./public/layouts/onaplay1.png', href:'./games/nextbirds/' }]},
+  { match:['next birds'], cat:'retro', accent:'#f59e0b', hero1:'#78350f', hero2:'#0f1923',
+    bonus:'NEXT BIRDS: VOO PREMIADO', headline:'VOE E MULTIPLIQUE', sub:'Entre no desafio valendo e concorra a 2x.',
+    jackpot: 220410.75, games:[
+      { n:'Next Birds', s:'Retro, voo', img:'./public/layouts/onaplay1.png', href:'./games/nextbirds/' },
+      { n:'Block Blast', s:'Retro, 96.5%', img:'./public/layouts/block-blast.jpg', href:'./games/block-blast/' },
+      { n:'Subway Run', s:'Retro, desvie', img:'./public/layouts/retros.png', href:'./games/subway/' },
+      { n:'Helix Jump', s:'Retro, torre', img:'./public/layouts/helix.png', href:'./games/helix/' }]},
   { match:['raspadinha','raspa','copa'], cat:'raspadinha', accent:'#f59e0b', hero1:'#7c2d12', hero2:'#0f1923',
     bonus:'RASPOU, GANHOU: PREMIOS ATE R$100 MIL', headline:'RASPADINHA DA COPA', sub:'Raspe e ganhe na hora. Premios caem direto no saldo, saque via PIX.',
     jackpot: 38767790.25, games:[
@@ -167,11 +287,11 @@ const LAYOUTS = [
   { match:['777','chines','mk','cm777','w1','fpmmm','caktus','venon','onaplay'], cat:'slots', accent:'#eab308', hero1:'#713f12', hero2:'#0f1923',
     bonus:'PRIMEIRO DEPÓSITO COM BÔNUS ATÉ R$3.777', headline:'JACKPOT MILIONÁRIO', sub:'Slots chineses, Fortune Tiger, Dragon e mais. Gire e concorra ao acumulado.',
     jackpot: 59780152.94, games:[
-      { n:'Fortune Tigre', s:'Slots, 96.8%', img:'./public/layouts/chinese - 777.png', href:'./games/fortune/' },
+      { n:'Fortune Tigre', s:'Slots, 96.8%', img:'./public/layouts/chinese - 777.png', provider:true },
       { n:'Caixa Misteriosa', s:'Ate 10x', img:'./public/layouts/lootbox.png', href:'./games/caixa/' },
       { n:'Raspadinha Chinesa', s:'Sorte oriental', img:'./public/layouts/raspadinha - chinese.png', href:'./games/raspadinha/?skin=chinesa' },
       { n:'Mines', s:'Original', img:'./public/layouts/blaze.png', href:'./games/mines/' },
-      { n:'Ganesha Gold', s:'Slots', img:'./public/layouts/chinese - default.png', href:'./games/fortune/' }]},
+      { n:'Ganesha Gold', s:'Slots', img:'./public/layouts/chinese - default.png', provider:true }]},
   { match:['subway','retro','helix'], cat:'retro', accent:'#22c55e', hero1:'#14532d', hero2:'#0f1923',
     bonus:'BONUS RETRO: DOBRE SEU PRIMEIRO PIX', headline:'JOGOS RETRO QUE PAGAM', sub:'Subway, Helix e classicos com ranking diario e saque instantaneo.',
     jackpot: 1250340.00, games:[
@@ -179,14 +299,14 @@ const LAYOUTS = [
       { n:'Helix Jump', s:'Retro • torre', img:'./public/layouts/helix.png', href:'./games/helix/' },
       { n:'Next Birds', s:'Retro • voo', img:'./public/layouts/onaplay1.png', href:'./games/nextbirds/' },
       { n:'Block Blast', s:'Retro • 96,5%', img:'./public/layouts/block-blast.jpg', href:'./games/block-blast/' }]},
-  { match:['blaze','mines','double','crash','aviator'], cat:'cassino', accent:'#ef4444', hero1:'#7f1d1d', hero2:'#0f1923',
-    bonus:'BONUS ORIGINAIS: 100% ATE R$1.000', headline:'DOUBLE, MINES, CRASH, AVIATOR', sub:'Os originais mais rapidos do Brasil. Resultado na hora, saque 24/7.',
+  { match:['blaze','mines','double','aviator'], cat:'cassino', accent:'#ef4444', hero1:'#7f1d1d', hero2:'#0f1923',
+    bonus:'BONUS BLAZE: 100% ATE R$1.000', headline:'DOUBLE, MINES, AVIATOR E CAIXA', sub:'Os originais mais rapidos do Brasil. Resultado na hora, saque 24/7.',
     jackpot: 2210450.75, games:[
       { n:'Double', s:'2x, Branco 14x', img:'./public/layouts/blaze.png', href:'./games/double/' },
       { n:'Mines', s:'97% RTP', img:'./public/layouts/blaze.png', href:'./games/mines/' },
-      { n:'Crash', s:'Cashout', img:'./public/layouts/blaze.png', href:'./games/crash/' },
-      { n:'Aviator', s:'Voe e saque', img:'./games/aviator/assets/aviator-img.png', href:'./games/aviator/' }]},
-  { match:['6666','popular','profits'], cat:'popular', accent:'#8cb506', hero1:'#1a242e', hero2:'#0f1923',
+      { n:'Aviator', s:'Voe e saque', img:'./games/aviator/assets/aviator-img.png', href:'./games/aviator/' },
+      { n:'Caixa Misteriosa', s:'Ate 10x', img:'./public/layouts/lootbox.png', href:'./games/caixa/' }]},
+  { match:['6666','popular','profits'], cat:'popular', skin:'profits', accent:'#8cb506', hero1:'#1a242e', hero2:'#0f1923',
     bonus:'BONUS POPULAR: 100% NO PRIMEIRO DEPOSITO', headline:'OS MAIS JOGADOS DO BRASIL', sub:'Populares, slots e originais em um so lugar. Deposite via PIX e jogue agora.',
     jackpot: 6616771.10, games:[
       { n:'Mines', s:'Original, 97% RTP', img:'./public/layouts/blaze.png', href:'./games/mines/' },
@@ -200,10 +320,10 @@ const LAYOUTS = [
   { match:['fortune','tiger','dragon','ox','pgsoft','pg '], cat:'slots', accent:'#eab308', hero1:'#713f12', hero2:'#0f1923',
     bonus:'BONUS FORTUNE: 100% ATE R$777', headline:'FORTUNE E SLOTS QUE PAGAM', sub:'Gire, combine e saque via PIX na hora.',
     jackpot: 3777015.40, games:[
-      { n:'Fortune Tigre', s:'Slots, 96.8%', img:'./public/layouts/chinese - 777.png', href:'./games/fortune/' },
+      { n:'Fortune Tigre', s:'Slots, 96.8%', img:'./public/layouts/chinese - 777.png', provider:true },
       { n:'Raspadinha Chinesa', s:'Sorte oriental', img:'./public/layouts/raspadinha - chinese.png', href:'./games/raspadinha/?skin=chinesa' },
       { n:'Mines', s:'Original, 97% RTP', img:'./public/layouts/blaze.png', href:'./games/mines/' },
-      { n:'Caixa Misteriosa', s:'Ate 10x', img:'./public/layouts/lootbox.png', href:'./games/caixa/' }]},
+      { n:'Double', s:'Branco 14x', img:'./public/layouts/blaze.png', href:'./games/double/' }]},
   { match:['caixa','loot','misteriosa'], cat:'caixa', accent:'#a855f7', hero1:'#4c1d95', hero2:'#0f1923',
     bonus:'CAIXA MISTERIOSA: GANHE ATE 10X', headline:'ESCOLHA UMA CAIXA E LUCRE', sub:'Pague para abrir. 3 caixas, 1 premio. Saque via PIX.',
     jackpot: 512340.80, games:[
@@ -214,6 +334,168 @@ const LAYOUTS = [
 ];
 const FALLBACK = LAYOUTS[0];
 function presetFor(layout){ const l=(layout||'').toLowerCase(); return LAYOUTS.find(p=>p.match.some(m=>l.includes(m))) || FALLBACK; }
+
+/* Catalogo fixo estilo profits: secoes por provedor com arte local */
+const PGSOFT = [
+  {n:'Fortune Rabbit', img:'./public/layouts/chinese - default.png'},
+  {n:'Fortune Tiger', img:'./public/layouts/chinese - 777.png'},
+  {n:'Fortune Dragon', img:'./public/layouts/chinese - mk.png'},
+  {n:'Fortune Ox', img:'./public/layouts/chinese - cm777.png'},
+  {n:'Fortune Snake', img:'./public/layouts/chinese - w1.png'},
+  {n:'Fortune Mouse', img:'./public/layouts/chinese - fpmmm.png'},
+  {n:'Dragon Hatch', img:'./public/layouts/chinese - venonpg.png'},
+  {n:'Lucky Neko', img:'./public/layouts/caktus.png'},
+  {n:'Wild Bandito', img:'./public/layouts/onaplay1.png'},
+  {n:'Pinata Wins', img:'./public/layouts/lootbox.png'},
+  {n:'Double Fortune', img:'./public/layouts/raspadinha - padrao.png'},
+  {n:'Midas Fortune', img:'./public/layouts/lootbox2.png'}
+];
+const PPSLOTS = [
+  {n:'Gates of Olympus', img:'./public/layouts/retros.png'},
+  {n:'Big Bass Splash', img:'./public/layouts/helix.png'},
+  {n:'Big Bass Bonanza', img:'./public/layouts/block-blast.jpg'},
+  {n:'Gold Party', img:'./public/layouts/playpix.png'},
+  {n:'Christmas Big Bass', img:'./public/layouts/raspadinha-copa.png'},
+  {n:'Sugar Rush', img:'./public/layouts/raspadinha - chinese.png'},
+  {n:'Sweet Bonanza', img:'./public/layouts/chinese - 777.png'},
+  {n:'3 Buzzing Wilds', img:'./public/layouts/chinese - mk.png'},
+  {n:'Starlight Princess', img:'./public/layouts/onaplay1.png'},
+  {n:'Wild West Gold', img:'./public/layouts/blaze.png'},
+  {n:'Queenie', img:'./public/layouts/caktus.png'},
+  {n:'Cowboys Gold', img:'./public/layouts/chinese - cm777.png'}
+];
+const ORIGINAIS = [
+  {n:'Mines', s:'Original', img:'./public/layouts/blaze.png', href:'./games/mines/'},
+  {n:'Double', s:'Original', img:'./public/layouts/blaze.png', href:'./games/double/'},
+  {n:'Aviator', s:'Crash', img:'./games/aviator/assets/aviator-img.png', href:'./games/aviator/'},
+  {n:'Caixa Misteriosa', s:'Ate 10x', img:'./public/layouts/lootbox.png', href:'./games/caixa/'}
+];
+const RETROGAMES = [
+  {n:'Block Blast', s:'Retro', img:'./public/layouts/block-blast.jpg', href:'./games/block-blast/'},
+  {n:'Subway Run', s:'Retro', img:'./public/layouts/retros.png', href:'./games/subway/'},
+  {n:'Helix Jump', s:'Retro', img:'./public/layouts/helix.png', href:'./games/helix/'},
+  {n:'Next Birds', s:'Retro', img:'./public/layouts/onaplay1.png', href:'./games/nextbirds/'}
+];
+const RASPAGAMES = [
+  {n:'Raspadinha Copa', s:'Ate R$100 mil', img:'./public/layouts/raspadinha-copa.png', href:'./games/raspadinha/?skin=copa'},
+  {n:'Raspadinha Chinesa', s:'Sorte oriental', img:'./public/layouts/raspadinha - chinese.png', href:'./games/raspadinha/?skin=chinesa'},
+  {n:'Raspadinha Padrao', s:'Classica', img:'./public/layouts/raspadinha - padrao.png', href:'./games/raspadinha/?skin=padrao'}
+];
+const PFTABS = [
+  {id:'popular', n:'Popular'},
+  {id:'slots', n:'Slots'},
+  {id:'originais', n:'Originais'},
+  {id:'retro', n:'Retro'}
+];
+let pfTab = 'popular', pfFavOnly = false, pfShown = {};
+function pfFavs(){ try{ return JSON.parse(localStorage.getItem('fav_'+PLAT.id)||'[]'); }catch{ return []; } }
+function pfIsFav(n){ return pfFavs().includes(n); }
+function pfToggleFav(n){
+  let f = pfFavs();
+  f = f.includes(n) ? f.filter(x=>x!==n) : [...f, n];
+  try{ localStorage.setItem('fav_'+PLAT.id, JSON.stringify(f)); }catch{}
+  renderProfits();
+}
+function pfSectionsFor(){
+  if(pfFavOnly) return [{title:'Favoritos', games:[...PGSOFT, ...PPSLOTS, ...ORIGINAIS, ...RETROGAMES, ...RASPAGAMES].filter(g=>pfIsFav(g.n))}];
+  if(pfTab==='slots') return [{title:'PGSOFT', games:PGSOFT},{title:'PP', games:PPSLOTS}];
+  if(pfTab==='originais') return [{title:'Originais', games:ORIGINAIS}];
+  if(pfTab==='retro') return [{title:'Retro', games:RETROGAMES},{title:'Raspadinha', games:RASPAGAMES}];
+  return [{title:'PGSOFT', games:PGSOFT},{title:'PP', games:PPSLOTS},{title:'Originais', games:ORIGINAIS},{title:'Retro', games:RETROGAMES}];
+}
+function pfCard(g){
+  const fav = pfIsFav(g.n);
+  return `<div class="pf-card">
+    <div class="pf-art"><img src="${g.img}" loading="lazy" alt="${g.n}">
+      <span class="pf-best">BEST</span>
+      <button class="pf-star ${fav?'on':''}" data-fav="${g.n}" title="Favoritar"><svg class="w-4 h-4" fill="${fav?'#facc15':'none'}" stroke="${fav?'#facc15':'#fff'}" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11.48 3.5c.16-.4.88-.4 1.04 0l2.12 5.11 5.52.44c.44.04.62.58.28.85l-4.2 3.6 1.28 5.38c.1.43-.36.76-.74.53L12 16.54l-4.78 2.87c-.38.23-.84-.1-.74-.53l1.28-5.38-4.2-3.6c-.34-.27-.16-.81.28-.85l5.52-.44 2.12-5.11z"/></svg></button>
+      <button class="pf-play" data-open="${g.n}">PLAY</button>
+    </div>
+    <p class="pf-name">${g.n}</p>${g.s?`<p class="pf-sub">${g.s}</p>`:''}
+  </div>`;
+}
+function pfGameByName(n){
+  return [...ORIGINAIS, ...RETROGAMES, ...RASPAGAMES].find(g=>g.n===n) || null;
+}
+function pfGate(n){
+  const g = pfGameByName(n);
+  if(!PLAYER?.email){ openConta(); return; }
+  if(g && g.href){
+    const sep = g.href.includes('?') ? '&' : '?';
+    location.href = g.href + sep + 'platform=' + encodeURIComponent(PLAT.id);
+    return;
+  }
+  if($('pixInfo')) $('pixInfo').textContent = 'Deposite para jogar ' + n;
+  openPix('deposito');
+}
+function renderProfits(){
+  if(!PLAT || PRESET.skin!=='profits') return;
+  $('pfTabs').innerHTML = PFTABS.map(t=>`<button data-pftab="${t.id}" class="pf-tab ${pfTab===t.id&&!pfFavOnly?'on':''}">${t.n}</button>`).join('');
+  $('pfTabs').querySelectorAll('[data-pftab]').forEach(b=> b.onclick = ()=>{ pfTab = b.dataset.pftab; pfFavOnly = false; renderProfits(); });
+  const side = [
+    {id:'bonus', n:'Bonus', dark:false},
+    {id:'menu', n:'Menu', dark:true},
+    {id:'jogos', n:'Jogos', dark:true},
+    {id:'hist', n:'Historico', dark:true},
+    {id:'fav', n:'Favoritos', dark:true}
+  ];
+  const sideHtml = side.map(s=>`<button data-pfnav="${s.id}" class="pf-sidebtn ${s.dark?'dark':''}">${s.n}</button>`).join('');
+  $('pfSide').innerHTML = sideHtml;
+  $('pfDrawerMenu').innerHTML = sideHtml;
+  document.querySelectorAll('[data-pfnav]').forEach(b=> b.onclick = ()=>pfNav(b.dataset.pfnav));
+  const secs = pfSectionsFor();
+  $('pfSections').innerHTML = secs.map((s,si)=>{
+    const key = pfFavOnly ? 'fav' : pfTab + si;
+    const total = s.games.length;
+    const shown = Math.min(pfShown[key] || (window.innerWidth < 1024 ? 6 : 10), total);
+    const cards = s.games.slice(0, shown).map(pfCard).join('');
+    const more = shown < total ? `<button data-pfmore="${key}" class="mt-3 w-full py-2.5 rounded-xl bg-white/10 text-xs font-extrabold">Carregar mais</button>` : '';
+    return `<div class="mt-5"><h3 class="pf-sectitle">${s.title}</h3><p class="pf-count">A exibir ${shown} jogos entre ${total}</p><div class="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 gap-2.5 mt-2">${cards || '<p class="muted text-xs col-span-full py-6 text-center">Nada aqui ainda. Toque na estrela de um jogo para favoritar.</p>'}</div>${more}</div>`;
+  }).join('');
+  $('pfSections').querySelectorAll('[data-fav]').forEach(b=> b.onclick = (e)=>{ e.stopPropagation(); pfToggleFav(b.dataset.fav); });
+  $('pfSections').querySelectorAll('[data-open]').forEach(b=> b.onclick = ()=>pfGate(b.dataset.open));
+  $('pfSections').querySelectorAll('[data-pfmore]').forEach(b=> b.onclick = ()=>{ const k = b.dataset.pfmore; pfShown[k] = (pfShown[k] || 10) + 10; renderProfits(); });
+}
+function pfNav(id){
+  $('pfDrawerWrap').classList.add('hidden');
+  if(id==='bonus'){ pfGate('Bonus'); return; }
+  if(id==='fav'){ pfFavOnly = true; renderProfits(); $('pfSections').scrollIntoView({behavior:'smooth'}); return; }
+  pfFavOnly = false;
+  if(id==='jogos'){ renderProfits(); $('pfSections').scrollIntoView({behavior:'smooth'}); return; }
+  if(id==='hist'){ ($('secExt')||document.body).scrollIntoView({behavior:'smooth'}); return; }
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+function pfSuporte(){
+  const info = PLAT.suporte || PLAT.whatsapp || PLAT.telegram || '';
+  if(/^https?:\/\//i.test(info)) window.open(info, '_blank');
+  else alert('Suporte: ' + (info || 'fale no painel do dono'));
+}
+function activateProfits(){
+  $('stdMain').classList.add('hidden');
+  $('stdBottomNav').classList.add('hidden');
+  $('pfShell').classList.remove('hidden');
+  $('pfFloats').classList.remove('hidden');
+  $('pfFloats').classList.add('flex');
+  $('btnEntrar').textContent = 'Login';
+  $('btnAccount').textContent = PLAYER?.email ? 'Jogar' : 'Registro';
+  const bm = $('btnPfMenu');
+  bm.classList.remove('hidden'); bm.classList.add('flex');
+  bm.onclick = ()=> $('pfDrawerWrap').classList.remove('hidden');
+  $('pfDrawerX').onclick = ()=> $('pfDrawerWrap').classList.add('hidden');
+  $('pfDrawerBg').onclick = ()=> $('pfDrawerWrap').classList.add('hidden');
+  try{
+    $('pfLiveSlot').appendChild($('secLive'));
+    $('pfExtSlot').appendChild($('secExt'));
+  }catch{}
+  $('pfPromo').onclick = ()=>openPix('deposito');
+  $('pfVip').onclick = ()=>openPix('deposito');
+  $('pfAgent').onclick = ()=>pfSuporte();
+  $('pfSup').onclick = ()=>pfSuporte();
+  $('pfWheel').onclick = ()=>openPix('deposito');
+  $('pfTele').onclick = ()=>pfSuporte();
+  $('pfJackpot').textContent = fmt(JACKPOT);
+  renderProfits();
+}
 
 const $ = id => document.getElementById(id);
 const params = new URLSearchParams(location.search);
@@ -267,6 +549,7 @@ function applyTheme(){
       : `<div class="h-20 rounded-xl grid place-items-center" style="background:${g.bg}">${g.svg||''}</div>`;
     const body = `${art}<p class="font-bold text-xs mt-1.5">${g.n}</p><p class="muted text-[10px]">${g.s}</p>`;
     if(g.off) return `<div class="game-card card rounded-2xl p-2.5 opacity-60">${body}<p class="text-[10px] font-bold text-yellow-300 mt-1">Em breve</p></div>`;
+    if(g.provider) return `<button data-prov="${g.n}" class="game-card card rounded-2xl p-2.5 text-left w-full">${body}<span class="inline-block mt-1.5 px-4 py-1.5 rounded-full btn-primary text-[11px] font-extrabold">Jogar</span></button>`;
     if(g.href){
       const sep = g.href.includes('?') ? '&' : '?';
       return `<a href="${g.href}${sep}platform=${encodeURIComponent(PLAT.id)}" class="game-card card rounded-2xl p-2.5 text-left block">${body}</a>`;
@@ -274,8 +557,14 @@ function applyTheme(){
     return `<button data-demo="${g.demo}" class="game-card card rounded-2xl p-2.5 text-left">${body}</button>`;
   }).join('');
   document.querySelectorAll('#gamesGrid [data-demo]').forEach(b=> b.onclick = ()=>openGame(b.dataset.demo));
+  document.querySelectorAll('#gamesGrid [data-prov]').forEach(b=> b.onclick = ()=>{
+    if(!PLAYER?.email){ openConta(); return; }
+    if($('pixInfo')) $('pixInfo').textContent = 'Deposite para jogar ' + b.dataset.prov;
+    openPix('deposito');
+  });
+  if(PRESET.skin==='profits') activateProfits();
 }
-setInterval(()=>{ if(!PLAT) return; JACKPOT += Math.random()*120; const el=$('jackpot'); if(el) el.textContent = fmt(JACKPOT); }, 2500);
+setInterval(()=>{ if(!PLAT) return; JACKPOT += Math.random()*120; const el=$('jackpot'); if(el) el.textContent = fmt(JACKPOT); const pf=$('pfJackpot'); if(pf) pf.textContent = fmt(JACKPOT); }, 2500);
 
 // feed ao vivo fake
 const NOMES = ['Lucas*','Ana*','Pedro*','Ju*','Rafa*','Thi*','Camila*','Diego*','Bru*','Leo*','Gabi*','Mat*'];
@@ -296,7 +585,7 @@ setInterval(pushLive, 3500);
 function renderPlayer(){
   PLAYER = PLAYER || getPlayer(PLAT?.id||'demo') || { nome:'', email:'', cpf:'', pix_key:'', saldo:0 };
   $('balancePill').textContent = fmt(PLAYER.saldo);
-  $('btnAccount').textContent = PLAYER.email ? 'Jogar' : 'Cadastrar';
+  $('btnAccount').textContent = PLAYER.email ? 'Jogar' : (PRESET.skin==='profits' ? 'Registro' : 'Cadastrar');
   renderExtrato();
 }
 function renderExtrato(){
