@@ -25,6 +25,7 @@
   #menuMsg { min-height:18px; font-size:12px; color:#ffb4b4; margin-top:8px; }
   #hud { display:none; align-items:center; gap:8px; margin-left:auto; }
   #hud span { background:rgba(255,255,255,.1); border-radius:999px; padding:4px 12px; font-weight:800; }
+  #dbg { position:fixed; left:8px; bottom:8px; z-index:100003; max-width:92vw; background:rgba(0,0,0,.75); color:#7CFC98; font:11px/1.5 monospace; padding:8px 10px; border-radius:10px; white-space:pre-wrap; }
 </style>
 </head>
 <body>
@@ -48,7 +49,19 @@
   </div>
 </div>
 <button id="sair">ENCERRAR APOSTA</button>
+<div id="dbg">pronto</div>
 <script>
+  window.__spdbg = [];
+  function dbg(m){
+    try{
+      window.__spdbg.push(m);
+      if(window.__spdbg.length > 6) window.__spdbg.shift();
+      document.getElementById('dbg').textContent = window.__spdbg.join('\n');
+    }catch(e){}
+  }
+  window.addEventListener('error', e=>dbg('ERRO: ' + (e.message || e.type)));
+  window.addEventListener('unhandledrejection', e=>dbg('PROMISE: ' + (e.reason && e.reason.message || e.reason)));
+  dbg('nucleo ok');
   window.NOSW = true;
   window.GAME_CONFIG = { leaderboard: 'mockup', bundlesPath: './bundles' };
 </script>
@@ -128,7 +141,7 @@ document.getElementById('sair').addEventListener('click', () => settle(true));
 (function () {
   const okP = () => Promise.resolve();
   const handlers = {
-    gameplayStart: function () { if (playing && settled) { settled = false; t0 = Date.now(); } },
+    gameplayStart: function () { if (playing && settled) { settled = false; t0 = Date.now(); dbg('corrida iniciou'); } },
     gameplayStop: function () { settle(false); },
     getURLParam: function () { return ''; }
   };
@@ -146,13 +159,18 @@ document.getElementById('sair').addEventListener('click', () => settle(true));
 })();
 
 function bootGame() {
+  dbg('carregando loading.js');
   const s1 = document.createElement('script');
   s1.src = 'js/loading.js';
   s1.onload = () => {
+    dbg('loading.js ok, carregando boot.js');
     const s2 = document.createElement('script');
     s2.src = 'js/boot.js';
+    s2.onload = () => dbg('boot.js ok, aguardando motor');
+    s2.onerror = () => dbg('FALHA boot.js (rede)');
     document.head.appendChild(s2);
   };
+  s1.onerror = () => dbg('FALHA loading.js (rede)');
   document.head.appendChild(s1);
 }
 let booted = false;
@@ -171,6 +189,9 @@ document.getElementById('btnStart').addEventListener('click', () => {
   settled = true;
   t0 = Date.now();
   if (!booted) { booted = true; bootGame(); }
+  setTimeout(() => {
+    if (playing && settled && (Date.now() - t0) > 25000) dbg('motor nao iniciou em 25s. recarrega a page.');
+  }, 26000);
 });
 </script>
 </body>
