@@ -135,11 +135,11 @@ function loop(){
   multEl.textContent = '1.00x'; multEl.style.color = '#fff';
   curve = []; crashed = false; draw(1);
   btnApostar.classList.remove('hidden'); btnCash.classList.add('hidden');
-  btnApostar.textContent = aposta > 0 ? `APOSTADO ${fmt(aposta)} — AGUARDE` : 'APOSTAR';
+  btnApostar.textContent = aposta > 0 ? `APOSTADO ${fmt(aposta)}. AGUARDE` : 'APOSTAR';
   btnApostar.disabled = aposta > 0;
   setTimeout(()=>{
     crashAt = crashPoint(); mult = 1; sacado = false;
-    setFase('fly', 'VOANDO — SAQUE ANTES DE CRASHAR');
+    setFase('fly', 'VOANDO. SAQUE ANTES DE CRASHAR');
     try{ sStart.play(); }catch{}
     const t0 = Date.now();
     timer = setInterval(()=>{
@@ -182,7 +182,7 @@ btnApostar.onclick = ()=>{
   if(v > saldo){ alert('Saldo insuficiente. Deposite no p.html'); return; }
   saldo -= v; saveSaldo();
   aposta = v;
-  btnApostar.textContent = `APOSTADO ${fmt(v)} — AGUARDE`;
+  btnApostar.textContent = `APOSTADO ${fmt(v)}. AGUARDE`;
   btnApostar.disabled = true;
   document.getElementById('msg').textContent = `Aposta de ${fmt(v)} confirmada. Boa sorte!`;
 };
