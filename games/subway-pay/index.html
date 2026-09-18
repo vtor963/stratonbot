@@ -122,16 +122,27 @@ async function settle(manual) {
 }
 document.getElementById('sair').addEventListener('click', () => settle(true));
 
-/* Shim do SDK: captura início e fim da corrida para liquidar */
+/* Shim do SDK: captura início e fim da corrida para liquidar.
+   Proxy generoso: métodos desconhecidos viram noop ou promise,
+   para o jogo nunca travar por chamada faltando. */
 (function () {
-  const noop = () => {};
   const okP = () => Promise.resolve();
-  window.PokiSDK = {
-    init: okP, gameLoadingStart: noop, gameLoadingFinished: noop,
-    setDebug: noop, customEvent: noop, displayAd: okP, rewardAd: okP,
+  const handlers = {
     gameplayStart: function () { if (playing && settled) { settled = false; t0 = Date.now(); } },
-    gameplayStop: function () { settle(false); }
+    gameplayStop: function () { settle(false); },
+    getURLParam: function () { return ''; }
   };
+  const syncNoop = () => {};
+  window.PokiSDK = new Proxy({ adBlockerOn: false }, {
+    get(t, p) {
+      if (p === 'then') return undefined;
+      if (p === 'init' || p === 'commercialBreak' || p === 'displayAd' || p === 'rewardAd') return okP;
+      if (p in handlers) return handlers[p];
+      if (p in t) return t[p];
+      return syncNoop;
+    },
+    set(t, p, v) { t[p] = v; return true; }
+  });
 })();
 
 function bootGame() {
