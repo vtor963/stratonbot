@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mines | StratonPay Bets</title>
+<link rel="icon" href="../../public/logo.png">
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+*{font-family:Inter,system-ui,sans-serif}
+body{background:#0b5bd3;color:#fff}
+.top-pill{background:#0a3fa0;border:1px solid rgba(255,255,255,.15)}
+.next-pill{background:#f5b301;color:#111}
+.tile{background:#123a8a;border:1px solid rgba(255,255,255,.12);box-shadow:inset 0 2px 0 rgba(255,255,255,.08), 0 3px 0 rgba(0,0,0,.25);transition:transform .08s ease, background .15s ease}
+.tile:not(:disabled):active{transform:scale(.96)}
+.tile:disabled{cursor:default}
+.tile.dot::after{content:"";width:12px;height:12px;border-radius:9999px;background:rgba(255,255,255,.25);display:block}
+.tile.open-gem{background:#0e9f6e}
+.tile.open-mine{background:#dc2626}
+.tile svg{width:26px;height:26px}
+.btn-green{background:#65a30d;color:#fff;box-shadow:0 6px 0 #3f6212, 0 10px 24px -8px rgba(0,0,0,.5)}
+.btn-green:active{transform:translateY(3px);box-shadow:0 3px 0 #3f6212}
+.btn-blue{background:#1d4ed8;color:#dbeafe}
+.btn-cash{background:#f5b301;color:#111;box-shadow:0 6px 0 #92400e}
+.btn-cash:active{transform:translateY(3px);box-shadow:0 3px 0 #92400e}
+input,select{color:#111}
+.hist-dot{font-variant-numeric:tabular-nums}
+</style>
+</head>
+<body class="min-h-screen">
+<header class="h-14 bg-[#0a2f7a] border-b border-white/10 flex items-center justify-between px-4 sticky top-0 z-10">
+  <a href="../index.html" class="flex items-center gap-2">
+    <img src="../../public/logo.png" class="w-8 h-8 rounded-lg object-cover" alt="StratonPay">
+    <span class="font-extrabold">Mines</span>
+  </a>
+  <div class="flex items-center gap-2">
+    <div class="bg-black/30 px-3 py-1.5 rounded-full border border-white/10 text-sm">Saldo <b id="saldo">R$ 100,00</b></div>
+    <a href="../index.html" class="px-3 py-1.5 bg-white text-black rounded-full text-xs font-bold">Jogos</a>
+  </div>
+</header>
+
+<main class="max-w-[480px] mx-auto p-3 pb-10">
+  <div class="flex items-center justify-between gap-2 mt-1">
+    <label class="top-pill flex items-center gap-1 rounded-full px-3 py-1.5 text-sm font-bold">
+      <span class="text-white/70 font-semibold">Minas:</span>
+      <select id="minas" class="bg-transparent text-white font-extrabold outline-none cursor-pointer"></select>
+    </label>
+    <div class="next-pill rounded-full px-4 py-1.5 text-sm font-extrabold">Proximo: <span id="prox">1.10x</span></div>
+  </div>
+
+  <div id="grid" class="grid grid-cols-5 gap-2 mt-3"></div>
+
+  <div class="flex items-center gap-2 mt-4">
+    <button id="btnRandom" class="btn-blue flex-1 h-10 rounded-full font-extrabold text-xs tracking-wide">ALEATORIO</button>
+    <button id="btnAuto" class="w-10 h-10 rounded-full bg-[#0a3fa0] grid place-items-center border border-white/10" title="Autojogo">
+      <svg viewBox="0 0 24 24" class="w-5 h-5" fill="none" stroke="#fff" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v6h6M20 20v-6h-6M20 9A8 8 0 0 0 5.6 5.6L4 7M4 15a8 8 0 0 0 14.4 3.4L20 17"/></svg>
+    </button>
+    <label class="flex items-center gap-1.5 text-xs font-bold bg-[#0a3fa0] rounded-full pl-2 pr-3 py-2 border border-white/10 cursor-pointer select-none">
+      <input id="autoToggle" type="checkbox" class="w-4 h-4 accent-[#65a30d]">
+      <span>Autojogo</span>
+      <input id="autoRounds" type="number" value="10" min="1" max="100" class="w-12 h-7 rounded-full px-2 text-xs text-black">
+    </label>
+  </div>
+
+  <div class="flex items-center gap-2 mt-2">
+    <button id="btnReset" class="w-12 h-12 rounded-full bg-[#0a3fa0] grid place-items-center border border-white/10 shrink-0" title="Nova rodada">
+      <svg viewBox="0 0 24 24" class="w-5 h-5" fill="none" stroke="#fff" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v6h6M20 20v-6h-6M20 9A8 8 0 0 0 5.6 5.6L4 7M4 15a8 8 0 0 0 14.4 3.4L20 17"/></svg>
+    </button>
+    <button id="btnMain" class="btn-green flex-1 h-12 rounded-2xl font-black text-sm tracking-wide flex items-center justify-center gap-2">
+      <svg viewBox="0 0 24 24" class="w-5 h-5" fill="#fff"><path d="M8 5v14l11-7z"/></svg>
+      <span id="btnMainTxt">APOSTA</span>
+    </button>
+  </div>
+
+  <div class="bg-[#0a3fa0] rounded-2xl p-3 mt-2 border border-white/10">
+    <p class="text-center text-xs font-bold text-white/80">Aposta BRL</p>
+    <div class="flex items-center justify-center gap-2 mt-1">
+      <button id="btnMinus" class="w-10 h-10 rounded-full bg-[#123a8a] text-xl font-black">-</button>
+      <div id="betVal" class="min-w-[110px] text-center text-xl font-black tabular-nums">3.00</div>
+      <button id="btnPlus" class="w-10 h-10 rounded-full bg-[#123a8a] text-xl font-black">+</button>
+    </div>
+    <div class="flex gap-2 mt-2 text-xs font-bold">
+      <button id="btnHalf" class="flex-1 h-8 rounded-full bg-white/10">1/2</button>
+      <button id="btnDouble" class="flex-1 h-8 rounded-full bg-white/10">x2</button>
+      <button id="btnMax" class="flex-1 h-8 rounded-full bg-white/10">MAX</button>
+    </div>
+  </div>
+
+  <p id="msg" class="text-xs text-white/80 mt-3 text-center">Escolha as minas e o valor. Clique em APOSTA para comecar.</p>
+  <div id="hist" class="flex gap-1.5 mt-2 overflow-x-auto text-xs justify-center flex-wrap"></div>
+  <p class="text-[11px] text-white/60 mt-3 text-center">Jogue com responsabilidade. Mais 18. Resultado aleatorio com margem da casa.</p>
+</main>
+
+<script type="module">
+const params = new URLSearchParams(location.search);
+const platformId = params.get('platform') || 'demo';
+const PKEY = 'player_' + platformId;
+const fmt = v => Number(v||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+const fmtMult = v => (Math.min(v, 50)).toFixed(2) + 'x';
+
+let saldo = 100;
+try{
+  const p = JSON.parse(localStorage.getItem(PKEY)||'null');
+  if(p && typeof p.saldo === 'number') saldo = p.saldo;
+}catch{}
+function saveSaldo(){
+  try{
+    const p = JSON.parse(localStorage.getItem(PKEY)||'{}');
+    p.saldo = saldo;
+    localStorage.setItem(PKEY, JSON.stringify(p));
+  }catch{}
+  document.getElementById('saldo').textContent = fmt(saldo);
+}
+async function logBet(b){
+  try{
+    const { sbCreateBet } = await import('../../supabase.js');
+    await sbCreateBet({ platform_id: platformId, jogo:'mines', ...b });
+  }catch{}
+}
+saveSaldo();
+
+const SVG_GEM = '<svg viewBox="0 0 24 24" fill="#fff"><path d="M12 2l4 5 5 3-9 12L3 10l5-3z"/><path d="M12 2l-4 5 4 15 4-15z" fill="#a7f3d0" opacity=".9"/></svg>';
+const SVG_MINE = '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="7" fill="#111"/><circle cx="10" cy="10" r="2" fill="rgba(255,255,255,.5)"/><g stroke="#fbbf24" stroke-width="2" stroke-linecap="round"><path d="M12 1v4M12 19v4M1 12h4M19 12h4M4 4l3 3M17 17l3 3M20 4l-3 3M7 17l-3 3"/></g></svg>';
+
+function comb(n,k){
+  if(k<0||k>n) return 0;
+  k = Math.min(k, n-k);
+  let r = 1;
+  for(let i=1;i<=k;i++){ r = r * (n-k+i) / i; }
+  return r;
+}
+function multFor(minas, hits){
+  if(hits<=0) return 1;
+  const fair = comb(25,hits) / comb(25-minas,hits);
+  return Math.min(fair * 0.97, 50);
+}
+
+const minasSel = document.getElementById('minas');
+for(let i=1;i<=20;i++){
+  const o = document.createElement('option');
+  o.value = i; o.textContent = i;
+  if(i===3) o.selected = true;
+  minasSel.appendChild(o);
+}
+
+let bet = 3.00, minas = 3, minesSet = new Set(), revealed = 0, active = false, autoTimer = null;
+const grid = document.getElementById('grid');
+const proxEl = document.getElementById('prox');
+const msgEl = document.getElementById('msg');
+const btnMain = document.getElementById('btnMain');
+const btnMainTxt = document.getElementById('btnMainTxt');
+const betValEl = document.getElementById('betVal');
+
+function renderBet(){ betValEl.textContent = bet.toFixed(2); }
+function renderProx(){
+  if(!active){ proxEl.textContent = fmtMult(multFor(minas, 1)); return; }
+  proxEl.textContent = fmtMult(multFor(minas, revealed+1));
+}
+function renderMain(){
+  if(!active){
+    btnMain.classList.remove('btn-cash'); btnMain.classList.add('btn-green');
+    btnMainTxt.textContent = 'APOSTA';
+  } else {
+    const cur = multFor(minas, revealed);
+    const val = revealed === 0 ? 'CASHOUT' : 'CASHOUT ' + fmt(bet*cur);
+    btnMain.classList.remove('btn-green'); btnMain.classList.add('btn-cash');
+    btnMainTxt.textContent = val;
+  }
+}
+function lockSetup(locked){
+  minasSel.disabled = locked;
+  document.getElementById('btnMinus').disabled = locked;
+  document.getElementById('btnPlus').disabled = locked;
+  document.getElementById('btnHalf').disabled = locked;
+  document.getElementById('btnDouble').disabled = locked;
+  document.getElementById('btnMax').disabled = locked;
+}
+
+function buildGrid(){
+  grid.innerHTML = '';
+  for(let i=0;i<25;i++){
+    const b = document.createElement('button');
+    b.className = 'tile dot aspect-square rounded-xl grid place-items-center';
+    b.dataset.idx = i;
+    b.onclick = ()=>clickTile(i);
+    grid.appendChild(b);
+  }
+}
+function shuffle(){
+  const arr = [...Array(25).keys()];
+  for(let i=arr.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [arr[i],arr[j]] = [arr[j],arr[i]];
+  }
+  minesSet = new Set(arr.slice(0, minas));
+}
+function revealAll(){
+  [...grid.children].forEach((b,i)=>{
+    b.disabled = true;
+    b.classList.remove('dot');
+    if(minesSet.has(i)){ b.classList.add('open-mine'); b.innerHTML = SVG_MINE; }
+    else if(!b.dataset.open){ b.classList.add('open-gem'); b.style.opacity = '.55'; if(!b.innerHTML) b.innerHTML = SVG_GEM; }
+  });
+}
+function pushHist(win, txt){
+  const d = document.createElement('span');
+  d.className = 'hist-dot px-2 py-1 rounded-full font-bold ' + (win ? 'bg-green-500/25 text-green-200' : 'bg-red-500/25 text-red-200');
+  d.textContent = txt;
+  const h = document.getElementById('hist');
+  h.prepend(d);
+  while(h.children.length > 20) h.lastChild.remove();
+}
+function beep(freq, dur){
+  try{
+    const ctx = beep.ctx || (beep.ctx = new (window.AudioContext||window.webkitAudioContext)());
+    const o = ctx.createOscillator(), g = ctx.createGain();
+    o.connect(g); g.connect(ctx.destination);
+    o.frequency.value = freq; o.type = 'sine';
+    g.gain.setValueAtTime(0.12, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + dur);
+    o.start(); o.stop(ctx.currentTime + dur);
+  }catch{}
+}
+
+async function startRound(){
+  if(active) return;
+  minas = Number(minasSel.value||3);
+  if(!(bet>0)){ msgEl.textContent = 'Informe um valor valido.'; return; }
+  if(bet > saldo){ msgEl.textContent = 'Saldo insuficiente. Deposite para continuar.'; return; }
+  saldo = Math.round((saldo - bet)*100)/100; saveSaldo();
+  revealed = 0; active = true;
+  shuffle(); buildGrid(); lockSetup(true);
+  renderProx(); renderMain();
+  msgEl.textContent = 'Rodada aberta. Clique nas casas ou use ALEATORIO. Faca cashout quando quiser.';
+  beep(440, .12);
+}
+async function cashout(auto){
+  if(!active) return;
+  const m = multFor(minas, revealed);
+  const ret = Math.round(bet*m*100)/100;
+  saldo = Math.round((saldo + ret)*100)/100; saveSaldo();
+  msgEl.textContent = 'Sacado em ' + m.toFixed(2) + 'x. Retorno ' + fmt(ret) + '.';
+  logBet({ valor: bet, multiplicador: m, retorno: ret, resultado: revealed>0 ? 'win' : 'loss' });
+  pushHist(true, '+' + fmt(ret-bet).replace('R$','').trim());
+  active = false; lockSetup(false);
+  [...grid.children].forEach(b=> b.disabled = true);
+  renderProx(); renderMain();
+  beep(880, .15);
+  maybeAuto();
+}
+async function bust(idx){
+  active = false;
+  revealAll();
+  msgEl.textContent = 'Mina atingida. Voce perdeu ' + fmt(bet) + '.';
+  logBet({ valor: bet, multiplicador: 0, retorno: 0, resultado: 'loss' });
+  pushHist(false, '-' + fmt(bet).replace('R$','').trim());
+  lockSetup(false);
+  renderProx(); renderMain();
+  beep(160, .3);
+  maybeAuto();
+}
+function clickTile(i){
+  if(!active) return;
+  const b = grid.children[i];
+  if(!b || b.dataset.open) return;
+  b.dataset.open = '1';
+  b.disabled = true;
+  b.classList.remove('dot');
+  if(minesSet.has(i)){
+    b.classList.add('open-mine'); b.innerHTML = SVG_MINE;
+    bust(i);
+  } else {
+    revealed++;
+    b.classList.add('open-gem'); b.innerHTML = SVG_GEM;
+    beep(660, .08);
+    if(revealed >= 25 - minas){ cashout(false); return; }
+    renderProx(); renderMain();
+  }
+}
+function randomPick(){
+  if(!active){ msgEl.textContent = 'Clique em APOSTA primeiro.'; return; }
+  const closed = [];
+  [...grid.children].forEach((b,i)=>{ if(!b.dataset.open) closed.push(i); });
+  if(!closed.length) return;
+  clickTile(closed[Math.floor(Math.random()*closed.length)]);
+}
+function maybeAuto(){
+  const on = document.getElementById('autoToggle').checked;
+  if(!on) return;
+  const roundsEl = document.getElementById('autoRounds');
+  let left = Number(roundsEl.value||0);
+  if(left <= 1){ document.getElementById('autoToggle').checked = false; return; }
+  roundsEl.value = left - 1;
+  clearTimeout(autoTimer);
+  autoTimer = setTimeout(async ()=>{
+    if(document.getElementById('autoToggle').checked && !active){
+      await startRound();
+      setTimeout(()=>{ if(active){ randomPick(); randomPick(); randomPick(); } }, 400);
+      setTimeout(()=>{ if(active) cashout(true); }, 900);
+    }
+  }, 1400);
+}
+
+btnMain.onclick = ()=>{ active ? cashout(false) : startRound(); };
+document.getElementById('btnRandom').onclick = randomPick;
+document.getElementById('btnReset').onclick = ()=>{ if(active) return; buildGrid(); renderProx(); msgEl.textContent = 'Nova rodada pronta.'; };
+document.getElementById('btnMinus').onclick = ()=>{ if(active) return; bet = Math.max(1, Math.round((bet-1)*100)/100); renderBet(); };
+document.getElementById('btnPlus').onclick = ()=>{ if(active) return; bet = Math.min(500, Math.round((bet+1)*100)/100); renderBet(); };
+document.getElementById('btnHalf').onclick = ()=>{ if(active) return; bet = Math.max(1, Math.round((bet/2)*100)/100); renderBet(); };
+document.getElementById('btnDouble').onclick = ()=>{ if(active) return; bet = Math.min(500, Math.round((bet*2)*100)/100); renderBet(); };
+document.getElementById('btnMax').onclick = ()=>{ if(active) return; bet = Math.min(500, Math.max(1, Math.floor(saldo))); renderBet(); };
+minasSel.onchange = ()=>{ if(active) return; minas = Number(minasSel.value); renderProx(); };
+
+buildGrid(); renderBet(); renderProx(); renderMain();
+</script>
+</body>
+</html>

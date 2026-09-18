@@ -15,9 +15,12 @@ html,body{margin:0;padding:0;background:#0f1923;height:100%;overflow:hidden;font
 </head>
 <body>
 <div id="topbar">
-  <a href="../index.html" style="color:#fff;font-weight:800;font-size:13px;text-decoration:none">← Jogos</a>
+  <a href="../index.html" style="color:#fff;font-weight:800;font-size:13px;text-decoration:none">Jogos</a>
   <span style="color:#fff;font-weight:800;font-size:13px">Next Birds</span>
-  <span id="netstat" style="margin-left:auto;color:#9aa0a6;font-size:11px">modo offline</span>
+  <span id="saldo" style="margin-left:auto;color:#fff;font-size:12px;font-weight:800">R$ 100,00</span>
+  <input id="valor" type="number" value="5" min="1" style="width:56px;height:28px;border-radius:9999px;border:0;padding:0 8px;font-size:12px;color:#111">
+  <button id="btnBet" style="height:28px;border-radius:9999px;border:0;background:#8cb506;color:#fff;font-weight:800;font-size:11px;padding:0 12px;cursor:pointer">JOGAR 5</button>
+  <span id="netstat" style="color:#9aa0a6;font-size:11px">valendo</span>
 </div>
 <div id="c3wrap"></div>
 <script>
@@ -53,7 +56,48 @@ html,body{margin:0;padding:0;background:#0f1923;height:100%;overflow:hidden;font
     window.WebSocket = function(){ return { send(){}, close(){}, addEventListener(){}, removeEventListener(){}, readyState:1, CONNECTING:0, OPEN:1 }; };
   }catch(e){}
   try{ localStorage.setItem('token','local'); localStorage.setItem('language','pt-BR'); }catch(e){}
-  document.getElementById('netstat').textContent = 'modo offline (sem apostas)';
+  document.getElementById('netstat').textContent = 'valendo';
+})();
+</script>
+<script>
+(function(){
+  const params = new URLSearchParams(location.search);
+  const platformId = params.get('platform') || 'demo';
+  const PKEY = 'player_' + platformId;
+  const fmt = v => Number(v||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+  let saldo = 100;
+  try{ const p = JSON.parse(localStorage.getItem(PKEY)||'null'); if(p && typeof p.saldo === 'number') saldo = p.saldo; }catch{}
+  const saldoEl = document.getElementById('saldo'), valorEl = document.getElementById('valor'), btn = document.getElementById('btnBet');
+  function save(){ try{ const p = JSON.parse(localStorage.getItem(PKEY)||'{}'); p.saldo = saldo; localStorage.setItem(PKEY, JSON.stringify(p)); }catch{} saldoEl.textContent = fmt(saldo); }
+  async function logBet(b){ try{ const m = await import('../../supabase.js'); await m.sbCreateBet({ platform_id: platformId, jogo:'nextbirds', ...b }); }catch{} }
+  save();
+  let aposta = 0, premioPago = false;
+  btn.onclick = async ()=>{
+    const v = Number(valorEl.value||0);
+    if(!(v>0)){ alert('Informe o valor'); return; }
+    if(v > saldo){ alert('Saldo insuficiente. Deposite para continuar.'); return; }
+    saldo = Math.round((saldo - v)*100)/100; save();
+    aposta = v; premioPago = false;
+    btn.textContent = 'JOGANDO ' + fmt(v);
+    document.getElementById('netstat').textContent = 'valendo ' + fmt(v);
+    setTimeout(async ()=>{
+      if(aposta > 0 && !premioPago){
+        premioPago = true;
+        const win = Math.random() < 0.40;
+        if(win){
+          const ret = Math.round(aposta*2*100)/100;
+          saldo = Math.round((saldo + ret)*100)/100; save();
+          logBet({ valor: aposta, multiplicador: 2, retorno: ret, resultado: 'win' });
+          document.getElementById('netstat').textContent = 'premio ' + fmt(ret);
+        } else {
+          logBet({ valor: aposta, multiplicador: 0, retorno: 0, resultado: 'loss' });
+          document.getElementById('netstat').textContent = 'sem premio';
+        }
+        btn.textContent = 'JOGAR ' + (valorEl.value||5);
+        aposta = 0;
+      }
+    }, 45000);
+  };
 })();
 </script>
 <script src="scripts/supportcheck.js"></script>
