@@ -24,23 +24,33 @@ async function logBet(b) {
   } catch (e) {}
 }
 
-const BETS = [2, 5, 10, 20, 50];
-let betIdx = 0;
+const BETS = [1, 2, 5, 10, 20, 50, 100];
+let betIdx = 2;
 let spinning = false;
+let turbo = localStorage.getItem('tiger_turbo') === '1';
 const apostaEl = document.querySelector('#aposta');
 function renderBet() { apostaEl.textContent = fmt(BETS[betIdx]); }
 apostaEl.addEventListener('click', () => {
   if (spinning) return;
   betIdx = (betIdx + 1) % BETS.length;
   renderBet();
+  try{ localStorage.setItem('tiger_bet', String(BETS[betIdx])); }catch(e){}
 });
+try{ const sb = Number(localStorage.getItem('tiger_bet')); if(BETS.includes(sb)) betIdx = BETS.indexOf(sb); }catch(e){}
 renderBet();
 saveSaldo();
+function setTurbo(v){
+  turbo = !!v;
+  document.getElementById('btnTurbo').classList.toggle('on', turbo);
+  try{ localStorage.setItem('tiger_turbo', turbo ? '1' : '0'); }catch(e){}
+}
+setTurbo(turbo);
 
 document.getElementById('btnBack').addEventListener('click', () => {
   if (history.length > 1) history.back();
   else location.href = '../../p.html?demo=6666';
 });
+document.getElementById('btnTurbo').addEventListener('click', () => setTurbo(!turbo));
 
 let bgSound = document.querySelector('#bgSound');
 let clickSound = document.querySelector('#clickSound');
@@ -202,16 +212,13 @@ document.getElementById('spinButton').addEventListener('click', function (e) {
   const outcome = r < 0.18 ? 'small' : (r < 0.24 ? 'big' : 'loss');
   const row = randomRow();
 
-  setTimeout(() => stopSpin(columns[0], row, 0), 2000);
-  setTimeout(() => stopSpin(columns[1], row, 1), 2500);
-  setTimeout(() => {
-    stopSpin(columns[2], row, 2);
+  function finishSpin(betV){
     e.target.classList.remove('rotateFaster');
     stars.classList.remove('anim');
     cols.forEach((col) => { col.classList.remove('shinecol'); });
 
     if (outcome === 'small') {
-      const prize = bet * 2;
+      const prize = betV * 2;
       document.querySelector('.allmarquee').style.opacity = '0';
       document.querySelector('.speedlight').style.opacity = '0.2';
       document.querySelector('.ganho').classList.add('show');
@@ -221,15 +228,15 @@ document.getElementById('spinButton').addEventListener('click', function (e) {
       document.querySelector('#total').textContent = fmt(prize);
       saldo = Math.round((saldo + prize) * 100) / 100;
       saveSaldo();
-      logBet({ valor: bet, multiplicador: 2, retorno: prize, resultado: 'win' });
+      logBet({ valor: betV, multiplicador: 2, retorno: prize, resultado: 'win' });
     } else if (outcome === 'big') {
-      const prize = bet * 10;
+      const prize = betV * 10;
       document.querySelector('#ganhoCols2').style.opacity = '1';
       try { win1.play(); } catch (err) {}
       document.querySelector('#total').textContent = fmt(prize);
       saldo = Math.round((saldo + prize) * 100) / 100;
       saveSaldo();
-      logBet({ valor: bet, multiplicador: 10, retorno: prize, resultado: 'win' });
+      logBet({ valor: betV, multiplicador: 10, retorno: prize, resultado: 'win' });
       setTimeout(() => {
         try { coinsSound.play(); } catch (err) {}
         bgSound.volume = 0.3;
@@ -237,10 +244,21 @@ document.getElementById('spinButton').addEventListener('click', function (e) {
         gg.style.display = 'block';
         gg.style.opacity = '1';
         countTo(prize);
-      }, 1000);
+      }, turbo ? 120 : 1000);
     } else {
-      logBet({ valor: bet, multiplicador: 0, retorno: 0, resultado: 'loss' });
+      logBet({ valor: betV, multiplicador: 0, retorno: 0, resultado: 'loss' });
     }
     spinning = false;
+  }
+  if(turbo){
+    cols.forEach((col,i)=> stopSpin(col,row,i));
+    finishSpin(bet);
+    return;
+  }
+  setTimeout(() => stopSpin(columns[0], row, 0), turbo ? 120 : 400);
+  setTimeout(() => stopSpin(columns[1], row, 1), turbo ? 220 : 900);
+  setTimeout(() => {
+    stopSpin(columns[2], row, 2);
+    finishSpin(bet);
   }, 3000);
 });

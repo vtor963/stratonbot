@@ -14,11 +14,16 @@
     <style>
       #btnBack{position:absolute;top:10px;left:10px;z-index:20;width:38px;height:38px;border-radius:9999px;border:1px solid rgba(255,255,255,.25);background:rgba(0,0,0,.45);color:#fff;font-size:18px;font-weight:900;cursor:pointer;line-height:1}
       #aposta{cursor:pointer}
+      #btnTurbo{position:absolute;top:10px;right:10px;z-index:20;width:42px;height:42px;border-radius:9999px;border:1px solid rgba(255,255,255,.18);background:rgba(0,0,0,.35);color:#fff;display:grid;place-items:center;cursor:pointer}
+      #btnTurbo.on{border-color:#facc15;box-shadow:0 0 12px rgba(250,204,21,.55)}
+      #btnTurbo small{position:absolute;bottom:-14px;left:50%;transform:translateX(-50%);font-size:9px;font-weight:800;letter-spacing:.08em;color:#facc15}
+      #btnTurbo svg{width:20px;height:20px}
     </style>
   </head>
   <body>
     <div class="content">
       <button id="btnBack" title="Voltar">&#8592;</button>
+      <button id="btnTurbo" title="Turbo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg><small>TURBO</small></button>
       <div class="stage1">
         <div class="positionBtn">
           <p>Você ganhou 3 rodadas grátis no Fortune Tiger !</p>
