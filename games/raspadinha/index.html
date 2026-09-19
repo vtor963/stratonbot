@@ -9,9 +9,11 @@
 <style>
 *{font-family:Inter,system-ui,sans-serif}
 body{background:#0f1923;color:#fff}
-.cell{position:relative;border-radius:12px;overflow:hidden;background:#1d2730;border:1px solid rgba(255,255,255,.1);aspect-ratio:1/1}
+.cell{position:relative;border-radius:14px;overflow:hidden;background:radial-gradient(ellipse at 50% 0%, #1d2730 0%, #0f1923 70%);border:1px solid rgba(255,255,255,.08);aspect-ratio:1/1;box-shadow:inset 0 2px 0 rgba(255,255,255,.06), 0 6px 14px rgba(0,0,0,.35)}
 .cell canvas{position:absolute;inset:0;width:100%;height:100%;cursor:pointer;touch-action:none}
 .prize{position:absolute;inset:0;display:grid;place-items:center;font-weight:900;font-size:22px}
+.prize img{width:62px;height:62px;object-fit:contain;filter:drop-shadow(0 6px 10px rgba(0,0,0,.45))}
+.cell.win{box-shadow:0 0 18px 3px rgba(250,204,21,.7), inset 0 2px 0 rgba(255,255,255,.2);border-color:#facc15}
 input{color:#111}
 input[type=number]{background:rgba(255,255,255,.08)!important;color:#fff!important;border:1px solid rgba(255,255,255,.18)!important;color-scheme:dark}
 </style>
@@ -51,6 +53,14 @@ const platformId = params.get('platform') || 'demo';
 const PKEY = 'player_' + platformId;
 const fmt = v => Number(v||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
 
+const SYMIMG = {
+  '★':'../../public/layouts/chinese - 777.png',
+  '7':'../../public/layouts/chinese - mk.png',
+  'R$':'../../public/layouts/chinese - cm777.png',
+  '◆':'../../public/layouts/chinese - default.png',
+  '●':'../../public/layouts/caktus.png',
+  '▲':'../../public/layouts/onaplay1.png'
+};
 const SKINS = {
   copa:     { title:'Raspadinha da Copa', art:'../../public/layouts/raspadinha-copa.png', syms:['★','7','R$','◆','●','▲'], mult:{'★':50,'7':20,'R$':10,'◆':5,'●':2,'▲':1} },
   chinesa:  { title:'Raspadinha Chinesa', art:'../../public/layouts/raspadinha - chinese.png', syms:['7','★','◆','R$','●','▲'], mult:{'7':50,'★':20,'◆':10,'R$':5,'●':2,'▲':1} },
@@ -102,7 +112,7 @@ function novaCartela(){
   syms.forEach(s=>{
     const d = document.createElement('div');
     d.className = 'cell';
-    d.innerHTML = `<div class="prize">${s}</div>`;
+    d.innerHTML = `<div class="prize"><img src="${SYMIMG[s]}" alt="${s}"></div>`;
     const cv = document.createElement('canvas');
     d.appendChild(cv);
     grid.appendChild(d);
@@ -110,30 +120,36 @@ function novaCartela(){
     function paint(){
       cv.width = d.clientWidth; cv.height = d.clientHeight;
       const g = ctx.createLinearGradient(0,0,cv.width,cv.height);
-      g.addColorStop(0,'#b45309'); g.addColorStop(1,'#92400e');
+      g.addColorStop(0,'#a16207'); g.addColorStop(1,'#92400e');
       ctx.fillStyle = g; ctx.fillRect(0,0,cv.width,cv.height);
-      ctx.fillStyle = 'rgba(255,255,255,.25)';
-      ctx.font = 'bold 11px Inter,sans-serif'; ctx.textAlign = 'center';
+      // textura diagonal
+      ctx.strokeStyle = 'rgba(255,255,255,.08)'; ctx.lineWidth = 1;
+      for(let i=-cv.height;i<cv.width;i+=12){ ctx.beginPath(); ctx.moveTo(i,0); ctx.lineTo(i+cv.height,cv.height); ctx.stroke(); }
+      ctx.fillStyle = '#fef3c7';
+      ctx.font = '800 11px Inter,sans-serif'; ctx.textAlign = 'center';
       ctx.fillText('RASPE', cv.width/2, cv.height/2 + 4);
     }
     paint();
     let down = false;
     const cell = { cv, ctx, s, open:false, pct:0 };
     cells.push(cell);
+    let down = false;
     function scratch(e){
       if(done || cell.open) return;
       const r = cv.getBoundingClientRect();
       const cx = (e.touches?e.touches[0].clientX:e.clientX) - r.left;
       const cy = (e.touches?e.touches[0].clientY:e.clientY) - r.top;
       ctx.globalCompositeOperation = 'destination-out';
-      ctx.beginPath(); ctx.arc(cx, cy, 16, 0, 7); ctx.fill();
+      ctx.beginPath(); ctx.arc(cx, cy, 18, 0, 7); ctx.fill();
       // % raspada
       const dpx = ctx.getImageData(0,0,cv.width,cv.height).data;
       let clear = 0;
-      for(let i=3;i<dpx.length;i+=16){ if(dpx[i]===0) clear++; }
-      if(clear / (dpx.length/16) > 0.45 && !cell.open){
+      for(let i=3;i<dpx.length;i+=20){ if(dpx[i]===0) clear++; }
+      if(clear / (dpx.length/20) > 0.52 && !cell.open){
         cell.open = true; revealed++;
         ctx.clearRect(0,0,cv.width,cv.height);
+        d.classList.add('win');
+        setTimeout(()=>d.classList.remove('win'), 550);
         if(revealed === 9) finalizar();
       }
     }

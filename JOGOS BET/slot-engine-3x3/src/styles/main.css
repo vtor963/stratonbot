@@ -1,0 +1,129 @@
+@keyframes win-pulse {
+  0%, 100% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 8px var(--win-color)) drop-shadow(0 0 16px var(--win-color));
+  }
+  50% {
+    transform: scale(1.15);
+    filter: drop-shadow(0 0 20px var(--win-color)) drop-shadow(0 0 40px var(--win-color)) drop-shadow(0 0 60px var(--win-color));
+  }
+}
+
+@keyframes spin-blur {
+  0% { filter: blur(0); }
+  50% { filter: blur(6px); }
+  100% { filter: blur(0); }
+}
+
+.slot-engine-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: var(--bg-main);
+  font-family: 'Inter', system-ui, sans-serif;
+  color: white;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.slot-grid {
+  position: relative;
+}
+
+.slot-reel {
+  position: relative;
+}
+
+.reel-strip {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  will-change: transform;
+}
+
+.reel-symbol {
+  width: var(--symbol-size);
+  height: var(--symbol-size);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.reel-symbol img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+  user-select: none;
+}
+
+.spin-button {
+  margin-top: 24px;
+  padding: 16px 48px;
+  font-size: 18px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--bg-main);
+  background: linear-gradient(135deg, var(--primary-neon), var(--win-color));
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 
+    0 4px 20px rgba(var(--primary-neon-rgb), 0.4),
+    0 0 0 2px rgba(var(--primary-neon-rgb), 0.2);
+}
+
+.spin-button:hover:not(:disabled) {
+  transform: scale(1.05);
+  box-shadow: 
+    0 6px 30px rgba(var(--primary-neon-rgb), 0.6),
+    0 0 0 3px rgba(var(--primary-neon-rgb), 0.3);
+}
+
+.spin-button:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.spin-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.game-info {
+  margin-top: 20px;
+  text-align: center;
+  color: var(--primary-neon);
+  font-family: monospace;
+  font-size: 14px;
+}
+
+.win-display {
+  margin-top: 16px;
+  font-size: 28px;
+  font-weight: 800;
+  background: linear-gradient(90deg, var(--primary-neon), var(--win-color));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: win-pulse 1s ease-in-out infinite;
+}
+
+@media (max-width: 480px) {
+  :root {
+    --symbol-size: 90px;
+  }
+  
+  .spin-button {
+    padding: 14px 32px;
+    font-size: 16px;
+  }
+}

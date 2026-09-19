@@ -8,16 +8,22 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
 *{font-family:Inter,system-ui,sans-serif}
-body{background:#150a2e;color:#fff}
-.chest{background:#2a1658;border:1px solid rgba(255,255,255,.12);transition:transform .1s ease}
-.chest:not(:disabled):active{transform:scale(.96)}
-.chest.open{background:#3b2273}
-.chest.winner{background:#14532d;border-color:#22c55e}
-.btn-open{background:#a855f7;color:#fff;box-shadow:0 6px 0 #6b21a8}
-.btn-open:active{transform:translateY(3px);box-shadow:0 3px 0 #6b21a8}
+body{background:#0f0a22;color:#fff}
+.chest{position:relative;border-radius:18px;overflow:hidden;background:radial-gradient(ellipse at 50% 0%, #3b2273 0%, #1d1238 60%);border:1px solid rgba(255,255,255,.12);transition:transform .15s ease, box-shadow .15s ease}
+.chest:hover{transform:translateY(-4px) scale(1.02);box-shadow:0 14px 30px rgba(0,0,0,.45)}
+.chest.open{background:linear-gradient(180deg,#3b2273,#1d1238)}
+.chest.winner{background:radial-gradient(ellipse at 50% 0%, #16a34a 0%, #14532d 60%);border-color:#22c55e;box-shadow:0 0 22px 4px rgba(34,197,94,.55)}
+.chest img{width:100%;height:118px;object-fit:cover;display:block;filter:drop-shadow(0 8px 14px rgba(0,0,0,.45))}
+.chest::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg, transparent 40%, rgba(0,0,0,.25));pointer-events:none}
+.btn-open{background:linear-gradient(135deg,#a855f7,#7c3aed);color:#fff;box-shadow:0 8px 22px -8px #a855f7}
+.btn-open:active{transform:translateY(2px)}
 .btn-open:disabled{opacity:.5}
 input{color:#111}
 input[type=number]{background:rgba(255,255,255,.08)!important;color:#fff!important;border:1px solid rgba(255,255,255,.18)!important;color-scheme:dark}
+@keyframes chestpop{0%{transform:scale(.7)}60%{transform:scale(1.08)}100%{transform:scale(1)}}
+.pop{animation:chestpop .32s ease}
+@keyframes coinrain{0%{transform:translateY(-24px) scale(.6);opacity:0}20%{opacity:1}100%{transform:translateY(24px) scale(1);opacity:0}}
+.coin{position:absolute;width:22px;height:22px;border-radius:999px;background:radial-gradient(circle at 30% 30%, #fef08a, #eab308);border:2px solid #a16207;animation:coinrain .9s ease forwards}
 </style>
 </head>
 <body class="min-h-screen">
@@ -67,7 +73,9 @@ function save(){ try{ const p = JSON.parse(localStorage.getItem(PKEY)||'{}'); p.
 async function logBet(b){ try{ const m = await import('../../supabase.js'); await m.sbCreateBet({ platform_id: platformId, jogo:'caixa', ...b }); }catch{} }
 save();
 
-const SVG_CHEST = '<svg viewBox="0 0 48 48" class="w-12 h-12"><rect x="6" y="18" width="36" height="22" rx="4" fill="#a855f7"/><rect x="6" y="10" width="36" height="12" rx="4" fill="#7c3aed"/><rect x="21" y="10" width="6" height="30" fill="#f5b301"/><circle cx="24" cy="24" r="3" fill="#111"/></svg>';
+const SVG_CHEST = '';
+const IMG_BAU = './../../public/layouts/lootbox.png';
+const IMG_BAU2 = './../../public/layouts/lootbox2.png';
 const boxesEl = document.getElementById('boxes'), msgEl = document.getElementById('msg');
 const valorEl = document.getElementById('valor'), btnGo = document.getElementById('btnGo');
 let aposta = 0, aberta = false, premios = [];
@@ -84,8 +92,8 @@ function renderBoxes(){
   boxesEl.innerHTML = '';
   for(let i=0;i<3;i++){
     const b = document.createElement('button');
-    b.className = 'chest rounded-2xl py-6 grid place-items-center';
-    b.innerHTML = SVG_CHEST + '<span class="text-xs font-bold mt-2">Caixa ' + (i+1) + '</span><span class="text-[11px] text-white/50" data-res></span>';
+    b.className = 'chest pop';
+    b.innerHTML = '<img src="' + (i===1?IMG_BAU2:IMG_BAU) + '" alt="bau"><span class="absolute bottom-2 left-1/2 -translate-x-1/2 text-xs font-black bg-black/60 px-2 py-1 rounded-full">Caixa ' + (i+1) + '</span><span class="text-[11px] text-white/50" data-res></span>';
     b.disabled = true;
     b.onclick = ()=>pick(i);
     boxesEl.appendChild(b);
@@ -143,6 +151,8 @@ async function pick(i){
     msgEl.textContent = 'Premio ' + m + 'x. Retorno ' + fmt(ret) + '.';
     logBet({ valor: aposta, multiplicador: m, retorno: ret, resultado: 'win' });
     pushHist(true, '+' + m + 'x');
+    const b = boxesEl.children[i];
+    for(let k=0;k<8;k++){ const c=document.createElement('div'); c.className='coin'; c.style.left=(30+k*28)+'px'; c.style.top='20px'; b.appendChild(c); setTimeout(()=>c.remove(),950); }
   } else {
     msgEl.textContent = 'Caixa vazia. Voce perdeu ' + fmt(aposta) + '.';
     logBet({ valor: aposta, multiplicador: 0, retorno: 0, resultado: 'loss' });

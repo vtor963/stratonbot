@@ -1,0 +1,58 @@
+{
+  "gameId": "zeus_olympus_scatter_01",
+  "gameName": "Gates of Olympus Clone",
+  "provider": "SaaS_Provedor_Interno",
+  "version": "1.0.0",
+  "metrics": {
+    "targetRtp": 96.5,
+    "volatility": "high",
+    "maxWinMultiplier": 5000
+  },
+  "grid": {
+    "columns": 6,
+    "rows": 5,
+    "totalPositions": 30
+  },
+  "mechanics": {
+    "type": "scatter_pays",
+    "tumbleEnabled": true,
+    "minClusterSize": 8
+  },
+  "paytable": [
+    { "id": "sym_crown", "pays": { "8": 10, "10": 25, "12": 50 }, "weight": 20 },
+    { "id": "sym_hourglass", "pays": { "8": 2.5, "10": 10, "12": 25 }, "weight": 35 },
+    { "id": "sym_ring", "pays": { "8": 2, "10": 5, "12": 15 }, "weight": 50 },
+    { "id": "sym_chalice", "pays": { "8": 1.5, "10": 2, "12": 12 }, "weight": 70 },
+    { "id": "sym_gem_red", "pays": { "8": 1, "10": 1.5, "12": 10 }, "weight": 150 },
+    { "id": "sym_gem_purple", "pays": { "8": 0.8, "10": 1.2, "12": 8 }, "weight": 200 },
+    { "id": "sym_gem_yellow", "pays": { "8": 0.5, "10": 1, "12": 5 }, "weight": 300 },
+    { "id": "sym_gem_green", "pays": { "8": 0.4, "10": 0.9, "12": 4 }, "weight": 350 },
+    { "id": "sym_gem_blue", "pays": { "8": 0.25, "10": 0.75, "12": 2 }, "weight": 400 }
+  ],
+  "features": {
+    "scatter": {
+      "id": "sym_scatter",
+      "payouts": { "4": 3, "5": 5, "6": 100 },
+      "weight": 15,
+      "triggers": {
+        "freeSpins": {
+          "minCount": 4,
+          "spinsAwarded": 15,
+          "retriggerCount": 3,
+          "retriggerSpins": 5
+        }
+      }
+    },
+    "multipliers": {
+      "enabled": true,
+      "symbols": ["sym_mult_green", "sym_mult_blue", "sym_mult_purple", "sym_mult_red"],
+      "values": [2, 3, 4, 5, 6, 8, 10, 12, 15, 20, 25, 50, 100, 250, 500],
+      "baseGameChancePct": 4.5,
+      "freeSpinsChancePct": 8.0,
+      "freeSpinsLogic": {
+        "accumulateGlobalMultiplier": true,
+        "applyOnWinOnly": true
+      }
+    }
+  }
+}
