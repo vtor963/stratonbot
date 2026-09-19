@@ -283,11 +283,16 @@ const PPSLOTS = [
   {n:'Cowboys Gold', img:'./public/layouts/chinese - cm777.png'}
 ];
 const ORIGINAIS = [
-  {n:'Mines', s:'Original', img:'./public/layouts/blaze.png', href:'./games/mines/'},
-  {n:'Double', s:'Original', img:'./public/layouts/blaze.png', href:'./games/double/'},
+  {n:'Mines', s:'97% RTP', img:'./public/layouts/blaze.png', href:'./games/mines/'},
+  {n:'Double', s:'Branco 14x', img:'./public/layouts/blaze.png', href:'./games/double/'},
   {n:'Aviator', s:'Crash', img:'./games/aviator/assets/aviator-img.png', href:'./games/aviator/'},
   {n:'Caixa Misteriosa', s:'Ate 10x', img:'./public/layouts/lootbox.png', href:'./games/caixa/'},
-  {n:'Plinko', s:'Original', img:'./public/layouts/playpix.png', href:'./games/plinko/'}
+  {n:'Plinko', s:'Original', img:'./public/layouts/playpix.png', href:'./games/plinko/'},
+  {n:'Fortune Tigre', s:'Tigre', img:'./public/layouts/chinese - 777.png', href:'./games/fortune-tiger/'},
+  {n:'Raspadinha Copa', s:'Copa', img:'./public/layouts/raspadinha-copa.png', href:'./games/raspadinha/?skin=copa'},
+  {n:'Raspadinha Chinesa', s:'Chinesa', img:'./public/layouts/raspadinha - chinese.png', href:'./games/raspadinha/?skin=chinesa'},
+  {n:'Block Blast', s:'Blast', img:'./public/layouts/block-blast.jpg', href:'./games/block-blast/'},
+  {n:'Subway Pay', s:'Pay', img:'./public/layouts/subway-pay.png', href:'./games/subway-pay/'}
 ];
 const RETROGAMES = [
   {n:'Block Blast', s:'Retro', img:'./public/layouts/block-blast.jpg', href:'./games/block-blast/'},
@@ -303,9 +308,7 @@ const RASPAGAMES = [
 ];
 const PFTABS = [
   {id:'popular', n:'Popular'},
-  {id:'slots', n:'Slots'},
   {id:'originais', n:'Originais'},
-  {id:'retro', n:'Retro'}
 ];
 let pfTab = 'popular', pfFavOnly = false, pfShown = {};
 function pfFavs(){ try{ return JSON.parse(localStorage.getItem('fav_'+PLAT.id)||'[]'); }catch{ return []; } }
@@ -317,11 +320,9 @@ function pfToggleFav(n){
   renderProfits();
 }
 function pfSectionsFor(){
-  if(pfFavOnly) return [{title:'Favoritos', games:[...PGSOFT, ...PPSLOTS, ...ORIGINAIS, ...RETROGAMES, ...RASPAGAMES].filter(g=>pfIsFav(g.n))}];
-  if(pfTab==='slots') return [{title:'PGSOFT', games:PGSOFT},{title:'PP', games:PPSLOTS}];
+  if(pfFavOnly) return [{title:'Favoritos', games:[...ORIGINAIS].filter(g=>pfIsFav(g.n))}];
   if(pfTab==='originais') return [{title:'Originais', games:ORIGINAIS}];
-  if(pfTab==='retro') return [{title:'Retro', games:RETROGAMES},{title:'Raspadinha', games:RASPAGAMES}];
-  return [{title:'PGSOFT', games:PGSOFT},{title:'PP', games:PPSLOTS},{title:'Originais', games:ORIGINAIS},{title:'Retro', games:RETROGAMES}];
+  return [{title:'Originais', games:ORIGINAIS}];
 }
 function pfCard(g){
   const fav = pfIsFav(g.n);
@@ -335,7 +336,7 @@ function pfCard(g){
   </div>`;
 }
 function pfGameByName(n){
-  return [...ORIGINAIS, ...RETROGAMES, ...RASPAGAMES].find(g=>g.n===n) || null;
+  return [...ORIGINAIS].find(g=>g.n===n) || null;
 }
 function pfGate(n){
   const g = pfGameByName(n);

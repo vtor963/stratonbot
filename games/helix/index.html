@@ -6,7 +6,7 @@
 <title>Helix Jump | StratonPay Bets</title>
 <link rel="icon" href="../../public/logo.png">
 <script src="https://cdn.tailwindcss.com"></script>
-<style>*{font-family:Inter,system-ui,sans-serif}body{background:#0f1923;color:#fff}canvas{touch-action:none}input{color:#111}
+<style>*{font-family:Inter,system-ui,sans-serif}body{background:#0b0e1a;color:#fff}canvas{touch-action:none;display:block}
 input[type=number]{background:rgba(255,255,255,.08)!important;color:#fff!important;border:1px solid rgba(255,255,255,.18)!important;color-scheme:dark}</style>
 </head>
 <body class="min-h-screen">
@@ -20,15 +20,18 @@ input[type=number]{background:rgba(255,255,255,.08)!important;color:#fff!importa
   </div>
 </header>
 <main class="max-w-[520px] mx-auto p-4">
-  <div class="bg-[#1d2730] rounded-2xl p-4 border border-white/10">
-    <div class="flex gap-2">
-      <input id="valor" type="number" value="5" min="1" class="h-11 w-28 rounded-xl px-3 text-sm">
-      <button id="btnJogar" class="flex-1 h-11 rounded-xl font-extrabold text-sm text-white" style="background:#ec4899">PULAR (12 plataformas = 2x)</button>
+  <div class="rounded-2xl p-4 border border-white/10" style="background:linear-gradient(135deg,#ec4899,#831843)">
+    <p class="text-xs font-bold text-pink-100">HELIX 3D</p>
+    <p class="font-black text-white">Gire a torre e desca</p>
+    <div class="flex gap-2 mt-2">
+      <input id="valor" type="number" value="5" min="1" class="h-11 w-28 rounded-xl px-3 text-sm bg-white text-black">
+      <button id="btnJogar" class="flex-1 h-11 rounded-xl font-extrabold text-sm text-white" style="background:#fff;color:#831843">PULAR (12 = 2x)</button>
     </div>
-    <p class="text-xs text-white/60 mt-2">Toque nas laterais ou use A-D para girar a torre. Passe pelas brechas. Cair no vermelho = fim.</p>
+    <p class="text-xs text-pink-100 mt-2">Arraste para girar. Brecha grande paga. Vermelho queima.</p>
   </div>
-  <div class="bg-[#1d2730] rounded-2xl mt-3 border border-white/10 overflow-hidden">
-    <canvas id="cv" width="480" height="420" class="w-full block"></canvas>
+  <div class="rounded-2xl mt-3 border border-white/10 overflow-hidden relative" style="background:radial-gradient(ellipse at 50% 100%, #831843 0%, #0b0e1a 60%)">
+    <canvas id="cv" width="480" height="520" class="w-full block"></canvas>
+    <div id="winFx" class="absolute inset-0 pointer-events-none hidden" style="background:radial-gradient(ellipse at 50% 50%, rgba(250,204,21,.35), transparent 60%)"></div>
   </div>
   <p id="msg" class="text-sm mt-2 text-center text-white/70"></p>
 </main>
@@ -106,22 +109,31 @@ function frame(){
   for(const p of plats){
     const sy = p.y - platY;
     if(sy < -30 || sy > 450) continue;
-    for(let a=0; a<Math.PI*2; a+=0.06){
+    for(let a=0; a<Math.PI*2; a+=0.05){
       const g = angNorm(p.gap + rot);
-      if(Math.abs(angNorm(a - g)) < 0.45) continue;
+      if(Math.abs(angNorm(a - g)) < 0.48) continue;
       const b = p.bad < 0 ? -1 : angNorm(p.bad + rot);
-      ctx.fillStyle = (b >= 0 && Math.abs(angNorm(a - b)) < 0.35) ? '#ef4444' : '#8b5cf6';
-      const r1 = 30, r2 = 110;
+      // profundidade 3D por angulo
+      const dep = Math.cos(a + rot)*0.35+0.65;
+      ctx.fillStyle = (b >= 0 && Math.abs(angNorm(a - b)) < 0.35) ? `rgba(239,68,68,${0.6+dep*0.4})` : `rgba(139,92,246,${0.5+dep*0.5})`;
+      const sh = dep*12;
+      const r1 = 28+sh, r2 = 108+sh;
       ctx.beginPath();
       ctx.arc(cx, sy, r2, a, a+0.06); ctx.arc(cx, sy, r1, a+0.06, a, true);
       ctx.closePath(); ctx.fill();
     }
   }
-  // bola
+  // bola com sombra 3D
   if(!dead || !playing){
+    ctx.shadowColor = 'rgba(236,72,153,.6)'; ctx.shadowBlur = 14;
+    // sombra no chao
+    ctx.fillStyle = 'rgba(0,0,0,.35)';
+    ctx.beginPath(); ctx.ellipse(cx, Math.min(ballY, 410)+18, 16, 7, 0, 0, 7); ctx.fill();
+    ctx.shadowBlur = 0;
     ctx.fillStyle = '#ec4899';
-    ctx.beginPath(); ctx.arc(cx, Math.min(ballY, 410), 12, 0, 7); ctx.fill();
-    ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(cx-4, Math.min(ballY,410)-4, 3, 0, 7); ctx.fill();
+    ctx.beginPath(); ctx.arc(cx, Math.min(ballY, 410), 13, 0, 7); ctx.fill();
+    // brilho
+    ctx.fillStyle = 'rgba(255,255,255,.9)'; ctx.beginPath(); ctx.arc(cx-4, Math.min(ballY,410)-4, 3.5, 0, 7); ctx.fill();
   }
   ctx.fillStyle = '#fff'; ctx.font = 'bold 18px Inter'; ctx.textAlign = 'left';
   ctx.fillText(passed + ' / ' + META, 12, 28);

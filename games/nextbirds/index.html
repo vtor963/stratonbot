@@ -69,14 +69,16 @@ html,body{margin:0;padding:0;background:#0f1923;height:100%;overflow:hidden;font
   try{ const p = JSON.parse(localStorage.getItem(PKEY)||'null'); if(p && typeof p.saldo === 'number') saldo = p.saldo; }catch{}
   const saldoEl = document.getElementById('saldo'), valorEl = document.getElementById('valor'), btn = document.getElementById('btnBet');
   function save(){ try{ const p = JSON.parse(localStorage.getItem(PKEY)||'{}'); p.saldo = saldo; localStorage.setItem(PKEY, JSON.stringify(p)); }catch{} saldoEl.textContent = fmt(saldo); }
-  async function logBet(b){ try{ const m = await import('../../supabase.js'); await m.sbCreateBet({ platform_id: platformId, jogo:'nextbirds', ...b }); }catch{} }
+  async function logBet(b){ try{ const m = await import('../../supabase.js'); await m.sbCreateBet({ platform_id: platformId, jogo:'nextbirds', ...b }); let pl={}; try{ pl=JSON.parse(localStorage.getItem(PKEY)||'{}'); }catch(e){} await m.sbUpsertPlayer(platformId, pl); }catch(e){} }
   save();
+  valorEl.addEventListener('input', ()=>{ const v=Number(valorEl.value||0); if(v>0) btn.textContent='JOGAR '+fmt(v); });
   let aposta = 0, premioPago = false;
   btn.onclick = async ()=>{
     const v = Number(valorEl.value||0);
     if(!(v>0)){ alert('Informe o valor'); return; }
     if(v > saldo){ alert('Saldo insuficiente. Deposite para continuar.'); return; }
     saldo = Math.round((saldo - v)*100)/100; save();
+    let pl={}; try{ pl=JSON.parse(localStorage.getItem(PKEY)||'{}'); }catch(e){} try{ const m=await import('../../supabase.js'); await m.sbUpsertPlayer(platformId, pl); }catch(e){}
     aposta = v; premioPago = false;
     btn.textContent = 'JOGANDO ' + fmt(v);
     document.getElementById('netstat').textContent = 'valendo ' + fmt(v);

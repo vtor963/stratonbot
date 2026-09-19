@@ -59,18 +59,21 @@
       document.getElementById('dbg').textContent = window.__spdbg.join('\n');
     }catch(e){}
   }
-  window.addEventListener('error', e=>spDbg('ERRO: ' + (e.message || e.type)));
-  window.addEventListener('unhandledrejection', e=>spDbg('PROMISE: ' + (e.reason && e.reason.message || e.reason)));
-  spDbg('nucleo ok');
+  // debug visível só via ?debug=1
+  const showDbg = new URLSearchParams(location.search).has('debug');
+  if(!showDbg) document.getElementById('dbg').style.display = 'none';
   window.NOSW = true;
   window.GAME_CONFIG = { leaderboard: 'mockup', bundlesPath: './bundles' };
+  window.aposta = 2;
+  window.addEventListener('error', e=>{ if(showDbg) spDbg('ERRO: ' + (e.message || e.type)); });
+  window.addEventListener('unhandledrejection', e=>{ if(showDbg) spDbg('PROMISE: ' + (e.reason && e.reason.message || e.reason)); });
+  if(showDbg) spDbg('nucleo ok');
 </script>
 <div id="message"></div>
 <script>
-/* Carteira StratonPay + ponte de eventos do jogo (isolado do motor) */
 (function(){
-const params = new URLSearchParams(location.search);
-const platformId = params.get('platform') || 'demo';
+const iifeParams = new URLSearchParams(location.search);
+const platformId = iifeParams.get('platform') || 'demo';
 const PKEY = 'player_' + platformId;
 const fmt = v => Number(v || 0).toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
 let saldo = 100;
@@ -106,6 +109,7 @@ document.querySelectorAll('.bets button').forEach(b => b.addEventListener('click
   document.querySelectorAll('.bets button').forEach(x => x.classList.remove('on'));
   b.classList.add('on');
   bet = Number(b.dataset.bet);
+  window.aposta = bet;
 }));
 function prizeFor(sec) {
   if (sec < 20) return 0;
@@ -142,7 +146,7 @@ document.getElementById('sair').addEventListener('click', () => settle(true));
 (function () {
   const okP = () => Promise.resolve();
   const handlers = {
-    gameplayStart: function () { if (playing && settled) { settled = false; t0 = Date.now(); spDbg('corrida iniciou'); } },
+    gameplayStart: function () { if (playing && settled) { settled = false; t0 = Date.now(); if(showDbg) spDbg('corrida iniciou'); } },
     gameplayStop: function () { settle(false); },
     getURLParam: function () { return ''; }
   };
@@ -160,18 +164,18 @@ document.getElementById('sair').addEventListener('click', () => settle(true));
 })();
 
 function bootGame() {
-  spDbg('carregando loading.js');
+  if(showDbg) spDbg('carregando loading.js');
   const s1 = document.createElement('script');
   s1.src = 'js/loading.js';
   s1.onload = () => {
-    spDbg('loading.js ok, carregando boot.js');
+    if(showDbg) spDbg('loading.js ok, carregando boot.js');
     const s2 = document.createElement('script');
     s2.src = 'js/boot.js';
-    s2.onload = () => spDbg('boot.js ok, aguardando motor');
-    s2.onerror = () => spDbg('FALHA boot.js (rede)');
+    s2.onload = () => { if(showDbg) spDbg('boot.js ok, aguardando motor'); };
+    s2.onerror = () => { if(showDbg) spDbg('FALHA boot.js (rede)'); };
     document.head.appendChild(s2);
   };
-  s1.onerror = () => spDbg('FALHA loading.js (rede)');
+  s1.onerror = () => { if(showDbg) spDbg('FALHA loading.js (rede)'); };
   document.head.appendChild(s1);
 }
 let booted = false;
@@ -191,7 +195,7 @@ document.getElementById('btnStart').addEventListener('click', () => {
   t0 = Date.now();
   if (!booted) { booted = true; bootGame(); }
   setTimeout(() => {
-    if (playing && settled && (Date.now() - t0) > 25000) spDbg('motor nao iniciou em 25s. recarrega a page.');
+    if (playing && settled && (Date.now() - t0) > 25000 && showDbg) spDbg('motor nao iniciou em 25s. recarrega a page.');
   }, 26000);
 });
 })();
