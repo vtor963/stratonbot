@@ -29,19 +29,31 @@ let betIdx = 2;
 let spinning = false;
 let turbo = localStorage.getItem('tiger_turbo') === '1';
 const apostaEl = document.querySelector('#aposta');
-function renderBet() { apostaEl.textContent = fmt(BETS[betIdx]); }
-apostaEl.addEventListener('click', () => {
-  if (spinning) return;
-  betIdx = (betIdx + 1) % BETS.length;
+function renderBet() { apostaEl.textContent = fmt(BETS[betIdx]); apostaEl.title = 'Toque para trocar: ' + BETS.join(', '); }
+function cycleBet(dir){
+  if(spinning) return;
+  betIdx = (betIdx + dir + BETS.length) % BETS.length;
   renderBet();
   try{ localStorage.setItem('tiger_bet', String(BETS[betIdx])); }catch(e){}
+  // flash feedback
+  apostaEl.style.transform = 'scale(1.08)';
+  setTimeout(()=> apostaEl.style.transform = '', 120);
+}
+apostaEl.addEventListener('click', () => cycleBet(1));
+apostaEl.addEventListener('contextmenu', e=>{ e.preventDefault(); cycleBet(-1); });
+let _apostaHold = null;
+apostaEl.addEventListener('pointerdown', e=>{
+  _apostaHold = setTimeout(()=> cycleBet(1), 500);
 });
+apostaEl.addEventListener('pointerup', ()=> clearTimeout(_apostaHold));
 try{ const sb = Number(localStorage.getItem('tiger_bet')); if(BETS.includes(sb)) betIdx = BETS.indexOf(sb); }catch(e){}
 renderBet();
 saveSaldo();
 function setTurbo(v){
   turbo = !!v;
-  document.getElementById('btnTurbo').classList.toggle('on', turbo);
+  const b = document.getElementById('btnTurbo');
+  b.classList.toggle('on', turbo);
+  b.style.transform = 'scale(1.12)'; setTimeout(()=> b.style.transform = '', 140);
   try{ localStorage.setItem('tiger_turbo', turbo ? '1' : '0'); }catch(e){}
 }
 setTurbo(turbo);
@@ -251,12 +263,15 @@ document.getElementById('spinButton').addEventListener('click', function (e) {
     spinning = false;
   }
   if(turbo){
-    cols.forEach((col,i)=> stopSpin(col,row,i));
+    cols.forEach((col,i)=>{ col.style.animation='none'; col.style.transform='translateY('+row[i]+')'; });
+    e.target.classList.remove('rotateFaster');
+    stars.classList.remove('anim');
+    cols.forEach(col=> col.classList.remove('shinecol'));
     finishSpin(bet);
     return;
   }
-  setTimeout(() => stopSpin(columns[0], row, 0), turbo ? 120 : 400);
-  setTimeout(() => stopSpin(columns[1], row, 1), turbo ? 220 : 900);
+  setTimeout(() => stopSpin(columns[0], row, 0), 400);
+  setTimeout(() => stopSpin(columns[1], row, 1), 900);
   setTimeout(() => {
     stopSpin(columns[2], row, 2);
     finishSpin(bet);
